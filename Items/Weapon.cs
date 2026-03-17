@@ -4,6 +4,9 @@ public class Weapon
 {
     // Fields and properties
     private int _baseDamage;
+    private String _weaponType;
+    private string _specialEffect;
+    
     public int BaseDamage
     {
         get { return _baseDamage; }
@@ -12,9 +15,8 @@ public class Weapon
             calculateDamage();
         }
     }
-
-    private String _weaponType;
-    public String WeaponType WeaponType
+    
+    public  WeaponType WeaponType
     {
         get {
             return _weaponType; 
@@ -24,17 +26,15 @@ public class Weapon
             _weaponType = value;
         }
     }
-
-    // private string _specialEffect;
-    // public string SpecialEffect
-    // {
-    //     get { return _specialEffect; }
-    //     set { _specialEffect = value; }
-    // }
+    public string SpecialEffect
+    {
+        get { return _specialEffect; }
+        set { _specialEffect = value; }
+    }
 
     // public void applyEffect(NPC target)
     // {
-    //     
+    //     TO UPDATE
     // }
 
  
@@ -48,7 +48,7 @@ public class Weapon
     }
 
     /**
-     * use() Meethod: Equips the item to the player
+     * use() Meethod: Equips the weapon item to the player
      * @param: Player, the player
      */
     public void use(Player player)
