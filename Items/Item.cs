@@ -3,6 +3,7 @@
 public abstract class Item
 {
 
+    // Fields
     private string _id;
     private string _name;
     private string _description;
@@ -10,6 +11,7 @@ public abstract class Item
     private Rarity  _rarity;
     private ItemType _type;
 
+    // Properties
     public string Id
     {
         get => _id;
@@ -50,6 +52,7 @@ public abstract class Item
         set => _type = value;
     }
     
+    // Abstract method for using the item
     public abstract void use(Player player)
     {
         
