@@ -98,4 +98,3 @@ using DefaultNamespace;
             return levels?.Count ?? 0;
         }
     }
-}
