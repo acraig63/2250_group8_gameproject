@@ -61,7 +61,7 @@
          */
         public int calculateDamage(int baseWeaponDmg)
         {
-            // TO DO
+            return (int)(DamageMultiplier * baseWeaponDmg);
         }
 
         /**
@@ -71,7 +71,7 @@
          */
         public bool isUnlocked(Player player)
         {
-            return player.AttackMoves.Any(x => x.MoveName == MoveName);
+            return player.attackMoves.Any(x => x.MoveName == MoveName);
         }
     
     
