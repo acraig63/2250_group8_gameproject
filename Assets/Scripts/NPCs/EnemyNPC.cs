@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
+using DefaultNamespace;
 
-namespace DefaultNamespace
-{
     public class EnemyNPC : NPC
     {
         //Attributes
@@ -103,5 +102,3 @@ namespace DefaultNamespace
         public bool DropsMap    => dropsMap;
     }
  
-
-}

@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
+using DefaultNamespace;
 
-namespace DefaultNamespace
-{
     public class CrewNPC : NPC
     {
         //Attributes
@@ -131,5 +130,3 @@ namespace DefaultNamespace
             set => questActive = value;
         }
     }
- 
-}
