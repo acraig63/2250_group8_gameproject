@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ProgressionSystem
+namespace DefaultNamespace
 {
     public class Player
     {
@@ -41,11 +41,11 @@ namespace ProgressionSystem
             position = position.Move(direction);
         }
 
-        public AttackResult Attack(NPC target)
+        public AttackMove Attack(NPC target)
         {
             if (equippedWeapon == null)
             {
-                return new AttackResult(false, 0);
+                return new AttackMove(false, 0);
             }
 
             return equippedWeapon.Use(target);
@@ -64,7 +64,7 @@ namespace ProgressionSystem
             }
             else if (item is Clothing clothing)
             {
-                equippedOutfit[clothing.GetSlot()] = clothing;
+                equippedOutfit[clothing.Slot] = clothing;
             }
         }
 

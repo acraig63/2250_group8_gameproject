@@ -1,4 +1,4 @@
-namespace Challenges
+namespace DefaultNamespace
 {
     // base parent class for all types of questions
 // abstract base class for all coding questions

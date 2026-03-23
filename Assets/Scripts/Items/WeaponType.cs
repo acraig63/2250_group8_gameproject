@@ -1,4 +1,4 @@
-﻿namespace Items
+﻿namespace DefaultNamespace
 {
     public enum WeaponType
     {

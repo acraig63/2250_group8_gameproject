@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ProgressionSystem
+namespace DefaultNamespace
 {
     public class Inventory
     {

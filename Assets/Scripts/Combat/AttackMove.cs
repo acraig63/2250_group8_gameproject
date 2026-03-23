@@ -1,4 +1,4 @@
-﻿namespace Combat
+﻿namespace DefaultNamespace
 {
     public class AttackMove
     {

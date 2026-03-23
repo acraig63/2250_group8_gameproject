@@ -1,4 +1,4 @@
-namespace Challenges
+namespace DefaultNamespace
 {
     using System.Collections.Generic;
 
