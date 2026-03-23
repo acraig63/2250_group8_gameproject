@@ -58,7 +58,7 @@ public class CrewNPC : NPC
             return;
         }
  
-        Debug.Log($"{npcName}: \"I have a task for you, {player.GetName()}. " +
+        Debug.Log($"{npcName}: \"I have a task for you, {player.getName()}. " +
                   $"Complete it and I'll reward you handsomely!\"");
  
         questActive = false;
@@ -78,7 +78,7 @@ public class CrewNPC : NPC
         Debug.Log($"{npcName} joins your crew and grants: {crewBonus}");
  
         // Concrete stat changes are applied through the Player subsystem
-        Debug.Log($"(Bonus \"{crewBonus}\" applied to {player.GetName()} via Player subsystem.)");
+        Debug.Log($"(Bonus \"{crewBonus}\" applied to {player.getName()} via Player subsystem.)");
     }
  
     public override void Interact(Player player)
