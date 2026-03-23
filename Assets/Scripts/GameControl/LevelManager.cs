@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Challenges;
-
-namespace GameControl
-{
+using DefaultNamespace;
     public class LevelManager : MonoBehaviour
     {
         public static LevelManager Instance;
