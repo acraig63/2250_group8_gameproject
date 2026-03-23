@@ -1,12 +1,23 @@
 ﻿namespace DefaultNamespace
 {
-    public class Weapon
+    public class Weapon: Item
     {
-        // Fields and properties
+        // Fields 
         private int _baseDamage;
         private WeaponType _weaponType;
         private string _specialEffect;
+        
+        // Constructor
+        public Weapon(string id, string name, string description, int goldValue,
+            Rarity rarity, int baseDamage, WeaponType weaponType, string specialEffect = "none")
+            : base(id, name, description, goldValue, rarity, ItemType.Weapon)
+        {
+            _baseDamage = baseDamage;
+            _weaponType = weaponType;
+            _specialEffect = specialEffect;
+        }
     
+        // Properties
         public int BaseDamage
         {
             get { return _baseDamage; }
@@ -44,14 +55,22 @@
          */
         public int calculateDamage()
         {
-        
+            float multiplier = Rarity switch
+            {
+                Rarity.Common    => 1.0f,
+                Rarity.Uncommon  => 1.2f,
+                Rarity.Rare      => 1.5f,
+                Rarity.Legendary => 2.0f,
+                _                => 1.0f
+            };
+            return (int)(_baseDamage * multiplier);
         }
 
         /**
          * use() Meethod: Equips the weapon item to the player
          * @param: Player, the player
          */
-        public void Use(Player player)
+        public override void use(Player player)
         {
             player.equipItem(this);
         }
