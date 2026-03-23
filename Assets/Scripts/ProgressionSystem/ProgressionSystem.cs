@@ -28,6 +28,11 @@ public class ProgressionSystem
     {
         _keysCollected.Add(levelId);
     }
+    
+    public bool IsLevelUnlocked(string levelId)
+    {
+        return _completedLevels.Contains(levelId);
+    }
 
     public bool HasAllKeys()
     {
