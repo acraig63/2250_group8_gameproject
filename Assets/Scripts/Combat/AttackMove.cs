@@ -1,4 +1,7 @@
-﻿namespace DefaultNamespace
+﻿using System.Linq;
+using System.Collections.Generic;
+
+namespace DefaultNamespace
 {
     public class AttackMove
     {
@@ -71,7 +74,7 @@
          */
         public bool isUnlocked(Player player)
         {
-            return player.attackMoves.Any(x => x.MoveName == MoveName);
+            return player.getAttackMoves().Any(x => x.MoveName == MoveName);
         }
     
     

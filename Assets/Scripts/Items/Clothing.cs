@@ -48,7 +48,7 @@
      */
     public override void use(Player player)
     {
-        player.equipItem(this);
+        player.EquipItem(this);
     }
 
     }
