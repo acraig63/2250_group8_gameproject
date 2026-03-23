@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine; 
 
-namespace NPCs
-{
+using DefaultNamespace;
+
     public abstract class NPC
     {
         //Attributes
@@ -77,5 +77,3 @@ namespace NPCs
         }
     }
  
-
-}
