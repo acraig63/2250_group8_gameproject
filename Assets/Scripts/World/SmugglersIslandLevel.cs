@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
 namespace DefaultNamespace
 {
     /// <summary>
@@ -33,12 +37,12 @@ public class SmugglersIslandLevel : Level
     /// </summary>
     public override void Initialize()
     {
-        Console.WriteLine("Initializing Smuggler's Island...");
+        Debug.Log("Initializing Smuggler's Island...");
         BuildMapLayout();
         SetupChallenge();
         SpawnNPCs();
         SpawnItems();
-        Console.WriteLine("Smuggler's Island ready.\n");
+        Debug.Log("Smuggler's Island ready.\n");
     }
 
     /// <summary>
@@ -91,49 +95,53 @@ public class SmugglersIslandLevel : Level
     /// </summary>
     private void SetupChallenge()
     {
-        // Challenge: no time limit (0 = unlimited), 100 XP on full completion
-        _challenge = new Challenge("challenge_lv1", xpReward: 100, timeLimit: 0);
+        // Challenge: no time limit (0 = unlimited)
+        _challenge = new Challenge("challenge_lv1");
 
         MultipleChoiceQuestion q1 = new MultipleChoiceQuestion(
-            questionText:  "What is the correct way to declare an integer variable in C#?",
+            question:  "What is the correct way to declare an integer variable in C#?",
             correctAnswer: "A",
             difficulty:    1,
-            xpValue:       25,
+            xp:       25,
             options: new List<string>
             {
                 "A) int x = 5;",
                 "B) integer x = 5;",
                 "C) var x = 5.0;",
                 "D) Int x = 5;"
-            }
+            },
+            hint: "Letter rhymes with May!"
         );
 
         MultipleChoiceQuestion q2 = new MultipleChoiceQuestion(
-            questionText:  "Which keyword is used to create a class in C#?",
+            question:  "Which keyword is used to create a class in C#?",
             correctAnswer: "B",
             difficulty:    1,
-            xpValue:       25,
+            xp:       25,
             options: new List<string>
             {
                 "A) define",
                 "B) class",
                 "C) struct",
                 "D) object"
-            }
+            },
+            hint: "Letter rhymes with Glee!"
+            
         );
 
         MultipleChoiceQuestion q3 = new MultipleChoiceQuestion(
-            questionText:  "What does the 'new' keyword do in C#?",
+            question:  "What does the 'new' keyword do in C#?",
             correctAnswer: "C",
             difficulty:    1,
-            xpValue:       25,
+            xp:       25,
             options: new List<string>
             {
                 "A) Declares a method",
                 "B) Imports a namespace",
                 "C) Creates a new instance of a class",
                 "D) Defines an interface"
-            }
+            },
+            hint: "Letter rhymes with Tree!"
         );
 
         _challenge.AddQuestion(q1);
@@ -153,13 +161,29 @@ public class SmugglersIslandLevel : Level
     /// </summary>
     public override void SpawnNPCs()
     {
+        MultipleChoiceQuestion bossQ = new MultipleChoiceQuestion(
+            question:  "Placeholder Boss Question?",
+            correctAnswer: "C",
+            difficulty:    5,
+            xp:       50,
+            options: new List<string>
+            {
+                "A) Declares a method",
+                "B) Imports a namespace",
+                "C) Creates a new instance of a class",
+                "D) Defines an interface"
+            },
+            hint: "Placeholder hint!"
+        );
+        
         // Boss enemy — defeating him awards Key 1 + Map 1
         EnemyNPC campLeader = new EnemyNPC(
             npcId:       "npc_lv1_boss",
-            name:        "Pirate Camp Leader",
+            npcName:        "Pirate Camp Leader",
             health:      50,
-            position:    new Point(10, 10),
+            position:    new global::Point(10,10),
             attackPower: 10,
+            combatQuestion: bossQ,
             dropsKey:    true,
             dropsMap:    true
         );
@@ -167,9 +191,9 @@ public class SmugglersIslandLevel : Level
         // Friendly NPC — offers hints and a small starter shop
         CrewNPC oldSaltPete = new CrewNPC(
             npcId:     "npc_lv1_pete",
-            name:      "Old Salt Pete",
+            npcName:      "Old Salt Pete",
             health:    100,
-            position:  new Point(3, 16),
+            position:  new global::Point(3, 16),
             crewRole:  "navigator",
             crewBonus: "Reveals one free combat hint per island"
         );
@@ -189,37 +213,40 @@ public class SmugglersIslandLevel : Level
     /// </summary>
     private void SpawnItems()
     {
-        Weapon rustyСutlass = new Weapon(
-            id:           "item_weapon_001",
-            name:         "Rusty Cutlass",
-            goldValue:    10,
-            rarity:       Rarity.Common,
-            baseDamage:   8,
-            weaponType:   "cutlass",
+        Weapon rustyCutlass = new Weapon(
+            id: "item_weapon_001",
+            name: "Rusty Cutlass",
+            description: "An old, worn pirate cutlass.",
+            goldValue: 10,
+            rarity: Rarity.Common,
+            baseDamage: 8,
+            weaponType: WeaponType.Cutlass,
             specialEffect: "none"
         );
 
         Clothing tatteredHat = new Clothing(
-            id:          "item_cloth_001",
-            name:        "Tattered Pirate Hat",
-            goldValue:   5,
-            rarity:      Rarity.Common,
-            slot:        ClothingSlot.Head,
+            id: "item_cloth_001",
+            name: "Tattered Pirate Hat",
+            description: "A worn pirate hat with frayed edges.",
+            goldValue: 5,
+            rarity: Rarity.Common,
+            slot: ClothingSlot.Head,
             defenseBonus: 2,
-            visualTag:   "hat_tattered"
+            visualTag: "hat_tattered"
         );
 
         Clothing raggedJacket = new Clothing(
-            id:          "item_cloth_002",
-            name:        "Ragged Jacket",
-            goldValue:   8,
-            rarity:      Rarity.Common,
-            slot:        ClothingSlot.Body,
+            id: "item_cloth_002",
+            name: "Ragged Jacket",
+            description: "A torn jacket that offers minimal protection.",
+            goldValue: 8,
+            rarity: Rarity.Common,
+            slot: ClothingSlot.Torso,
             defenseBonus: 3,
-            visualTag:   "jacket_ragged"
+            visualTag: "jacket_ragged"
         );
 
-        AddItemSpawn(rustyСutlass);
+        AddItemSpawn(rustyCutlass);
         AddItemSpawn(tatteredHat);
         AddItemSpawn(raggedJacket);
 
@@ -241,7 +268,7 @@ public class SmugglersIslandLevel : Level
         foreach (NPC npc in _npcs)
         {
             if (npc is EnemyNPC enemy
-                && enemy.Name == "Pirate Camp Leader"
+                && enemy.NpcName == "Pirate Camp Leader"
                 && enemy.IsDefeated())
             {
                 _bossDefeatedHandled = true;
@@ -259,7 +286,7 @@ public class SmugglersIslandLevel : Level
     /// </summary>
     public override void OnLevelComplete(Player player)
     {
-        player.Progression.AddXP(_challenge.XpReward);
+        player.Progression.AddXP(_challenge.xpReward);
         player.Progression.AddKey(_levelId);
         Console.WriteLine("Smuggler's Island cleared! The Jungle Ruins await...");
     }
