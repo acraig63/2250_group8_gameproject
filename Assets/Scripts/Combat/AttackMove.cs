@@ -1,4 +1,7 @@
-﻿namespace DefaultNamespace
+﻿using System.Linq;
+using System.Collections.Generic;
+
+namespace DefaultNamespace
 {
     public class AttackMove
     {
