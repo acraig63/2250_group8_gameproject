@@ -10,6 +10,17 @@
         private int _goldValue;
         private Rarity _rarity;
         private ItemType _type;
+        
+        // Constructor
+        protected Item(string id, string name, string description, int goldValue, Rarity rarity, ItemType type)
+        {
+            _id = id;
+            _name = name;
+            _description = description;
+            GoldValue = goldValue; // use property so the validation runs
+            _rarity = rarity;
+            _type = type;
+        }
 
         // Properties
         public string Id
@@ -53,7 +64,7 @@
         }
 
         // Abstract method for using the item
-        public abstract void use(Player player)
+        public abstract void use(Player player);
 
     }
 
