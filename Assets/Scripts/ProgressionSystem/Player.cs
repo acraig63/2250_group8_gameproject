@@ -58,9 +58,10 @@ namespace DefaultNamespace
             position = new Point((int)(position.X + direction.x), (int)(position.Y + direction.y));
         }
 
-        public AttackMove Attack(EnemyNPC target)
+        public void Attack(EnemyNPC target)
         {
-            return equippedWeapon.Use(target);
+            // TODO: wire up AttackMove.execute() once combat system is complete
+            equippedWeapon.calculateDamage();
         }
 
         public void PickUpItem(Item item)
