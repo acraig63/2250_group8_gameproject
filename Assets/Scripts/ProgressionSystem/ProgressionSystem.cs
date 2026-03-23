@@ -1,5 +1,7 @@
-namespace ProgressionSystem {
-public class DefaultNamespace
+using System.Collections.Generic;
+
+namespace DefaultNamespace {
+public class ProgressionSystem
 {
     private int _currentXP;
     private int _playerLevel;
@@ -7,6 +9,11 @@ public class DefaultNamespace
     private List<string> _unlockedAbilities;
     private List<string> _completedLevels;
 
+    public ProgressionSystem()
+    {
+        
+    }
+    
     public void AddXP(int amount)
     {
         _currentXP = _currentXP + amount;
@@ -19,12 +26,15 @@ public class DefaultNamespace
 
     public void AddKey(string levelId)
     {
-        _keysCollected.add(levelId);
+        _keysCollected.Add(levelId);
     }
 
     public bool HasAllKeys()
     {
-        if (_keysCollected.length == 5) ;
+        if (_keysCollected.Count == 5)
+            return true;
+        else
+            return false;
     }
 }
 }
