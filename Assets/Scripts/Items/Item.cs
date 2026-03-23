@@ -36,7 +36,7 @@
             set
             {
                 if (value >= 0) _goldValue = value;
-                else Console.WriteLine("Invalid gold value");
+                else Debug.Log("Invalid gold value");
             }
         }
 
