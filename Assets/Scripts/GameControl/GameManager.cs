@@ -1,4 +1,4 @@
-namespace GameControl
+namespace DefaultNamespace
 {
     using UnityEngine;
 

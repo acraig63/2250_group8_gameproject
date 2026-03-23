@@ -1,5 +1,5 @@
 namespace ProgressionSystem {
-public class ProgressionSystem
+public class DefaultNamespace
 {
     private int _currentXP;
     private int _playerLevel;

@@ -1,4 +1,4 @@
-namespace ProgressionSystem
+namespace DefaultNamespace
 {
     public class HealthBar
     {
