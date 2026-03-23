@@ -61,7 +61,7 @@
          */
         public int calculateDamage(int baseWeaponDmg)
         {
-            // TO DO
+            return (int)(DamageMultiplier * baseWeaponDmg);
         }
 
         /**
