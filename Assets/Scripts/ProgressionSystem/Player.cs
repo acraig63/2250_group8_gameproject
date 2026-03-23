@@ -42,9 +42,20 @@ namespace DefaultNamespace
             equippedWeapon = null;
         }
 
+        //getters
+        public List<AttackMove> getAttackMoves()
+        {
+            return attackMoves;
+        }
+
+        public string getName()
+        {
+            return name;
+        }
+
         public void Move(Vector2 direction)
         {
-            position = new Point(position.X + direction.x, position.Y + direction.y);
+            position = new Point((int)(position.X + direction.x), (int)(position.Y + direction.y));
         }
 
         public AttackMove Attack(EnemyNPC target)
