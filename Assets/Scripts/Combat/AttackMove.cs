@@ -71,7 +71,7 @@
          */
         public bool isUnlocked(Player player)
         {
-            return player.attackMoves.Any(x => x.MoveName == MoveName);
+            return player.getAttackMoves().Any(x => x.MoveName == MoveName);
         }
     
     

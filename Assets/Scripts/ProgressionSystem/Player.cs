@@ -42,6 +42,11 @@ namespace DefaultNamespace
             equippedWeapon = null;
         }
 
+        public List<AttackMove> getAttackMoves()
+        {
+            return attackMoves;
+        }
+
         public void Move(Vector2 direction)
         {
             position = new Point(position.X + direction.x, position.Y + direction.y);
