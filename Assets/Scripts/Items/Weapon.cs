@@ -4,7 +4,7 @@
     {
         // Fields and properties
         private int _baseDamage;
-        private string _weaponType;
+        private WeaponType _weaponType;
         private string _specialEffect;
     
         public int BaseDamage
@@ -12,7 +12,7 @@
             get { return _baseDamage; }
             set
             {
-                calculateDamage();
+                _baseDamage = value;
             }
         }
     
