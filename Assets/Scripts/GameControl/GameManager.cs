@@ -45,9 +45,14 @@ namespace DefaultNamespace
             if (!isRunning) return;
 
             // if levelmanger and curent level exist, update the level
-            if (levelManager != null && levelManager.GetCurrentLevel() != null)
+            if (levelManager != null)
             {
-                levelManager.GetCurrentLevel().UpdateLevel();
+                var level = levelManager.GetCurrentLevel();
+
+                if (level != null)
+                {
+                    level.Update(); 
+                }
             }
         }
 
@@ -55,10 +60,17 @@ namespace DefaultNamespace
         public void StartGame()
         {
             Debug.Log("Game Started");
+            
+            levelManager = LevelManager.Instance;
 
-            levelManager = new LevelManager();
+            if (levelManager == null)
+            {
+                Debug.LogError("LevelManager not found in scene!");
+                return;
+            }
+
             levelManager.Initialize();
-
+            
             isRunning = true;
         }
 
