@@ -25,7 +25,7 @@ using DefaultNamespace;
         {
             levels = new List<Level>();
             
-            levels.Add(new SmugglersIslandLevel());
+            //levels.Add(new SmugglersIslandLevel());
             //levels.Add(new JungleRuinsLevel());
             //levels.Add(new StormbreakerIslandLevel());
             //levels.Add(new BlackstoneFortressLevel());
