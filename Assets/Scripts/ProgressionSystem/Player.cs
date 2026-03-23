@@ -41,6 +41,9 @@ namespace DefaultNamespace
             position = new Point(0, 0);
             equippedWeapon = null;
         }
+        
+        //properties
+        public ProgressionSystem Progression => progression;
 
         //getters
         public List<AttackMove> getAttackMoves()
