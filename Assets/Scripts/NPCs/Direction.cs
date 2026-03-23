@@ -1,4 +1,5 @@
-using DefaultNamespace;
+﻿namespace NPCs
+{
     public enum Direction
     {
         Up,
@@ -6,3 +7,4 @@ using DefaultNamespace;
         Left,
         Right
     }
+}

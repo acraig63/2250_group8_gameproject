@@ -7,6 +7,7 @@
     private int _defenseBonus;
     private string _visualTag;
     
+    
     // Constructor
     public Clothing(string id, string name, string description, int goldValue,
         Rarity rarity, ClothingSlot slot, int defenseBonus, string visualTag = "")
