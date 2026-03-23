@@ -40,7 +40,7 @@
             }
         }
 
-        public Rairity Rarity
+        public Rarity Rarity
         {
             get => _rarity;
             set => _rarity = value;
@@ -54,9 +54,6 @@
 
         // Abstract method for using the item
         public abstract void use(Player player)
-        {
-
-        }
 
     }
 

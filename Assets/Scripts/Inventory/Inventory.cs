@@ -9,6 +9,11 @@ namespace DefaultNamespace
         private List<Item> _items;
         private int _maxCapacity;
         private int _gold;
+        
+        //properties
+        public List<Item> Items => _items;
+        public int Gold => _gold;
+        public int MaxCapacity => _maxCapacity;
 
         //constructor
         public Inventory(int maxCapacity)
