@@ -51,9 +51,9 @@
          * use() Meethod: Equips the weapon item to the player
          * @param: Player, the player
          */
-        public void use(Player player)
+        public void Use(Player player)
         {
-            player.equipItem(this)
+            player.equipItem(this);
         }
 
 

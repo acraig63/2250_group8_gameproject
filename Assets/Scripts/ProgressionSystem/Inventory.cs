@@ -39,7 +39,7 @@ namespace DefaultNamespace
         //returns all items in inventory that match the specified type
         public List<Item> GetItemsByType(ItemType type)
         {
-            return _items.Where(item => item.GetItemType() == type).ToList();
+            return _items.Where(item => item.Type == type).ToList();
         }
 
         //adds specified amount to gold count

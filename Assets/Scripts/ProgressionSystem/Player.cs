@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace DefaultNamespace
 {
@@ -19,6 +20,11 @@ namespace DefaultNamespace
         private List<AttackMove> attackMoves;
 
         //constructor
+        public Player()
+        {
+
+        }
+
         public Player(string name, string characterClass)
         {
             this.name = name;
@@ -36,18 +42,13 @@ namespace DefaultNamespace
             equippedWeapon = null;
         }
 
-        public void Move(Direction direction)
+        public void Move(Vector2 direction)
         {
-            position = position.Move(direction);
+            position = new Point(position.X + direction.x, position.Y + direction.y);
         }
 
-        public AttackMove Attack(NPC target)
+        public AttackMove Attack(EnemyNPC target)
         {
-            if (equippedWeapon == null)
-            {
-                return new AttackMove(false, 0);
-            }
-
             return equippedWeapon.Use(target);
         }
 
@@ -77,14 +78,5 @@ namespace DefaultNamespace
         {
             return !health.IsDead();
         }
-
-        public PlayerStats GetStats()
-        {
-            return new PlayerStats(
-                health.GetCurrentHP(),
-                progression.GetLevel(),
-                equippedWeapon
-            );
-        }
-
+    }
 }
