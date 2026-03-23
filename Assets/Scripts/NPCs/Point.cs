@@ -1,4 +1,4 @@
-namespace DefaultNamespace;
+using DefaultNamespace;
 
 public class Point
 {
