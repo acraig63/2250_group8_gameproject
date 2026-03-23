@@ -68,7 +68,7 @@ public class EnemyNPC : NPC
         if (!string.IsNullOrEmpty(line))
             Debug.Log($"{npcName}: \"{line}\"");
  
-        Debug.Log($"{npcName} challenges {player.GetName()} to combat!");
+        Debug.Log($"{npcName} challenges {player.getName()} to combat!");
  
         // Combat flow is delegated to Player and AttackMove
         player.Attack(this);
@@ -79,7 +79,7 @@ public class EnemyNPC : NPC
         if (IsDefeated())
             return;
  
-        Debug.Log($"{npcName} attacks {player.GetName()} for {attackPower} damage!");
+        Debug.Log($"{npcName} attacks {player.getName()} for {attackPower} damage!");
         player.TakeDamage(attackPower);
     }
  
