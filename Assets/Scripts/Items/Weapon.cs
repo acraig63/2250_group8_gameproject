@@ -1,12 +1,12 @@
 ﻿namespace DefaultNamespace
 {
-    public class Weapon: Item
+    public class Weapon : Item
     {
         // Fields 
         private int _baseDamage;
         private WeaponType _weaponType;
         private string _specialEffect;
-        
+
         // Constructor
         public Weapon(string id, string name, string description, int goldValue,
             Rarity rarity, int baseDamage, WeaponType weaponType, string specialEffect = "none")
@@ -16,27 +16,20 @@
             _weaponType = weaponType;
             _specialEffect = specialEffect;
         }
-    
+
         // Properties
         public int BaseDamage
         {
             get { return _baseDamage; }
-            set
-            {
-                _baseDamage = value;
-            }
+            set { _baseDamage = value; }
         }
-    
-        public  WeaponType WeaponType
+
+        public WeaponType WeaponType
         {
-            get {
-                return _weaponType; 
-            }
-            set
-            {
-                _weaponType = value;
-            }
+            get { return _weaponType; }
+            set { _weaponType = value; }
         }
+
         public string SpecialEffect
         {
             get { return _specialEffect; }
@@ -48,7 +41,7 @@
         //     TO UPDATE
         // }
 
- 
+
         /**
          * calculareDamage() Method : Calcualtes the amount of damage the weapon will deal
          * @return: Integer, damage value
@@ -57,11 +50,11 @@
         {
             float multiplier = Rarity switch
             {
-                Rarity.Common    => 1.0f,
-                Rarity.Uncommon  => 1.2f,
-                Rarity.Rare      => 1.5f,
+                Rarity.Common => 1.0f,
+                Rarity.Uncommon => 1.2f,
+                Rarity.Rare => 1.5f,
                 Rarity.Legendary => 2.0f,
-                _                => 1.0f
+                _ => 1.0f
             };
             return (int)(_baseDamage * multiplier);
         }
@@ -75,5 +68,5 @@
             player.equipItem(this);
         }
 
-
+    }
 }
