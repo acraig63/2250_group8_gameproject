@@ -4,15 +4,11 @@ using Challenges;
 
 namespace GameControl
 {
-    // LevelManager handles creating, loading, and switching between levels
     public class LevelManager : MonoBehaviour
     {
         public static LevelManager Instance;
 
-        // List storing all levels in the game
         private List<Level> levels;
-
-        // Tracks which level the player is currently on 
         private int currentIndex = 0;
 
         void Awake()
@@ -20,6 +16,7 @@ namespace GameControl
             if (Instance == null)
             {
                 Instance = this;
+                DontDestroyOnLoad(gameObject); 
             }
             else
             {
@@ -27,26 +24,24 @@ namespace GameControl
             }
         }
 
-        // Initializes all levels at the start of the game
         public void Initialize()
         {
             levels = new List<Level>();
-
-            levels.Add(new Level("Smuggler's Island", 1));
-            levels.Add(new Level("Jungle Ruins", 2));
-            levels.Add(new Level("Stormbreaker Island", 3));
-            levels.Add(new Level("Blackstone Fortress", 4));
-            levels.Add(new Level("Pirate Queen's Island", 5));
+            
+            levels.Add(new SmugglersIslandLevel());
+            levels.Add(new JungleRuinsLevel());
+            levels.Add(new StormbreakerIslandLevel());
+            levels.Add(new BlackstoneFortressLevel());
+            levels.Add(new PirateQueenIslandLevel());
 
             LoadLevel(0);
         }
 
-        // Loads a level based on its index in the list
         public void LoadLevel(int index)
         {
-            if (index < 0 || index >= levels.Count)
+            if (levels == null || index < 0 || index >= levels.Count)
             {
-                Debug.Log("Invalid level index");
+                Debug.LogError("Invalid level index");
                 return;
             }
 
@@ -55,13 +50,20 @@ namespace GameControl
             Level currentLevel = levels[currentIndex];
             currentLevel.Initialize();
 
-            Debug.Log("Loaded Level: " + currentLevel.levelName);
+            Debug.Log("Loaded Level: " + currentLevel.LevelName);
 
-            Challenge challenge = currentLevel.CreateChallenge();
-            challenge.StartChallenge();
+            Challenge challenge = currentLevel.GetChallenge();
+
+            if (challenge != null)
+            {
+                challenge.StartChallenge();
+            }
+            else
+            {
+                Debug.LogWarning("No challenge found for this level");
+            }
         }
 
-        // Moves the player to the next level
         public void LoadNextLevel()
         {
             currentIndex++;
@@ -75,14 +77,14 @@ namespace GameControl
             LoadLevel(currentIndex);
         }
 
-        // Restarts the current level 
         public void RestartLevel()
         {
-            Debug.Log("Restarting Level: " + levels[currentIndex].levelName);
+            if (levels == null) return;
+
+            Debug.Log("Restarting Level: " + levels[currentIndex].LevelName);
             LoadLevel(currentIndex);
         }
 
-        // Returns the current level object
         public Level GetCurrentLevel()
         {
             if (levels == null || levels.Count == 0) return null;
@@ -96,7 +98,7 @@ namespace GameControl
 
         public int GetLevelCount()
         {
-            return levels.Count;
+            return levels?.Count ?? 0;
         }
     }
 }
