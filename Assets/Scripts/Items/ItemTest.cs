@@ -1,8 +1,4 @@
-﻿namespace DefaultNamespace;
-
-public class ItemTest
-{
-using UnityEngine;
+﻿using UnityEngine;
 using DefaultNamespace;
 
 public class ItemTest : MonoBehaviour
@@ -22,5 +18,4 @@ public class ItemTest : MonoBehaviour
         Debug.Log($"Clothing: {hat.Name}, Defense: {hat.DefenseBonus}");
         Debug.Log($"Treasure: {key.Name}, Type: {key.Type}");
     }
-}
 }
