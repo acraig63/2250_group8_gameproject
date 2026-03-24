@@ -17,5 +17,17 @@ public class ItemTest : MonoBehaviour
         Debug.Log($"Weapon: {sword.Name}, Damage: {sword.calculateDamage()}");
         Debug.Log($"Clothing: {hat.Name}, Defense: {hat.DefenseBonus}");
         Debug.Log($"Treasure: {key.Name}, Type: {key.Type}");
+        
+        // Test Inventory directly
+        Inventory inventory = new Inventory(5);
+        
+
+        inventory.AddItem(sword);
+        inventory.AddItem(hat);
+        inventory.AddGold(50);
+
+        Debug.Log($"Items in inventory: {inventory.Items.Count}"); // should print 2
+        Debug.Log($"Gold: {inventory.Gold}");                      // should print 50
+        Debug.Log($"Is full: {inventory.IsFull()}");               // should print False
     }
 }
