@@ -47,7 +47,7 @@
             set
             {
                 if (value >= 0) _goldValue = value;
-                else Debug.Log("Invalid gold value");
+                else _goldValue = 0;
             }
         }
 

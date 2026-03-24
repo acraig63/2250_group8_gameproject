@@ -1,4 +1,7 @@
-﻿namespace DefaultNamespace
+﻿using System.Linq;
+using System.Collections.Generic;
+
+namespace DefaultNamespace
 {
     public class AttackMove
     {
@@ -61,7 +64,7 @@
          */
         public int calculateDamage(int baseWeaponDmg)
         {
-            // TO DO
+            return (int)(DamageMultiplier * baseWeaponDmg);
         }
 
         /**
@@ -71,7 +74,7 @@
          */
         public bool isUnlocked(Player player)
         {
-            return player.AttackMoves.Any(x => x.MoveName == MoveName);
+            return player.getAttackMoves().Any(x => x.MoveName == MoveName);
         }
     
     
