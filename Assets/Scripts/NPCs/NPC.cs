@@ -1,80 +1,69 @@
 using System;
-using System.Collections.Generic;
+    using System.Collections.Generic;
+    using UnityEngine;
 
-namespace NPCs
-{
+    using DefaultNamespace;
+
     public abstract class NPC
     {
-        //Attributes
-        protected string _npcId;
-        protected string _name;
-        protected int _health;
-        protected Point _position;
-        protected List<string> _dialogue;
- 
-        //Constructor 
+        // ── Attributes ────────────────────────────────────────────────
+        protected string npcId;
+        protected string npcName; // renamed from 'name' to avoid conflict with UnityEngine.Object.name
+        protected int health;
+        protected Point position;
+        protected List<string> dialogue;
 
-        protected NPC(string npcId, string name, int health, Point position,
-                      List<string>? dialogue = null)   //nullable annotation silences the warning
+        // ── Constructor ───────────────────────────────────────────────
+
+        protected NPC(string npcId, string npcName, int health, Point position,
+            List<string> dialogue = null)
         {
-            if (string.IsNullOrWhiteSpace(npcId))
-                throw new ArgumentException("NPC ID cannot be null or empty.", nameof(npcId));
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("NPC name cannot be null or empty.", nameof(name));
-            if (health <= 0)
-                throw new ArgumentOutOfRangeException(nameof(health), "Health must be positive.");
- 
-            _npcId    = npcId;
-            _name     = name;
-            _health   = health;
-            _position = position;
-            _dialogue = dialogue ?? new List<string>(); //always a valid list, never null
+            this.npcId = npcId;
+            this.npcName = npcName;
+            this.health = health;
+            this.position = position;
+            this.dialogue = dialogue ?? new List<string>();
         }
- 
-        //Abstract Methods
+
+        // ── Abstract Methods ──────────────────────────────────────────
 
         public abstract void Interact(Player player);
- 
-        //Concrete Methods
 
+        // ── Concrete Methods ──────────────────────────────────────────
         public void TakeDamage(int amount)
         {
-            if (amount < 0)
-                throw new ArgumentOutOfRangeException(nameof(amount), "Damage amount cannot be negative.");
- 
-            _health = Math.Max(0, _health - amount);
-            Console.WriteLine($"{_name} took {amount} damage. Remaining HP: {_health}");
+            health = Mathf.Max(0, health - amount);
+            Debug.Log($"{npcName} took {amount} damage. Remaining HP: {health}");
         }
-        
-        //returns true when this NPC's health has reached zero.
 
         public bool IsDefeated()
         {
-            return _health <= 0;
+            return health <= 0;
         }
-        
-        //returns a random line of dialogue from the list.
-        //returns an empty string when no dialogue has been set.
+
+        // Returns a random line of dialogue from the list.
+        // Returns an empty string when no dialogue has been set.
 
         public string GetDialogue()
         {
-            if (_dialogue.Count == 0)
+            if (dialogue == null || dialogue.Count == 0)
                 return string.Empty;
- 
-            int index = new Random().Next(_dialogue.Count);
-            return _dialogue[index];
+
+            // Use System.Random explicitly to avoid conflict with UnityEngine.Random
+            int index = new System.Random().Next(dialogue.Count);
+            return dialogue[index];
         }
- 
-        //accessors 
-        public string NpcId    => _npcId;
-        public string Name     => _name;
-        public int    Health   => _health;
-        public Point  Position
+
+        // ── Accessors ─────────────────────────────────────────────────
+        public string NpcId => npcId;
+        public string NpcName => npcName;
+        public int Health => health;
+
+        public Point Position
         {
-            get => _position;
-            set => _position = value;
+            get => position;
+            set => position = value;
         }
     }
- 
 
-}
+ 

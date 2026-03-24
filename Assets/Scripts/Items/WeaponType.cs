@@ -14,6 +14,7 @@
         Spear,
         Staff,
         Feather,
+        Cutlass
     
     }
 }

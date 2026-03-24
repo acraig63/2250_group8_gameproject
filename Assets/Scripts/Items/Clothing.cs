@@ -7,6 +7,7 @@
     private int _defenseBonus;
     private string _visualTag;
     
+    
     // Constructor
     public Clothing(string id, string name, string description, int goldValue,
         Rarity rarity, ClothingSlot slot, int defenseBonus, string visualTag = "")
@@ -48,7 +49,7 @@
      */
     public override void use(Player player)
     {
-        player.equipItem(this);
+        player.EquipItem(this);
     }
 
     }

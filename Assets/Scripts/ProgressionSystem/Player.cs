@@ -41,15 +41,30 @@ namespace DefaultNamespace
             position = new Point(0, 0);
             equippedWeapon = null;
         }
+        
+        //properties
+        public ProgressionSystem Progression => progression;
+
+        //getters
+        public List<AttackMove> getAttackMoves()
+        {
+            return attackMoves;
+        }
+
+        public string getName()
+        {
+            return name;
+        }
 
         public void Move(Vector2 direction)
         {
-            position = new Point(position.X + direction.x, position.Y + direction.y);
+            position = new Point((int)(position.X + direction.x), (int)(position.Y + direction.y));
         }
 
-        public AttackMove Attack(EnemyNPC target)
+        public void Attack(EnemyNPC target)
         {
-            return equippedWeapon.Use(target);
+            // TODO: wire up AttackMove.execute() once combat system is complete
+            equippedWeapon.calculateDamage();
         }
 
         public void PickUpItem(Item item)
