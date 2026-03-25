@@ -29,11 +29,11 @@ namespace DefaultNamespace
         [SerializeField] private float flashDuration = 0.12f;
 
         // Internal state
-        private bool          _playerInside;
-        private float         _damageTimer;
-        private float         _flashTimer;
-        private bool          _flashing;
-        private PlayerManager _playerManager;
+        private bool           _playerInside;
+        private float          _damageTimer;
+        private float          _flashTimer;
+        private bool           _flashing;
+        private global::PlayerManager _playerManager;
         private SpriteRenderer _sr;
         private Color          _originalColor;
 
@@ -68,7 +68,7 @@ namespace DefaultNamespace
 
         void OnTriggerEnter2D(Collider2D other)
         {
-            PlayerManager pm = other.GetComponent<PlayerManager>();
+            global::PlayerManager pm = other.GetComponent<global::PlayerManager>();
             if (pm == null) return;
             _playerManager = pm;
             _playerInside  = true;
@@ -78,7 +78,7 @@ namespace DefaultNamespace
 
         void OnTriggerExit2D(Collider2D other)
         {
-            if (other.GetComponent<PlayerManager>() == null) return;
+            if (other.GetComponent<global::PlayerManager>() == null) return;
             _playerInside  = false;
             _damageTimer   = 0f;
             _playerManager = null;
