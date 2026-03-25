@@ -1,134 +1,166 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-/// <summary>
-/// Attach this to your Canvas GameObject (or any GameObject — it creates its own Canvas).
-/// On Play, displays the pirate backstory as a full-screen text panel.
-/// The player presses any key to dismiss it and start the game.
-///
-/// Setup:
-///   1. Create an empty GameObject in your scene, name it "StoryIntro"
-///   2. Attach this script to it
-///   3. Press Play — the intro screen appears automatically
-///
-/// The screen fades out smoothly when dismissed.
-/// GameManager.StartGame() is called after the fade completes.
-/// </summary>
-public class StoryIntroUI : MonoBehaviour
+namespace DefaultNamespace
 {
-    // -----------------------------------------------------------------------
-    // Story text — edit this to match your narrative
-    // -----------------------------------------------------------------------
-    private const string STORY_TEXT =
-        "PIRATES OF THE CARIBBEAN\n\n" +
-        "You are the most feared pirate captain on the sea.\n\n" +
-        "After a brutal ambush by a ruthless rival known only as the\n" +
-        "PIRATE KING, your entire crew has been captured and locked\n" +
-        "in prison cells scattered across five islands.\n\n" +
-        "Stripped of your allies and most of your gear, you must\n" +
-        "fight your way through each island — answering coding\n" +
-        "challenges to power your attacks — to collect every key\n" +
-        "and free your crew.\n\n" +
-        "Defeat the Pirate King. Save your crew.\n\n" +
-        "[Press any key to begin]";
-
-    // -----------------------------------------------------------------------
-    // Internal UI references
-    // -----------------------------------------------------------------------
-    private Canvas    _canvas;
-    private Image     _background;
-    private Text      _storyText;
-    private bool      _dismissed = false;
-    private float     _fadeDuration = 1.2f;
-
-    void Start()
+    /// <summary>
+    /// Displays a pirate-themed story intro panel when the SmugglersIsland scene loads.
+    /// Fades in → holds → fades out. Skippable with any key or screen tap.
+    ///
+    /// Attach to any Canvas in the scene. All UI elements are built at runtime —
+    /// no prefab or manual child-wiring required.
+    ///
+    /// Inspector overrides:
+    ///   introText     — body text shown in the panel.
+    ///   holdDuration  — seconds at full opacity before auto-dismiss.
+    ///   fadeDuration  — seconds for each fade transition.
+    /// </summary>
+    public class StoryIntroUI : MonoBehaviour
     {
-        BuildIntroScreen();
-    }
+        [Header("Story Text")]
+        [TextArea(4, 12)]
+        [SerializeField] private string introText =
+            "Ye have washed ashore at Smuggler's Island...\n\n" +
+            "Three territories divide this wretched cove:\n" +
+            "the open beach where ye first land,\n" +
+            "the walled pirate camp patrolled by the Camp Leader,\n" +
+            "and the dense jungle hiding secrets to the north.\n\n" +
+            "Defeat the Camp Leader to claim Key 1 and Map 1.\n" +
+            "Beware the quicksand fields — many have sunk without trace.\n\n" +
+            "A hidden passage waits at the jungle's northern edge.\n" +
+            "Find it and ye may escape without another fight.\n\n" +
+            "Good luck, sailor.";
 
-    void Update()
-    {
-        if (_dismissed) return;
+        [Header("Timing")]
+        [SerializeField] private float holdDuration = 7f;
+        [SerializeField] private float fadeDuration = 1.2f;
 
-        // Any key press dismisses the screen
-        if (Input.anyKeyDown)
+        [Header("Colours")]
+        [SerializeField] private Color panelColor  = new Color(0.05f, 0.07f, 0.12f, 0.92f);
+        [SerializeField] private Color textColor   = new Color(0.88f, 0.80f, 0.60f, 1f);
+        [SerializeField] private Color titleColor  = new Color(1.00f, 0.84f, 0.15f, 1f);
+        [SerializeField] private Color promptColor = new Color(0.70f, 0.65f, 0.50f, 1f);
+
+        [Header("Font Sizes")]
+        [SerializeField] private int titleSize  = 28;
+        [SerializeField] private int bodySize   = 16;
+        [SerializeField] private int promptSize = 13;
+
+        private enum Phase { FadeIn, Hold, FadeOut, Done }
+        private Phase  _phase;
+        private float  _timer;
+        private bool   _skipped;
+
+        private CanvasGroup _group;
+        private GameObject  _panel;
+        private Text        _promptText;
+
+        void Start()
         {
-            _dismissed = true;
-            StartCoroutine(FadeOutAndStart());
-        }
-    }
-
-    // -----------------------------------------------------------------------
-    // Build the UI at runtime — no prefab or Canvas setup needed
-    // -----------------------------------------------------------------------
-    private void BuildIntroScreen()
-    {
-        // --- Canvas ---
-        GameObject canvasObj = new GameObject("StoryIntroCanvas");
-        _canvas = canvasObj.AddComponent<Canvas>();
-        _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        _canvas.sortingOrder = 100; // On top of everything
-        canvasObj.AddComponent<CanvasScaler>();
-        canvasObj.AddComponent<GraphicRaycaster>();
-
-        // --- Full screen dark background ---
-        GameObject bgObj = new GameObject("Background");
-        bgObj.transform.SetParent(canvasObj.transform, false);
-        _background = bgObj.AddComponent<Image>();
-        _background.color = new Color(0.05f, 0.05f, 0.10f, 1f); // Near-black
-
-        RectTransform bgRect = _background.GetComponent<RectTransform>();
-        bgRect.anchorMin = Vector2.zero;
-        bgRect.anchorMax = Vector2.one;
-        bgRect.offsetMin = Vector2.zero;
-        bgRect.offsetMax = Vector2.zero;
-
-        // --- Story text ---
-        GameObject textObj = new GameObject("StoryText");
-        textObj.transform.SetParent(canvasObj.transform, false);
-        _storyText = textObj.AddComponent<Text>();
-
-        // Use the built-in Arial font — no font asset needed
-        _storyText.font      = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        _storyText.fontSize  = 22;
-        _storyText.color     = new Color(0.95f, 0.85f, 0.60f, 1f); // Warm gold
-        _storyText.alignment = TextAnchor.MiddleCenter;
-        _storyText.text      = STORY_TEXT;
-        _storyText.lineSpacing = 1.4f;
-
-        RectTransform textRect = _storyText.GetComponent<RectTransform>();
-        textRect.anchorMin = new Vector2(0.1f, 0.1f);
-        textRect.anchorMax = new Vector2(0.9f, 0.9f);
-        textRect.offsetMin = Vector2.zero;
-        textRect.offsetMax = Vector2.zero;
-
-        Debug.Log("Story intro screen displayed. Press any key to begin.");
-    }
-
-    // -----------------------------------------------------------------------
-    // Fade out the intro screen, then hand control back to the game
-    // -----------------------------------------------------------------------
-    private IEnumerator FadeOutAndStart()
-    {
-        float elapsed = 0f;
-        Color bgStart   = _background.color;
-        Color textStart = _storyText.color;
-
-        while (elapsed < _fadeDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / _fadeDuration;
-
-            _background.color = new Color(bgStart.r,   bgStart.g,   bgStart.b,   Mathf.Lerp(1f, 0f, t));
-            _storyText.color  = new Color(textStart.r, textStart.g, textStart.b, Mathf.Lerp(1f, 0f, t));
-
-            yield return null;
+            BuildUI();
+            _phase = Phase.FadeIn;
+            _timer = 0f;
+            if (_group != null) _group.alpha = 0f;
         }
 
-        // Destroy the canvas once fully faded
-        Destroy(_canvas.gameObject);
+        void Update()
+        {
+            if (_phase == Phase.Done) return;
 
-        Debug.Log("Story intro dismissed. Game world is now active.");
+            if (!_skipped && (Input.anyKeyDown ||
+                (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)))
+            { _skipped = true; _phase = Phase.FadeOut; _timer = 0f; return; }
+
+            _timer += Time.deltaTime;
+
+            switch (_phase)
+            {
+                case Phase.FadeIn:
+                    SetAlpha(Mathf.Clamp01(_timer / fadeDuration));
+                    if (_timer >= fadeDuration) Next();
+                    break;
+                case Phase.Hold:
+                    if (_promptText != null)
+                    {
+                        float p = 0.5f + 0.5f * Mathf.Sin(Time.time * 2.5f);
+                        Color c = _promptText.color; _promptText.color = new Color(c.r,c.g,c.b,p);
+                    }
+                    if (_timer >= holdDuration) Next();
+                    break;
+                case Phase.FadeOut:
+                    SetAlpha(1f - Mathf.Clamp01(_timer / fadeDuration));
+                    if (_timer >= fadeDuration) Next();
+                    break;
+            }
+        }
+
+        private void Next()
+        {
+            _timer = 0f;
+            switch (_phase)
+            {
+                case Phase.FadeIn:  _phase = Phase.Hold;    break;
+                case Phase.Hold:    _phase = Phase.FadeOut; break;
+                case Phase.FadeOut:
+                    _phase = Phase.Done;
+                    if (_panel != null) _panel.SetActive(false);
+                    break;
+            }
+        }
+
+        private void SetAlpha(float a) { if (_group != null) _group.alpha = a; }
+
+        private void BuildUI()
+        {
+            if (GetComponent<Canvas>() == null)
+            { Debug.LogError("StoryIntroUI must be on a Canvas."); return; }
+
+            if (GetComponent<CanvasScaler>() == null)
+            {
+                var s = gameObject.AddComponent<CanvasScaler>();
+                s.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                s.referenceResolution = new Vector2(1920, 1080);
+            }
+
+            _panel = new GameObject("StoryIntroPanel");
+            _panel.transform.SetParent(transform, false);
+            _group = _panel.AddComponent<CanvasGroup>();
+            _group.blocksRaycasts = false;
+
+            var rt = _panel.AddComponent<RectTransform>();
+            rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
+            rt.offsetMin = rt.offsetMax = Vector2.zero;
+            _panel.AddComponent<Image>().color = panelColor;
+
+            MakeText("Title",  "— Smuggler's Island —", titleSize, titleColor,
+                     new Vector2(0.1f,0.78f), new Vector2(0.9f,0.92f), TextAnchor.UpperCenter);
+            MakeText("Sep",    "────────────────────────", 13,
+                     new Color(titleColor.r,titleColor.g,titleColor.b,0.4f),
+                     new Vector2(0.15f,0.73f), new Vector2(0.85f,0.80f), TextAnchor.UpperCenter);
+            MakeText("Body",   introText, bodySize, textColor,
+                     new Vector2(0.12f,0.12f), new Vector2(0.88f,0.72f), TextAnchor.UpperLeft);
+            _promptText = MakeText("Prompt", "[ Press any key to continue ]", promptSize, promptColor,
+                     new Vector2(0.1f,0.04f), new Vector2(0.9f,0.12f), TextAnchor.LowerCenter);
+        }
+
+        private Text MakeText(string name, string content, int size, Color color,
+                               Vector2 aMin, Vector2 aMax, TextAnchor align)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(_panel.transform, false);
+            var rt = go.AddComponent<RectTransform>();
+            rt.anchorMin = aMin; rt.anchorMax = aMax;
+            rt.offsetMin = rt.offsetMax = Vector2.zero;
+            var t = go.AddComponent<Text>();
+            t.text = content; t.fontSize = size; t.color = color;
+            t.alignment = align;
+            t.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            t.horizontalOverflow = HorizontalWrapMode.Wrap;
+            t.verticalOverflow   = VerticalWrapMode.Overflow;
+            return t;
+        }
+
+        public void SkipIntro() { _skipped = true; _phase = Phase.FadeOut; _timer = 0f; }
+        public bool IsRunning() => _phase != Phase.Done;
     }
 }
