@@ -1,3 +1,4 @@
+using DefaultNamespace;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -10,6 +11,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        FindObjectOfType<InventoryUI>().Initialize(new Inventory(20));
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
