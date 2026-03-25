@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,19 +25,11 @@ namespace DefaultNamespace
 
         private bool _bossDefeatedHandled;
 
-    /// <summary>
-    /// Builds the island tile layout, sets up the MultipleChoice challenge,
-    /// spawns NPCs, and places starter items.
-    /// </summary>
-    public override void Initialize()
-    {
-        Debug.Log("Initializing Smuggler's Island...");
-        BuildMapLayout();
-        SetupChallenge();
-        SpawnNPCs();
-        SpawnItems();
-        Debug.Log("Smuggler's Island ready.\n");
-    }
+        public SmugglersIslandLevel()
+            : base("level_1", "Smuggler's Island", MAP_WIDTH, MAP_HEIGHT)
+        {
+            _bossDefeatedHandled = false;
+        }
 
         // =====================================================================
         // Initialization
@@ -355,60 +346,19 @@ namespace DefaultNamespace
                     _mapLayout.SetTile(x, y, type, tag);
         }
 
-    /// <summary>
-    /// Creates the Level 1 Challenge with two MultipleChoiceQuestions (syntax topics).
-    /// Richard's Challenge and MultipleChoiceQuestion classes are used here.
-    /// </summary>
-    private void SetupChallenge()
-    {
-        // Challenge: no time limit (0 = unlimited)
-        _challenge = new Challenge("challenge_lv1");
-
-        MultipleChoiceQuestion q1 = new MultipleChoiceQuestion(
-            question:  "What is the correct way to declare an integer variable in C#?",
-            correctAnswer: "A",
-            difficulty:    1,
-            xp:       25,
-            options: new List<string>
+        private void SetBorderRing(int x0, int y0, int x1, int y1, TileType type, string tag)
+        {
+            for (int x = x0; x <= x1; x++)
             {
-                "A) int x = 5;",
-                "B) integer x = 5;",
-                "C) var x = 5.0;",
-                "D) Int x = 5;"
-            },
-            hint: "Letter rhymes with May!"
-        );
-
-        MultipleChoiceQuestion q2 = new MultipleChoiceQuestion(
-            question:  "Which keyword is used to create a class in C#?",
-            correctAnswer: "B",
-            difficulty:    1,
-            xp:       25,
-            options: new List<string>
+                _mapLayout.SetTile(x, y0, type, tag);
+                _mapLayout.SetTile(x, y1, type, tag);
+            }
+            for (int y = y0 + 1; y < y1; y++)
             {
-                "A) define",
-                "B) class",
-                "C) struct",
-                "D) object"
-            },
-            hint: "Letter rhymes with Glee!"
-            
-        );
-
-        MultipleChoiceQuestion q3 = new MultipleChoiceQuestion(
-            question:  "What does the 'new' keyword do in C#?",
-            correctAnswer: "C",
-            difficulty:    1,
-            xp:       25,
-            options: new List<string>
-            {
-                "A) Declares a method",
-                "B) Imports a namespace",
-                "C) Creates a new instance of a class",
-                "D) Defines an interface"
-            },
-            hint: "Letter rhymes with Tree!"
-        );
+                _mapLayout.SetTile(x0, y, type, tag);
+                _mapLayout.SetTile(x1, y, type, tag);
+            }
+        }
 
         private void SetRow(int y, int x0, int x1, TileType type, string tag)
         {
@@ -428,54 +378,9 @@ namespace DefaultNamespace
                 _mapLayout.SetTile(coords[i, 0], coords[i, 1], type, tag);
         }
 
-    /// <summary>
-    /// Spawns the Pirate Camp Leader (boss) and Old Salt Pete (friendly shop NPC).
-    /// Kabi's EnemyNPC and CrewNPC classes are used here.
-    /// </summary>
-    public override void SpawnNPCs()
-    {
-        MultipleChoiceQuestion bossQ = new MultipleChoiceQuestion(
-            question:  "Placeholder Boss Question?",
-            correctAnswer: "C",
-            difficulty:    5,
-            xp:       50,
-            options: new List<string>
-            {
-                "A) Declares a method",
-                "B) Imports a namespace",
-                "C) Creates a new instance of a class",
-                "D) Defines an interface"
-            },
-            hint: "Placeholder hint!"
-        );
-        
-        // Boss enemy — defeating him awards Key 1 + Map 1
-        EnemyNPC campLeader = new EnemyNPC(
-            npcId:       "npc_lv1_boss",
-            npcName:        "Pirate Camp Leader",
-            health:      50,
-            position:    new global::Point(10,10),
-            attackPower: 10,
-            combatQuestion: bossQ,
-            dropsKey:    true,
-            dropsMap:    true
-        );
-
-        // Friendly NPC — offers hints and a small starter shop
-        CrewNPC oldSaltPete = new CrewNPC(
-            npcId:     "npc_lv1_pete",
-            npcName:      "Old Salt Pete",
-            health:    100,
-            position:  new global::Point(3, 16),
-            crewRole:  "navigator",
-            crewBonus: "Reveals one free combat hint per island"
-        );
-
-        AddNPC(campLeader);
-        AddNPC(oldSaltPete);
-
-        Console.WriteLine($"{_npcs.Count} NPC(s) spawned on Smuggler's Island.");
-    }
+        // =====================================================================
+        // Challenge setup
+        // =====================================================================
 
         private void SetupChallenge()
         {
@@ -513,50 +418,10 @@ namespace DefaultNamespace
             Debug.Log("Level 1 challenge: 3 questions configured.");
         }
 
-    /// <summary>
-    /// Places starter items at treasure spots. Michael's Item subclasses are used here.
-    /// </summary>
-    private void SpawnItems()
-    {
-        Weapon rustyCutlass = new Weapon(
-            id: "item_weapon_001",
-            name: "Rusty Cutlass",
-            description: "An old, worn pirate cutlass.",
-            goldValue: 10,
-            rarity: Rarity.Common,
-            baseDamage: 8,
-            weaponType: WeaponType.Cutlass,
-            specialEffect: "none"
-        );
-
-        Clothing tatteredHat = new Clothing(
-            id: "item_cloth_001",
-            name: "Tattered Pirate Hat",
-            description: "A worn pirate hat with frayed edges.",
-            goldValue: 5,
-            rarity: Rarity.Common,
-            slot: ClothingSlot.Head,
-            defenseBonus: 2,
-            visualTag: "hat_tattered"
-        );
-
-        Clothing raggedJacket = new Clothing(
-            id: "item_cloth_002",
-            name: "Ragged Jacket",
-            description: "A torn jacket that offers minimal protection.",
-            goldValue: 8,
-            rarity: Rarity.Common,
-            slot: ClothingSlot.Torso,
-            defenseBonus: 3,
-            visualTag: "jacket_ragged"
-        );
-
-        AddItemSpawn(rustyCutlass);
-        AddItemSpawn(tatteredHat);
-        AddItemSpawn(raggedJacket);
-
-        Console.WriteLine($"{_itemSpawns.Count} item(s) spawned on Smuggler's Island.");
-    }
+        // =====================================================================
+        // NPC spawning — tile markers placed in BuildMapLayout; NPC objects
+        // are the NPC subsystem team's responsibility.
+        // =====================================================================
 
         public override void SpawnNPCs()
         {
@@ -570,9 +435,9 @@ namespace DefaultNamespace
 
         public override void Update()
         {
-            if (npc is EnemyNPC enemy
-                && enemy.NpcName == "Pirate Camp Leader"
-                && enemy.IsDefeated())
+            if (_isCompleted || _bossDefeatedHandled) return;
+
+            foreach (NPC npc in _npcs)
             {
                 if (npc is EnemyNPC enemy
                     && enemy.NpcName == "Pirate Camp Leader"
@@ -587,14 +452,11 @@ namespace DefaultNamespace
             }
         }
 
-    /// <summary>
-    /// Finalizes level completion: awards XP, registers the key, logs the transition.
-    /// Called by LevelManager after Update() marks the level complete.
-    /// </summary>
-    public override void OnLevelComplete(Player player)
-    {
-        player.Progression.AddXP(_challenge.xpReward);
-        player.Progression.AddKey(_levelId);
-        Console.WriteLine("Smuggler's Island cleared! The Jungle Ruins await...");
+        public override void OnLevelComplete(Player player)
+        {
+            player.Progression.AddXP(_challenge.xpReward);
+            player.Progression.AddKey(_levelId);
+            Debug.Log("Smuggler's Island cleared! The Jungle Ruins await...");
+        }
     }
 }
