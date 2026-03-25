@@ -7,7 +7,11 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
-        player = new Player("Rory", "Pirate");
+        string characterName = CharacterSelectManager.selectedCharacter;
+        player = new Player(characterName, "Pirate");
+    
+        Debug.Log("Selected sprite: " + CharacterSelectManager.selectedSprite);
+        GetComponent<SpriteRenderer>().sprite = CharacterSelectManager.selectedSprite;
     }
 
     void Update()
