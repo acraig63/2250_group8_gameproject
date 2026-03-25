@@ -69,7 +69,7 @@ public class InventoryUI : MonoBehaviour
 
             TMP_Text label = slot.GetComponentInChildren<TMP_Text>();
             if (label != null)
-                label.text = $"{item.Name}\n<size=10>{item.Rarity} {item.Type}</size>";
+                label.text = $"<b><size=14>{item.Name}</size></b>\n<size=8>{item.Rarity} {item.Type}</size>";
 
             // Colour slot by rarity
             Image slotImage = slot.GetComponent<Image>();
@@ -95,6 +95,14 @@ public class InventoryUI : MonoBehaviour
         if (fullText != null) fullText.gameObject.SetActive(_inventory.IsFull());
         RefreshUI();
         return added;
+    }
+    
+    public void AddGold(int amount)
+    {
+        if (_inventory == null) return;
+
+        _inventory.Gold += amount;
+        RefreshUI();
     }
 
     private Color RarityColor(Rarity rarity) => rarity switch

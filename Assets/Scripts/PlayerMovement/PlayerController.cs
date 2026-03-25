@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        FindObjectOfType<InventoryUI>().Initialize(new Inventory(20));
+        FindObjectOfType<InventoryUI>().Initialize(new Inventory(5));
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;

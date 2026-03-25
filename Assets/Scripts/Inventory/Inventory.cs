@@ -12,7 +12,7 @@ namespace DefaultNamespace
         
         //properties
         public List<Item> Items => _items;
-        public int Gold => _gold;
+        public int Gold { get; set; }
         public int MaxCapacity => _maxCapacity;
 
         //constructor
@@ -40,6 +40,8 @@ namespace DefaultNamespace
         {
             _items.Remove(item);
         }
+        
+        
 
         //returns all items in inventory that match the specified type
         public List<Item> GetItemsByType(ItemType type)
