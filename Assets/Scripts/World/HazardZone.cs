@@ -1,54 +1,109 @@
 using UnityEngine;
 
-/// <summary>
-/// Attach to any GameObject with a trigger BoxCollider2D to create a hazard zone.
-/// When the player walks into the trigger, they take damage per second.
-/// IslandSceneBuilder attaches this automatically to the storm hazard zone.
-///
-/// Manual setup (optional):
-///   1. Create an empty GameObject, add BoxCollider2D (set Is Trigger = true)
-///   2. Attach this script
-///   3. Set damagePerSecond in the Inspector
-/// </summary>
-public class HazardZone : MonoBehaviour
+namespace DefaultNamespace
 {
-    [Tooltip("Damage dealt to player per second while inside the zone.")]
-    public float damagePerSecond = 5f;
-
-    [Tooltip("Label shown in the debug log when player enters.")]
-    public string hazardLabel = "Hazard Zone";
-
-    private bool _playerInside = false;
-    private GameObject _player;
-
-    void OnTriggerEnter2D(Collider2D other)
+    /// <summary>
+    /// Attached automatically by IslandSceneBuilder to every tile whose
+    /// TileType is <see cref="TileType.Hazard"/> (quicksand zone).
+    ///
+    /// Deals damage-over-time while the player stands on the tile.
+    /// Uses OnTriggerStay2D so it fires continuously without polling Update.
+    ///
+    /// Requirements on the player's GameObject:
+    ///   • Rigidbody2D    (so Unity dispatches trigger events)
+    ///   • PlayerManager  (holds the Player data model)
+    ///
+    /// Inspector tweaks:
+    ///   • damagePerTick  — HP removed each interval (default 5).
+    ///   • damageInterval — seconds between ticks (default 0.5 s).
+    ///   • flashColor     — tint applied to this tile briefly after a hit.
+    /// </summary>
+    public class HazardZone : MonoBehaviour
     {
-        if (!other.CompareTag("Player")) return;
+        [Header("Damage")]
+        [SerializeField] private int   damagePerTick  = 5;
+        [SerializeField] private float damageInterval = 0.5f;
 
-        _playerInside = true;
-        _player = other.gameObject;
-        Debug.Log($"Player entered {hazardLabel}! Taking {damagePerSecond} damage per second.");
-    }
+        [Header("Visual Feedback")]
+        [SerializeField] private Color flashColor    = new Color(1f, 0.25f, 0.25f, 0.65f);
+        [SerializeField] private float flashDuration = 0.12f;
 
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (!other.CompareTag("Player")) return;
+        // Internal state
+        private bool          _playerInside;
+        private float         _damageTimer;
+        private float         _flashTimer;
+        private bool          _flashing;
+        private PlayerManager _playerManager;
+        private SpriteRenderer _sr;
+        private Color          _originalColor;
 
-        _playerInside = false;
-        _player = null;
-        Debug.Log($"Player left {hazardLabel}.");
-    }
+        void Awake()
+        {
+            _sr = GetComponent<SpriteRenderer>();
+            if (_sr != null) _originalColor = _sr.color;
+        }
 
-    void Update()
-    {
-        if (!_playerInside || _player == null) return;
+        void Update()
+        {
+            if (_playerInside && _playerManager != null)
+            {
+                _damageTimer += Time.deltaTime;
+                if (_damageTimer >= damageInterval)
+                {
+                    _damageTimer = 0f;
+                    DealDamage();
+                }
+            }
 
-        // Apply damage via PlayerController's health reference
-        // For now, log the damage tick — wire to HealthBar once Player is exposed
-        Debug.Log($"{hazardLabel}: dealing {damagePerSecond * Time.deltaTime:F2} damage this frame.");
+            if (_flashing)
+            {
+                _flashTimer += Time.deltaTime;
+                if (_flashTimer >= flashDuration)
+                {
+                    _flashing = false;
+                    if (_sr != null) _sr.color = _originalColor;
+                }
+            }
+        }
 
-        // Uncomment once HealthBar is accessible on the player GameObject:
-        // HealthBar hb = _player.GetComponent<HealthBar>();
-        // if (hb != null) hb.TakeDamage((int)(damagePerSecond * Time.deltaTime));
+        void OnTriggerEnter2D(Collider2D other)
+        {
+            PlayerManager pm = other.GetComponent<PlayerManager>();
+            if (pm == null) return;
+            _playerManager = pm;
+            _playerInside  = true;
+            _damageTimer   = damageInterval; // immediate first hit
+            Debug.Log($"HazardZone ({name}): player entered quicksand.");
+        }
+
+        void OnTriggerExit2D(Collider2D other)
+        {
+            if (other.GetComponent<PlayerManager>() == null) return;
+            _playerInside  = false;
+            _damageTimer   = 0f;
+            _playerManager = null;
+            if (_sr != null) _sr.color = _originalColor;
+            _flashing = false;
+        }
+
+        private void DealDamage()
+        {
+            if (_playerManager?.player == null) return;
+            if (!_playerManager.player.IsAlive()) return;
+
+            _playerManager.player.TakeDamage(damagePerTick);
+            Debug.Log($"HazardZone: -{damagePerTick} HP | remaining: {_playerManager.player.GetHealthNormalized()*100:F0}%");
+
+            if (_sr != null) { _sr.color = flashColor; _flashTimer = 0f; _flashing = true; }
+
+            if (!_playerManager.player.IsAlive())
+            {
+                Debug.Log("HazardZone: player defeated in quicksand.");
+                _playerInside = false;
+            }
+        }
+
+        public bool IsPlayerInside()              => _playerInside;
+        public void SetDamagePerTick(int damage)  => damagePerTick = Mathf.Max(0, damage);
     }
 }
