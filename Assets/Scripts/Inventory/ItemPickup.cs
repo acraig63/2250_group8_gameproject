@@ -31,6 +31,16 @@ public class ItemPickup : MonoBehaviour
         }
 
         Item item = BuildItem();
+
+        // If this is treasure / coin loot, add to gold only
+        if (item.Type == ItemType.Treasure)
+        {
+            inventoryUI.AddGold(item.GoldValue);
+            Debug.Log($"Picked up {item.GoldValue} gold.");
+            Destroy(gameObject);
+            return;
+        }
+
         bool added = inventoryUI.TryAddItem(item);
 
         if (added)
@@ -40,7 +50,7 @@ public class ItemPickup : MonoBehaviour
         }
         else
         {
-            Debug.Log("Inventory full — could not pick up item.");
+            Debug.Log("Inventory full, could not pick up item.");
         }
     }
 
