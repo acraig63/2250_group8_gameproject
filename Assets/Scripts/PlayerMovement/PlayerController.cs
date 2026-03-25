@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 1;
     }
 
     void Update()
@@ -22,6 +25,6 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.linearVelocity = movement * speed;
+        rb.linearVelocity = new Vector2(movement.x * speed, movement.y * speed);
     }
 }
