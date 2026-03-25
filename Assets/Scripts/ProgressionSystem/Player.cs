@@ -93,5 +93,9 @@ namespace DefaultNamespace
         {
             return !health.IsDead();
         }
+        public float GetHealthNormalized()
+        {
+            return health.GetNormalizedValue();
+        }
     }
 }
