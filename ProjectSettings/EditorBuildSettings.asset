@@ -5,18 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 1
-    path: Assets/Scenes/OpeningScreen.unity
-    guid: 018593ca1d5f04367b7107430ab4c5dd
-  - enabled: 1
-    path: Assets/Scenes/CharacterCustomization.unity
-    guid: a4016cb10797542889ee8c07a439b991
-  - enabled: 1
-    path: Assets/Scenes/SmugglersIsland.unity
-    guid: c602896f48194e347a8b482b07b1e768
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
