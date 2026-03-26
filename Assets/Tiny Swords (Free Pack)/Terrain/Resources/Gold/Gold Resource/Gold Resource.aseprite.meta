@@ -139,7 +139,11 @@ ScriptedImporter:
       y: 4
       width: 24
       height: 26
+<<<<<<< HEAD
     spriteID: 66ff971ad23de471ca011308ebf8cdc2
+=======
+    spriteID: 945cca41a53164a2da76e72b825e2ded
+>>>>>>> player-inventory
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -160,7 +164,11 @@ ScriptedImporter:
       y: 38
       width: 24
       height: 26
+<<<<<<< HEAD
     spriteID: 0f196d738b93942b6bd0c080e29e1351
+=======
+    spriteID: 62812652388ea448bb9b2d0500220467
+>>>>>>> player-inventory
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -181,7 +189,11 @@ ScriptedImporter:
       y: 72
       width: 24
       height: 26
+<<<<<<< HEAD
     spriteID: 3934bd00dc7c448208e9ebe5d50a6943
+=======
+    spriteID: fec087516bfcb4f3cbc3568da374e1f5
+>>>>>>> player-inventory
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -202,7 +214,11 @@ ScriptedImporter:
       y: 4
       width: 24
       height: 26
+<<<<<<< HEAD
     spriteID: e647266237b4641ec96e72cc05fad325
+=======
+    spriteID: a98debc69338c43e18fd1f39f05ced55
+>>>>>>> player-inventory
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -223,7 +239,11 @@ ScriptedImporter:
       y: 38
       width: 24
       height: 26
+<<<<<<< HEAD
     spriteID: 112bed187c89c404288e26af8a3e516a
+=======
+    spriteID: 07406d25ce6a74c8c96b88b02b66ec48
+>>>>>>> player-inventory
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -244,7 +264,11 @@ ScriptedImporter:
       y: 72
       width: 24
       height: 26
+<<<<<<< HEAD
     spriteID: ad73c77880d664c92b8c324da6bdff66
+=======
+    spriteID: e366c66ceddc8472785fd4cb3c0bdc04
+>>>>>>> player-inventory
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -265,7 +289,11 @@ ScriptedImporter:
       y: 4
       width: 24
       height: 26
+<<<<<<< HEAD
     spriteID: cd63bfb0348e3419cb3d0663c6d17d50
+=======
+    spriteID: d9615027770ee4ec0930e6bde966894f
+>>>>>>> player-inventory
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -297,7 +325,11 @@ ScriptedImporter:
         y: 53
         width: 24
         height: 26
+<<<<<<< HEAD
       spriteId: 66ff971ad23de471ca011308ebf8cdc2
+=======
+      spriteId: 945cca41a53164a2da76e72b825e2ded
+>>>>>>> player-inventory
     - name: Frame_1
       frameIndex: 1
       additiveSortOrder: 0
@@ -306,7 +338,11 @@ ScriptedImporter:
         y: 53
         width: 24
         height: 26
+<<<<<<< HEAD
       spriteId: 0f196d738b93942b6bd0c080e29e1351
+=======
+      spriteId: 62812652388ea448bb9b2d0500220467
+>>>>>>> player-inventory
     - name: Frame_2
       frameIndex: 2
       additiveSortOrder: 0
@@ -315,7 +351,11 @@ ScriptedImporter:
         y: 53
         width: 24
         height: 26
+<<<<<<< HEAD
       spriteId: 3934bd00dc7c448208e9ebe5d50a6943
+=======
+      spriteId: fec087516bfcb4f3cbc3568da374e1f5
+>>>>>>> player-inventory
     - name: Frame_3
       frameIndex: 3
       additiveSortOrder: 0
@@ -324,7 +364,11 @@ ScriptedImporter:
         y: 53
         width: 24
         height: 26
+<<<<<<< HEAD
       spriteId: e647266237b4641ec96e72cc05fad325
+=======
+      spriteId: a98debc69338c43e18fd1f39f05ced55
+>>>>>>> player-inventory
     - name: Frame_4
       frameIndex: 4
       additiveSortOrder: 0
@@ -333,7 +377,11 @@ ScriptedImporter:
         y: 53
         width: 24
         height: 26
+<<<<<<< HEAD
       spriteId: 112bed187c89c404288e26af8a3e516a
+=======
+      spriteId: 07406d25ce6a74c8c96b88b02b66ec48
+>>>>>>> player-inventory
     - name: Frame_5
       frameIndex: 5
       additiveSortOrder: 0
@@ -342,7 +390,11 @@ ScriptedImporter:
         y: 53
         width: 24
         height: 26
+<<<<<<< HEAD
       spriteId: ad73c77880d664c92b8c324da6bdff66
+=======
+      spriteId: e366c66ceddc8472785fd4cb3c0bdc04
+>>>>>>> player-inventory
     - name: Frame_6
       frameIndex: 6
       additiveSortOrder: 0
@@ -351,7 +403,11 @@ ScriptedImporter:
         y: 53
         width: 24
         height: 26
+<<<<<<< HEAD
       spriteId: cd63bfb0348e3419cb3d0663c6d17d50
+=======
+      spriteId: d9615027770ee4ec0930e6bde966894f
+>>>>>>> player-inventory
     linkedCells: []
     tileCells: []
     tileSetIndex: 0
