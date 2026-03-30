@@ -310,7 +310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryUI
   inventoryPanel: {fileID: 1876547021}
-  itemSlotPrefab: {fileID: 7067593806230064521, guid: 2fd0022ebf76c2b43aaf749d11644401, type: 3}
+  itemSlotPrefab: {fileID: 3698079972718183549, guid: fd84714969e3a684aabda49f8a8bd8ac, type: 3}
   itemSlotsContainer: {fileID: 1981213839}
   goldText: {fileID: 1165356314}
   fullText: {fileID: 867037600}
@@ -2727,7 +2727,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 20, y: 15, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
