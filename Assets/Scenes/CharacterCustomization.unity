@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 8882666270506729424, guid: 13fab08caf9274e41923b9a5a332d843, type: 3}
+  m_Sprite: {fileID: 8882666270506729424, guid: 1416070fb60cd40aa88ba8a1371a9061, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -251,7 +251,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 8882666270506729424, guid: c90951692c4204f2881c80a339a8cc25, type: 3}
+  m_Sprite: {fileID: 8882666270506729424, guid: 1b733697d703944eea133f7bcabaefb4, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -628,7 +628,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterButton
   characterName: Richard
-  characterSprite: {fileID: 7257567913506708742, guid: 08dec3bc11142458487cec42b0e428b9, type: 3}
+  characterSprite: {fileID: 8882666270506729424, guid: 1416070fb60cd40aa88ba8a1371a9061, type: 3}
 --- !u!1 &450953364
 GameObject:
   m_ObjectHideFlags: 0
@@ -913,7 +913,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterButton
   characterName: Rory
-  characterSprite: {fileID: 7257567913506708742, guid: 58f47f4f28f32447f82ee963f90a1aaa, type: 3}
+  characterSprite: {fileID: 8882666270506729424, guid: 7486bb0446b2348d9918e4ca1d7f7c5a, type: 3}
 --- !u!1 &902416057
 GameObject:
   m_ObjectHideFlags: 0
@@ -1220,9 +1220,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1756667038}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -48, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 250, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1117920976
@@ -1245,7 +1245,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 8882666270506729424, guid: 38b16641fcda248e8bf80e2bddd439ab, type: 3}
+  m_Sprite: {fileID: 8882666270506729424, guid: e596e9c8d583042babb0271b5b4f4877, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1626,7 +1626,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterButton
   characterName: Toby
-  characterSprite: {fileID: 7257567913506708742, guid: c5d866db942724a0eb146903ebbf7df5, type: 3}
+  characterSprite: {fileID: 8882666270506729424, guid: b6ceae578699545c49de69452d5107aa, type: 3}
 --- !u!1 &1474958830
 GameObject:
   m_ObjectHideFlags: 0
@@ -1774,7 +1774,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterButton
   characterName: Kabi
-  characterSprite: {fileID: 7257567913506708742, guid: a32fb0901dc9249d28cd0e4f695484bc, type: 3}
+  characterSprite: {fileID: 8882666270506729424, guid: b6ceae578699545c49de69452d5107aa, type: 3}
 --- !u!1 &1537952450
 GameObject:
   m_ObjectHideFlags: 0
@@ -1807,9 +1807,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1756667038}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 48, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -250, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1537952452
@@ -1832,7 +1832,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 8882666270506729424, guid: 6af6010b41638419ca8700ee32732f4e, type: 3}
+  m_Sprite: {fileID: 8882666270506729424, guid: 7486bb0446b2348d9918e4ca1d7f7c5a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2201,7 +2201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 8882666270506729424, guid: 8ee6828dfd2144b24bb3260250742387, type: 3}
+  m_Sprite: {fileID: 8882666270506729424, guid: b6ceae578699545c49de69452d5107aa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2366,7 +2366,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterButton
   characterName: Michael
-  characterSprite: {fileID: 7257567913506708742, guid: 0d48552c440944aa686c72f9ec6f3b0a, type: 3}
+  characterSprite: {fileID: 8882666270506729424, guid: 1b733697d703944eea133f7bcabaefb4, type: 3}
 --- !u!1 &2066881839
 GameObject:
   m_ObjectHideFlags: 0
