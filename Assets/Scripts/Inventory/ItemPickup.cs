@@ -10,6 +10,7 @@ public class ItemPickup : MonoBehaviour
     [SerializeField] private int      goldValue       = 10;
     [SerializeField] private Rarity   rarity          = Rarity.Common;
     [SerializeField] private ItemType itemType        = ItemType.Weapon;
+    [SerializeField] private Sprite worldSprite;
 
     [Header("Weapon Stats (only used if ItemType = Weapon)")]
     [SerializeField] private int        baseDamage = 5;
@@ -53,17 +54,48 @@ public class ItemPickup : MonoBehaviour
             Debug.Log("Inventory full, could not pick up item.");
         }
     }
-
+    
     private Item BuildItem()
     {
-        return itemType switch
+        Item item = itemType switch
         {
             ItemType.Weapon   => new Weapon(itemId, itemName, itemDescription,
-                                            goldValue, rarity, baseDamage, weaponType),
+                goldValue, rarity, baseDamage, weaponType),
+
             ItemType.Clothing => new Clothing(itemId, itemName, itemDescription,
-                                              goldValue, rarity, clothingSlot, defenseBonus),
+                goldValue, rarity, clothingSlot, defenseBonus),
+
             _                 => new TreasureItem(itemId, itemName, itemDescription,
-                                                  goldValue, rarity, itemType)
+                goldValue, rarity, itemType)
         };
+
+        item.WorldSprite = worldSprite;
+        return item;
+    }
+    
+    public void SetItemData(Item item, Sprite sprite)
+    {
+        itemId          = item.Id;
+        itemName        = item.Name;
+        itemDescription = item.Description;
+        goldValue       = item.GoldValue;
+        rarity          = item.Rarity;
+        itemType        = item.Type;
+        worldSprite     = sprite;
+
+        if (item is Weapon weapon)
+        {
+            baseDamage = weapon.BaseDamage;
+            weaponType = weapon.WeaponType;
+        }
+        else if (item is Clothing clothing)
+        {
+            clothingSlot = clothing.Slot;
+            defenseBonus = clothing.DefenseBonus;
+        }
+
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null && worldSprite != null)
+            sr.sprite = worldSprite;
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace DefaultNamespace
+﻿using UnityEngine;
+
+namespace DefaultNamespace
 {
     public abstract class Item
     {
@@ -10,6 +12,7 @@
         private int _goldValue;
         private Rarity _rarity;
         private ItemType _type;
+        public Sprite WorldSprite { get; set; }
         
         // Constructor
         protected Item(string id, string name, string description, int goldValue, Rarity rarity, ItemType type)

@@ -25,6 +25,8 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private Transform  itemSlotsContainer;
     [SerializeField] private TMP_Text   goldText;
     [SerializeField] private TMP_Text   fullText;
+    [SerializeField] private ItemDetailPopup itemDetailPopup;
+    [SerializeField] private Transform playerTransform;
 
     private Inventory _inventory;
     private bool      _isOpen = false;
@@ -63,6 +65,20 @@ public class InventoryUI : MonoBehaviour
             Destroy(child.gameObject);
 
         // Rebuild from inventory
+        // foreach (Item item in _inventory.Items)
+        // {
+        //     GameObject slot = Instantiate(itemSlotPrefab, itemSlotsContainer);
+        //
+        //     TMP_Text label = slot.GetComponentInChildren<TMP_Text>();
+        //     if (label != null)
+        //         label.text = $"<b><size=14>{item.Name}</size></b>\n<size=8>{item.Rarity} {item.Type}</size>";
+        //
+        //     // Colour slot by rarity
+        //     Image slotImage = slot.GetComponent<Image>();
+        //     if (slotImage != null)
+        //         slotImage.color = RarityColor(item.Rarity);
+        // }
+        
         foreach (Item item in _inventory.Items)
         {
             GameObject slot = Instantiate(itemSlotPrefab, itemSlotsContainer);
@@ -71,10 +87,18 @@ public class InventoryUI : MonoBehaviour
             if (label != null)
                 label.text = $"<b><size=14>{item.Name}</size></b>\n<size=8>{item.Rarity} {item.Type}</size>";
 
-            // Colour slot by rarity
             Image slotImage = slot.GetComponent<Image>();
             if (slotImage != null)
                 slotImage.color = RarityColor(item.Rarity);
+
+            // Make slot clickable — capture item in local variable for the lambda
+            Item capturedItem = item;
+            Button slotButton = slot.AddComponent<Button>();
+            slotButton.onClick.AddListener(() =>
+            {
+                if (itemDetailPopup != null)
+                    itemDetailPopup.Show(capturedItem, _inventory, this, playerTransform);
+            });
         }
 
         if (goldText != null)
