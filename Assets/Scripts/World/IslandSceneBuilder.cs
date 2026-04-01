@@ -70,8 +70,9 @@ namespace DefaultNamespace
         // Tile asset cache — one TileBase per visual tag
         private Dictionary<string, TileBase> _tileAssets;
 
-        private SmugglersIslandLevel _level;
-        public  SmugglersIslandLevel Level => _level;
+        [SerializeField] private string levelType;
+
+        private Level _level;
 
         private const int TEX = 32;
 
@@ -96,7 +97,14 @@ namespace DefaultNamespace
             }
 
             // Build level data
-            _level = new SmugglersIslandLevel();
+            if (levelType == "jungle")
+            {
+                _level = new JungleRuinsIsland();
+            }
+            else
+            {
+                _level = new SmugglersIslandLevel();
+            }
             _level.Initialize();
 
             // Paint all tiles

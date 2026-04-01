@@ -3335,6 +3335,7 @@ MonoBehaviour:
   spriteEntries: []
   hazardDamagePerTick: 5
   hazardDamageInterval: 0.5
+  levelType: smugglers
 --- !u!4 &1218779212
 Transform:
   m_ObjectHideFlags: 0
@@ -3688,6 +3689,7 @@ MonoBehaviour:
   spriteEntries: []
   hazardDamagePerTick: 5
   hazardDamageInterval: 0.5
+  levelType: smugglers
 --- !u!4 &1259979787
 Transform:
   m_ObjectHideFlags: 0
