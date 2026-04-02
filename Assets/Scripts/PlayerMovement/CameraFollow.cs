@@ -55,5 +55,9 @@ public class CameraFollow : MonoBehaviour
         pos.y = Mathf.Clamp(pos.y, _minY, _maxY);
 
         transform.position = pos;
+        // Proof log — fires once per 300 frames (~5 s at 60 fps).
+        if (Time.frameCount % 300 == 1)
+            Debug.Log($">>> CAMERAFOLLOW CLAMPING ACTIVE: target=({target.position.x:F1},{target.position.y:F1}) "
+                      + $"clamped=({pos.x:F2},{pos.y:F2}) bounds=[{_minX:F1},{_maxX:F1}]x[{_minY:F1},{_maxY:F1}]");
     }
 }
