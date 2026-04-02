@@ -73,10 +73,17 @@ namespace DefaultNamespace
 
         void Awake()
         {
+            // Minimap is only valid in SmugglersIsland — destroy immediately in any other scene
+            // so this canvas (which carries a GraphicRaycaster) cannot block input elsewhere.
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "SmugglersIsland")
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {
