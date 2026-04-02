@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,9 +19,15 @@ namespace DefaultNamespace
     /// </summary>
     public class MinimapUI : MonoBehaviour
     {
+        public static MinimapUI Instance;
+
         [Header("Render Texture")]
         [Tooltip("The same RenderTexture assigned to your MinimapCamera's Camera component.")]
         public RenderTexture minimapRenderTexture;
+
+        [Header("Camera Reference")]
+        [Tooltip("Drag the MinimapCamera GameObject here. Used to project NPC world positions onto the minimap.")]
+        public Camera minimapCamera;
 
         [Header("Player Reference")]
         [Tooltip("Drag your Player GameObject here for the player dot indicator.")]
@@ -45,15 +52,45 @@ namespace DefaultNamespace
         [Tooltip("Size of the player dot in pixels.")]
         public int playerDotSize = 8;
 
+        [Header("NPC Indicators")]
+        [Tooltip("Color of NPC dots on the minimap.")]
+        public Color npcDotColor = Color.yellow;
+
+        [Tooltip("Size of each NPC dot in pixels.")]
+        public int npcDotSize = 6;
+
+        [Tooltip("Tag used by NPC GameObjects in the scene. Must match the tag set in the Inspector on each NPC prefab.")]
+        public string npcTag = "NPC";
+
         // Internal UI references — built at runtime so no manual wiring needed
         private RectTransform _borderPanel;
         private RectTransform _minimapPanel;
         private RawImage _minimapImage;
         private RectTransform _playerDot;
 
+        // NPC tracking: pairs a world-space Transform with its minimap dot rect
+        private readonly List<(Transform npc, RectTransform dot)> _npcTrackers
+            = new List<(Transform, RectTransform)>();
+        private float _npcRefreshTimer;
+        private const float NPC_REFRESH_INTERVAL = 2f;
+
+        void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
         void Start()
         {
             BuildMinimapUI();
+            RefreshNPCTrackers();
         }
 
         /// <summary>
@@ -140,8 +177,93 @@ namespace DefaultNamespace
 
         void Update()
         {
-            // Player dot always stays centered since the camera follows the player —
-            // nothing to update here unless you later want to add other map markers
+            // Player dot stays centered — the minimap camera always follows the player.
+
+            // Periodically re-scan for new or destroyed NPC GameObjects.
+            _npcRefreshTimer += Time.deltaTime;
+            if (_npcRefreshTimer >= NPC_REFRESH_INTERVAL)
+            {
+                _npcRefreshTimer = 0f;
+                RefreshNPCTrackers();
+            }
+
+            UpdateNPCDots();
+        }
+
+        /// <summary>
+        /// Destroys all existing NPC dots and rebuilds them from every active
+        /// GameObject tagged with npcTag. Call automatically every few seconds
+        /// so newly spawned or defeated NPCs are reflected on the minimap.
+        /// </summary>
+        private void RefreshNPCTrackers()
+        {
+            // Remove old dots
+            foreach (var (_, dot) in _npcTrackers)
+                if (dot != null) Destroy(dot.gameObject);
+            _npcTrackers.Clear();
+
+            if (_minimapPanel == null) return;
+
+            // Find NPCs by component rather than tag to avoid undefined-tag crashes
+            NPCDialogueTrigger[] npcTriggers = FindObjectsOfType<NPCDialogueTrigger>();
+            foreach (NPCDialogueTrigger trigger in npcTriggers)
+            {
+                GameObject npcGO = trigger.gameObject;
+                GameObject dotObj = new GameObject("NPCDot_" + npcGO.name);
+                dotObj.transform.SetParent(_minimapPanel, false);
+
+                RectTransform rt = dotObj.AddComponent<RectTransform>();
+                Image img        = dotObj.AddComponent<Image>();
+                img.color        = npcDotColor;
+
+                rt.sizeDelta          = new Vector2(npcDotSize, npcDotSize);
+                rt.anchorMin          = new Vector2(0.5f, 0.5f);
+                rt.anchorMax          = new Vector2(0.5f, 0.5f);
+                rt.pivot              = new Vector2(0.5f, 0.5f);
+                rt.anchoredPosition   = Vector2.zero;
+
+                _npcTrackers.Add((npcGO.transform, rt));
+            }
+        }
+
+        /// <summary>
+        /// Projects each tracked NPC's world position into minimap panel space
+        /// using the minimap camera's viewport, then moves the dot accordingly.
+        /// Dots outside the camera's view are hidden.
+        /// </summary>
+        private void UpdateNPCDots()
+        {
+            if (minimapCamera == null) return;
+
+            for (int i = _npcTrackers.Count - 1; i >= 0; i--)
+            {
+                var (npcTransform, dot) = _npcTrackers[i];
+
+                // NPC was destroyed (e.g. defeated enemy) — remove the dot
+                if (npcTransform == null)
+                {
+                    if (dot != null) Destroy(dot.gameObject);
+                    _npcTrackers.RemoveAt(i);
+                    continue;
+                }
+
+                // WorldToViewportPoint gives (0,0) = bottom-left, (1,1) = top-right
+                // of what the minimap camera currently sees. z > 0 means in front.
+                Vector3 vp = minimapCamera.WorldToViewportPoint(npcTransform.position);
+
+                bool inView = vp.z > 0f && vp.x >= 0f && vp.x <= 1f
+                                        && vp.y >= 0f && vp.y <= 1f;
+                dot.gameObject.SetActive(inView);
+
+                if (inView)
+                {
+                    // Remap from [0,1] viewport to [-size/2, +size/2] panel coords
+                    dot.anchoredPosition = new Vector2(
+                        (vp.x - 0.5f) * minimapSize,
+                        (vp.y - 0.5f) * minimapSize
+                    );
+                }
+            }
         }
 
         /// <summary>
