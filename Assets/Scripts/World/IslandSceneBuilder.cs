@@ -143,6 +143,17 @@ namespace DefaultNamespace
                 }
             }
 
+            // Fallback pass — ensure every cell has a ground tile so the camera
+            // background never shows through gaps (e.g. under water/obstacle tiles).
+            TileBase sandFallback = GetTileAsset("sand");
+            for (int x = 0; x < map.Width;  x++)
+            for (int y = 0; y < map.Height; y++)
+            {
+                Vector3Int pos = new Vector3Int(x, y, 0);
+                if (groundTilemap.GetTile(pos) == null)
+                    groundTilemap.SetTile(pos, sandFallback);
+            }
+
             // Refresh all tilemaps after bulk painting
             groundTilemap.RefreshAllTiles();
             obstacleTilemap.RefreshAllTiles();

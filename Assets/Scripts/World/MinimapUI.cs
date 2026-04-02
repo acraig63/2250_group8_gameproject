@@ -92,21 +92,15 @@ namespace DefaultNamespace
                           + SceneManager.GetActiveScene().name);
                 return;
             }
-            BuildMinimapUI();
-
-            // Always pull the RenderTexture from MinimapCamera — it creates a
-            // fresh one at runtime in Awake(). This overrides any stale Inspector
-            // reference so the UI always shows what the camera is rendering.
-            if (MinimapCamera.Instance != null)
-            {
+            // Grab the runtime RT from MinimapCamera BEFORE building the UI so
+            // BuildMinimapUI() receives a valid texture instead of the stale
+            // Inspector reference (which may be null if the asset was recreated).
+            Debug.Log($"MinimapUI.Start: MinimapCamera.Instance={(MinimapCamera.Instance != null)} "
+                      + $"RT={(MinimapCamera.Instance != null ? MinimapCamera.Instance.renderTexture != null : false)}");
+            if (MinimapCamera.Instance != null && MinimapCamera.Instance.renderTexture != null)
                 minimapRenderTexture = MinimapCamera.Instance.renderTexture;
-                if (_minimapImage != null)
-                    _minimapImage.texture = minimapRenderTexture;
-            }
-            else
-            {
-                Debug.LogWarning("MinimapUI: MinimapCamera not found — ensure it is activated before MinimapCanvas.");
-            }
+
+            BuildMinimapUI();
 
             RefreshNPCTrackers();
         }
@@ -167,6 +161,18 @@ namespace DefaultNamespace
         void Update()
         {
             if (!_initialized) return;
+
+            // Self-heal: if the RawImage still has no texture (RT wasn't ready
+            // during Start), keep trying until MinimapCamera provides one.
+            if (_minimapImage != null && _minimapImage.texture == null
+                && MinimapCamera.Instance != null
+                && MinimapCamera.Instance.renderTexture != null)
+            {
+                minimapRenderTexture  = MinimapCamera.Instance.renderTexture;
+                _minimapImage.texture = minimapRenderTexture;
+                Debug.Log("MinimapUI: RT self-healed in Update.");
+            }
+
             if (_playerTransform == null)
             {
                 GameObject p = GameObject.FindWithTag("Player");
