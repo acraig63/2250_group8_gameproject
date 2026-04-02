@@ -58,5 +58,10 @@ namespace DefaultNamespace
             _maxHP = newMax;
             _currentHP = newMax;
         }
+        
+        public float GetNormalizedValue()
+        {
+            return (float)_currentHP / _maxHP;
+        }
     }
 }
