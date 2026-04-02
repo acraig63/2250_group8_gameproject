@@ -56,9 +56,15 @@ namespace DefaultNamespace
                 return;
             }
 
-            // Always create the RenderTexture at runtime to avoid serialization
-            // timing issues when the GameObject starts inactive.
-            renderTexture = new RenderTexture(256, 256, 16);
+            // Disable HDR on the minimap camera before creating the RT — HDR mode
+            // causes URP to use a floating-point RT internally, which produces a
+            // format mismatch with a standard ARGB32 RT and prevents output from
+            // being written. Must be set BEFORE assigning targetTexture.
+            _cam.allowHDR = false;
+
+            // Create the RenderTexture at runtime with an explicit ARGB32 format so
+            // URP writes alpha correctly. Depth=16 is sufficient for a 2D scene.
+            renderTexture = new RenderTexture(256, 256, 16, RenderTextureFormat.ARGB32);
             renderTexture.name = "MinimapRT_Runtime";
             renderTexture.Create();
             _cam.targetTexture = renderTexture;
@@ -72,7 +78,9 @@ namespace DefaultNamespace
             _cam.depth            = -2;           // render before main camera (depth -1)
             _cam.cullingMask      = ~(1 << 5);    // exclude UI layer (layer 5)
             _cam.clearFlags       = CameraClearFlags.SolidColor;
-            _cam.backgroundColor  = new Color(0.05f, 0.05f, 0.08f, 1f);
+            // Use transparent clear so areas with no tiles are see-through rather
+            // than a solid colour that bleeds through the UI RawImage.
+            _cam.backgroundColor  = Color.clear;
             _cam.nearClipPlane    = 0.1f;
             _cam.farClipPlane     = heightAboveMap + 50f;
         }
