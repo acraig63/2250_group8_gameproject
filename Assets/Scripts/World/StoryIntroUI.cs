@@ -103,7 +103,7 @@ namespace DefaultNamespace
                 case Phase.Hold:    _phase = Phase.FadeOut; break;
                 case Phase.FadeOut:
                     _phase = Phase.Done;
-                    if (_panel != null) _panel.SetActive(false);
+                    if (_panel != null) { Destroy(_panel); _panel = null; }
                     ShowMinimap();
                     break;
             }

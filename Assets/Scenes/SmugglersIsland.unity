@@ -4239,7 +4239,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -6053,9 +6053,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b76978eef7b85492ca1191a034f2b276, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.MinimapCamera
-  playerTransform: {fileID: 0}
-  heightAbovePlayer: 20
-  orthographicSize: 10
+  mapCenterX: 40
+  mapCenterY: 30
+  heightAboveMap: 20
+  orthographicSize: 40
 --- !u!114 &5000000005
 MonoBehaviour:
   m_ObjectHideFlags: 0
