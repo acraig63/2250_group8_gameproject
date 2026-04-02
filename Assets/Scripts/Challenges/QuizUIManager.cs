@@ -34,6 +34,12 @@ public class QuizUIManager : MonoBehaviour
         // Freeze the player while the quiz is open
         SetPlayerMovement(false);
 
+        // Activate the panel first so Unity runs Awake() on all child TMP/Button
+        // components before we access them, and call SetAsLastSibling() so the
+        // panel renders on top of any runtime overlays (e.g. StoryIntroUI panel).
+        quizPanel.SetActive(true);
+        quizPanel.transform.SetAsLastSibling();
+
         // Populate UI
         dialogueText.text = "Ah, you caught me! Answer this question correctly to defeat me…";
         questionText.text = question.questionText;
@@ -62,8 +68,6 @@ public class QuizUIManager : MonoBehaviour
                 answerButtons[i].gameObject.SetActive(false);
             }
         }
-
-        quizPanel.SetActive(true);
     }
 
 
