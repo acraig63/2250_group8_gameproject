@@ -18,26 +18,11 @@ public class NPCDialogueTrigger : MonoBehaviour
         if (hasBeenDefeated || isPlayerInside) return;
         if (!other.CompareTag("Player")) return;
 
-        // Fallback: find QuizUIManager at runtime if the Inspector reference was lost
-        if (quizUIManager == null)
-            quizUIManager = FindObjectOfType<QuizUIManager>();
-        if (quizUIManager == null) return;
-
         MultipleChoiceQuestion question = GetRandomQuestion();
         if (question == null) return;
 
         isPlayerInside = true;
         quizUIManager.ShowQuiz(question, this);
-    }
-
-    /// <summary>
-    /// Called by QuizUIManager when the quiz panel closes so the player can
-    /// re-trigger the encounter without needing to physically exit and re-enter
-    /// the collider (important after a wrong answer).
-    /// </summary>
-    public void OnQuizClosed()
-    {
-        isPlayerInside = false;
     }
 
     private void OnTriggerExit2D(Collider2D other)
