@@ -56,11 +56,12 @@ namespace DefaultNamespace
                 return;
             }
 
-            // Target texture must be assigned so the camera never renders to screen.
-            if (renderTexture != null)
-                _cam.targetTexture = renderTexture;
-            else
-                Debug.LogWarning("MinimapCamera: renderTexture not assigned — camera will render to screen!");
+            // Always create the RenderTexture at runtime to avoid serialization
+            // timing issues when the GameObject starts inactive.
+            renderTexture = new RenderTexture(256, 256, 16);
+            renderTexture.name = "MinimapRT_Runtime";
+            renderTexture.Create();
+            _cam.targetTexture = renderTexture;
 
             // Silence any extra audio listener.
             AudioListener al = GetComponent<AudioListener>();
