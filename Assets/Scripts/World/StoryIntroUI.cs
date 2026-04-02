@@ -103,8 +103,12 @@ namespace DefaultNamespace
                 case Phase.Hold:    _phase = Phase.FadeOut; break;
                 case Phase.FadeOut:
                     _phase = Phase.Done;
-                    if (_panel != null) { Destroy(_panel); _panel = null; }
-                    ShowMinimap();
+                    if (_panel != null) _panel.SetActive(false);
+                    // Show minimap after intro dismisses (works whether MinimapCanvas
+                    // starts inactive in the scene or hasn't been added yet).
+                    foreach (Canvas c in FindObjectsOfType<Canvas>(true))
+                        if (c.gameObject.name == "MinimapCanvas")
+                        { c.gameObject.SetActive(true); break; }
                     break;
             }
         }
@@ -159,17 +163,6 @@ namespace DefaultNamespace
             t.horizontalOverflow = HorizontalWrapMode.Wrap;
             t.verticalOverflow   = VerticalWrapMode.Overflow;
             return t;
-        }
-
-        private void ShowMinimap()
-        {
-            // Activate MinimapCamera and MinimapCanvas, which start inactive to stay
-            // hidden during the story intro. FindObjectsOfType with includeInactive=true
-            // is needed because the objects are disabled at scene load.
-            foreach (MinimapCamera mc in FindObjectsOfType<MinimapCamera>(true))
-                mc.gameObject.SetActive(true);
-            foreach (MinimapUI mu in FindObjectsOfType<MinimapUI>(true))
-                mu.gameObject.SetActive(true);
         }
 
         public void SkipIntro() { _skipped = true; _phase = Phase.FadeOut; _timer = 0f; }
