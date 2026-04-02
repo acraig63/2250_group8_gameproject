@@ -7,14 +7,14 @@ namespace DefaultNamespace
     /// <summary>
     /// Attach this to your Canvas GameObject.
     /// Displays the minimap RenderTexture in a small panel at the top-left of the screen.
-    /// Shows a yellow diamond for the player and red dots for each NPC.
+    /// Also shows a small dot representing the player's position on the minimap.
     ///
     /// Setup steps (do once in Unity Editor):
     ///   1. Create a Canvas in your scene if one doesn't exist
     ///      (GameObject → UI → Canvas). Set "Render Mode" to "Screen Space - Overlay"
     ///   2. Attach this script to the Canvas GameObject
     ///   3. Drag your MinimapRenderTexture asset into the "minimapRenderTexture" field
-    ///   4. Drag the MinimapCamera into the "minimapCamera" field
+    ///   4. Drag your Player GameObject into the "playerTransform" field
     ///   5. Press Play — the minimap panel will build itself automatically
     /// </summary>
     public class MinimapUI : MonoBehaviour
@@ -26,8 +26,12 @@ namespace DefaultNamespace
         public RenderTexture minimapRenderTexture;
 
         [Header("Camera Reference")]
-        [Tooltip("Drag the MinimapCamera GameObject here. Used to project world positions onto the minimap.")]
+        [Tooltip("Drag the MinimapCamera GameObject here. Used to project NPC world positions onto the minimap.")]
         public Camera minimapCamera;
+
+        [Header("Player Reference")]
+        [Tooltip("Drag your Player GameObject here for the player dot indicator.")]
+        public Transform playerTransform;
 
         [Header("Minimap Appearance")]
         [Tooltip("Size of the minimap panel in pixels.")]
@@ -42,28 +46,27 @@ namespace DefaultNamespace
         [Tooltip("Color of the border around the minimap.")]
         public Color borderColor = new Color(0.6f, 0.4f, 0.1f, 1f); // Pirate gold
 
-        [Header("Player Indicator")]
-        [Tooltip("Color of the player diamond on the minimap.")]
-        public Color playerDotColor = Color.yellow;
+        [Tooltip("Color of the player dot on the minimap.")]
+        public Color playerDotColor = Color.red;
 
-        [Tooltip("Size of the player diamond in pixels.")]
-        public int playerDotSize = 10;
+        [Tooltip("Size of the player dot in pixels.")]
+        public int playerDotSize = 8;
 
         [Header("NPC Indicators")]
         [Tooltip("Color of NPC dots on the minimap.")]
-        public Color npcDotColor = Color.red;
+        public Color npcDotColor = Color.yellow;
 
         [Tooltip("Size of each NPC dot in pixels.")]
         public int npcDotSize = 6;
+
+        [Tooltip("Tag used by NPC GameObjects in the scene. Must match the tag set in the Inspector on each NPC prefab.")]
+        public string npcTag = "NPC";
 
         // Internal UI references — built at runtime so no manual wiring needed
         private RectTransform _borderPanel;
         private RectTransform _minimapPanel;
         private RawImage _minimapImage;
         private RectTransform _playerDot;
-
-        // Player tracking — lazy lookup so scene transitions work
-        private Transform _playerTransform;
 
         // NPC tracking: pairs a world-space Transform with its minimap dot rect
         private readonly List<(Transform npc, RectTransform dot)> _npcTrackers
@@ -73,17 +76,10 @@ namespace DefaultNamespace
 
         void Awake()
         {
-            // Minimap is only valid in SmugglersIsland — destroy immediately in any other scene
-            // so this canvas (which carries a GraphicRaycaster) cannot block input elsewhere.
-            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "SmugglersIsland")
-            {
-                Destroy(gameObject);
-                return;
-            }
-
             if (Instance == null)
             {
                 Instance = this;
+                DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -144,19 +140,21 @@ namespace DefaultNamespace
             _minimapPanel.pivot     = new Vector2(0.5f, 0.5f);
             _minimapPanel.anchoredPosition = Vector2.zero;
 
+            // Hook up the render texture if one was provided
             if (minimapRenderTexture != null)
             {
                 _minimapImage.texture = minimapRenderTexture;
             }
             else
             {
+                // Fallback: dark background so the panel is at least visible
                 _minimapImage.color = new Color(0.1f, 0.1f, 0.15f, 0.9f);
                 Debug.LogWarning("MinimapUI: No RenderTexture assigned. " +
                                  "Drag MinimapRenderTexture into the minimapRenderTexture field.");
             }
 
             // ------------------------------------------------------------------
-            // 3. Player dot — yellow diamond (square rotated 45°)
+            // 3. Player dot — small circle centered on the minimap
             // ------------------------------------------------------------------
             GameObject dotObj = new GameObject("PlayerDot");
             dotObj.transform.SetParent(minimapObj.transform, false);
@@ -166,30 +164,22 @@ namespace DefaultNamespace
             dotImage.color = playerDotColor;
 
             _playerDot.sizeDelta = new Vector2(playerDotSize, playerDotSize);
+
+            // Since the minimap camera always centers on the player, the dot
+            // always stays in the middle of the minimap panel
             _playerDot.anchorMin = new Vector2(0.5f, 0.5f);
             _playerDot.anchorMax = new Vector2(0.5f, 0.5f);
             _playerDot.pivot     = new Vector2(0.5f, 0.5f);
             _playerDot.anchoredPosition = Vector2.zero;
-
-            // Rotate 45° so the square looks like a diamond
-            dotObj.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
 
             Debug.Log("MinimapUI: Minimap panel built successfully.");
         }
 
         void Update()
         {
-            // Lazy player lookup — handles scene transitions without re-running Start
-            if (_playerTransform == null)
-            {
-                GameObject playerObj = GameObject.FindWithTag("Player");
-                if (playerObj != null)
-                    _playerTransform = playerObj.transform;
-            }
+            // Player dot stays centered — the minimap camera always follows the player.
 
-            UpdatePlayerDot();
-
-            // Periodically re-scan for new or destroyed NPC GameObjects
+            // Periodically re-scan for new or destroyed NPC GameObjects.
             _npcRefreshTimer += Time.deltaTime;
             if (_npcRefreshTimer >= NPC_REFRESH_INTERVAL)
             {
@@ -200,36 +190,21 @@ namespace DefaultNamespace
             UpdateNPCDots();
         }
 
-        private void UpdatePlayerDot()
-        {
-            if (_playerDot == null || minimapCamera == null || _playerTransform == null)
-                return;
-
-            Vector3 vp = minimapCamera.WorldToViewportPoint(_playerTransform.position);
-            bool inView = vp.z > 0f && vp.x >= 0f && vp.x <= 1f
-                                     && vp.y >= 0f && vp.y <= 1f;
-            _playerDot.gameObject.SetActive(inView);
-
-            if (inView)
-            {
-                _playerDot.anchoredPosition = new Vector2(
-                    (vp.x - 0.5f) * minimapSize,
-                    (vp.y - 0.5f) * minimapSize
-                );
-            }
-        }
-
         /// <summary>
-        /// Destroys all existing NPC dots and rebuilds them from every active NPC.
+        /// Destroys all existing NPC dots and rebuilds them from every active
+        /// GameObject tagged with npcTag. Call automatically every few seconds
+        /// so newly spawned or defeated NPCs are reflected on the minimap.
         /// </summary>
         private void RefreshNPCTrackers()
         {
+            // Remove old dots
             foreach (var (_, dot) in _npcTrackers)
                 if (dot != null) Destroy(dot.gameObject);
             _npcTrackers.Clear();
 
             if (_minimapPanel == null) return;
 
+            // Find NPCs by component rather than tag to avoid undefined-tag crashes
             NPCDialogueTrigger[] npcTriggers = FindObjectsOfType<NPCDialogueTrigger>();
             foreach (NPCDialogueTrigger trigger in npcTriggers)
             {
@@ -241,18 +216,20 @@ namespace DefaultNamespace
                 Image img        = dotObj.AddComponent<Image>();
                 img.color        = npcDotColor;
 
-                rt.sizeDelta        = new Vector2(npcDotSize, npcDotSize);
-                rt.anchorMin        = new Vector2(0.5f, 0.5f);
-                rt.anchorMax        = new Vector2(0.5f, 0.5f);
-                rt.pivot            = new Vector2(0.5f, 0.5f);
-                rt.anchoredPosition = Vector2.zero;
+                rt.sizeDelta          = new Vector2(npcDotSize, npcDotSize);
+                rt.anchorMin          = new Vector2(0.5f, 0.5f);
+                rt.anchorMax          = new Vector2(0.5f, 0.5f);
+                rt.pivot              = new Vector2(0.5f, 0.5f);
+                rt.anchoredPosition   = Vector2.zero;
 
                 _npcTrackers.Add((npcGO.transform, rt));
             }
         }
 
         /// <summary>
-        /// Projects each tracked NPC's world position onto the minimap panel every frame.
+        /// Projects each tracked NPC's world position into minimap panel space
+        /// using the minimap camera's viewport, then moves the dot accordingly.
+        /// Dots outside the camera's view are hidden.
         /// </summary>
         private void UpdateNPCDots()
         {
@@ -262,6 +239,7 @@ namespace DefaultNamespace
             {
                 var (npcTransform, dot) = _npcTrackers[i];
 
+                // NPC was destroyed (e.g. defeated enemy) — remove the dot
                 if (npcTransform == null)
                 {
                     if (dot != null) Destroy(dot.gameObject);
@@ -269,13 +247,17 @@ namespace DefaultNamespace
                     continue;
                 }
 
+                // WorldToViewportPoint gives (0,0) = bottom-left, (1,1) = top-right
+                // of what the minimap camera currently sees. z > 0 means in front.
                 Vector3 vp = minimapCamera.WorldToViewportPoint(npcTransform.position);
+
                 bool inView = vp.z > 0f && vp.x >= 0f && vp.x <= 1f
                                         && vp.y >= 0f && vp.y <= 1f;
                 dot.gameObject.SetActive(inView);
 
                 if (inView)
                 {
+                    // Remap from [0,1] viewport to [-size/2, +size/2] panel coords
                     dot.anchoredPosition = new Vector2(
                         (vp.x - 0.5f) * minimapSize,
                         (vp.y - 0.5f) * minimapSize
