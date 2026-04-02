@@ -110,6 +110,10 @@ public class QuizUIManager : MonoBehaviour
     {
         quizPanel.SetActive(false);
         SetPlayerMovement(true);
+        // Reset the NPC's player-inside flag so the quiz can be re-triggered
+        // immediately after a wrong answer without needing to exit the collider
+        if (activeNPC != null)
+            activeNPC.OnQuizClosed();
         activeQuestion = null;
         activeNPC = null;
     }
