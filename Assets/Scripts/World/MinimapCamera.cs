@@ -56,6 +56,11 @@ namespace DefaultNamespace
                 return;
             }
 
+            // Disable any AudioListener — the main camera already has one and Unity
+            // will warn about duplicates if this camera also has one active.
+            AudioListener al = GetComponent<AudioListener>();
+            if (al != null) al.enabled = false;
+
             // Force orthographic — minimap should never have perspective distortion
             _minimapCamera.orthographic = true;
             _minimapCamera.orthographicSize = orthographicSize;
