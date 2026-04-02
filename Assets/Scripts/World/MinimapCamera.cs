@@ -68,6 +68,7 @@ namespace DefaultNamespace
             renderTexture.name = "MinimapRT_Runtime";
             renderTexture.Create();
             _cam.targetTexture = renderTexture;
+            Debug.Log($"MinimapCamera.Awake: Instance={(Instance != null)} RT={(renderTexture != null)} cam={(_cam != null)}");
 
             // Silence any extra audio listener.
             AudioListener al = GetComponent<AudioListener>();

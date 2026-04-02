@@ -36,6 +36,14 @@ public class CameraFollow : MonoBehaviour
         _maxY = mapMaxY - halfH;
         _boundsReady = true;
 
+        // Match camera background to sand colour so any sub-pixel gap at the
+        // map edge blends in rather than showing the default grey/blue.
+        if (_cam != null)
+        {
+            _cam.clearFlags     = CameraClearFlags.SolidColor;
+            _cam.backgroundColor = new Color(0.88f, 0.76f, 0.50f, 1f); // sand
+        }
+
         if (halfH > (mapMaxY - mapMinY) * 0.5f)
             Debug.LogWarning($"[CameraFollow] orthoSize {halfH} exceeds half the map height — clamp bounds will invert.");
 
