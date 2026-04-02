@@ -104,8 +104,11 @@ namespace DefaultNamespace
                 case Phase.FadeOut:
                     _phase = Phase.Done;
                     if (_panel != null) _panel.SetActive(false);
-                    // Show minimap after intro dismisses (works whether MinimapCanvas
-                    // starts inactive in the scene or hasn't been added yet).
+                    // Activate MinimapCamera FIRST so its Awake() creates the
+                    // RenderTexture before MinimapUI.Start() tries to read it.
+                    foreach (MinimapCamera mc in FindObjectsOfType<MinimapCamera>(true))
+                    { mc.gameObject.SetActive(true); break; }
+                    // Then activate the minimap UI canvas.
                     foreach (Canvas c in FindObjectsOfType<Canvas>(true))
                         if (c.gameObject.name == "MinimapCanvas")
                         { c.gameObject.SetActive(true); break; }

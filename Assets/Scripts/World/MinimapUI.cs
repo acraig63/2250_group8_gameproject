@@ -80,13 +80,18 @@ namespace DefaultNamespace
         {
             BuildMinimapUI();
 
-            // If the RenderTexture wasn't assigned in the Inspector (common when
-            // the GameObject starts inactive), grab it from MinimapCamera at runtime.
-            if (minimapRenderTexture == null && MinimapCamera.Instance != null)
+            // Always pull the RenderTexture from MinimapCamera — it creates a
+            // fresh one at runtime in Awake(). This overrides any stale Inspector
+            // reference so the UI always shows what the camera is rendering.
+            if (MinimapCamera.Instance != null)
             {
                 minimapRenderTexture = MinimapCamera.Instance.renderTexture;
                 if (_minimapImage != null)
                     _minimapImage.texture = minimapRenderTexture;
+            }
+            else
+            {
+                Debug.LogWarning("MinimapUI: MinimapCamera not found — ensure it is activated before MinimapCanvas.");
             }
 
             RefreshNPCTrackers();
@@ -171,6 +176,9 @@ namespace DefaultNamespace
 
             if (_minimapPanel == null) return;
 
+            // TODO: NPCDialogueTrigger has no enemy/friendly distinction — all dots are red.
+            // When an IsEnemy flag or EnemyNPC component is added, change dot color:
+            //   enemy = Color.red, friendly = Color.green
             foreach (NPCDialogueTrigger trigger in FindObjectsOfType<NPCDialogueTrigger>())
             {
                 GameObject npcGO = trigger.gameObject;
