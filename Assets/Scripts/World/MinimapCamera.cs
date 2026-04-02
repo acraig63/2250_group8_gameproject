@@ -10,15 +10,20 @@ namespace DefaultNamespace
     /// Setup steps (do once in Unity Editor):
     ///   1. Create a new Camera GameObject — name it "MinimapCamera"
     ///   2. Attach this script to it
-    ///   3. Create a RenderTexture asset (Project panel → right-click → Create → Render Texture)
+    ///   3. Create a RenderTexture asset (right-click in Project → Create → Render Texture)
     ///      Set size to 256x256. Name it "MinimapRenderTexture"
-    ///   4. Drag that RenderTexture into the "targetTexture" field of the MinimapCamera's
-    ///      Camera component (not this script — the Camera component itself)
-    ///   5. Set orthographicSize to cover half the map height (e.g. 40 for an 80x60 map)
+    ///   4. Drag that RenderTexture into the "renderTexture" field on THIS script
+    ///   5. Also drag it into the "targetTexture" field of the Camera component itself
+    ///      (both assignments ensure it works across DontDestroyOnLoad transitions)
+    ///   6. Set orthographicSize to cover half the map height (40 for an 80x60 map)
     /// </summary>
     public class MinimapCamera : MonoBehaviour
     {
         public static MinimapCamera Instance;
+
+        [Header("Render Texture")]
+        [Tooltip("Assign the MinimapRenderTexture asset here. The camera will explicitly render into this texture.")]
+        public RenderTexture renderTexture;
 
         [Header("Map Centre")]
         [Tooltip("World-space X of the map centre.")]
@@ -57,6 +62,14 @@ namespace DefaultNamespace
                 return;
             }
 
+            // Explicitly assign target texture in code so it survives DontDestroyOnLoad
+            // and is not lost if the serialized reference on the Camera component drops.
+            if (renderTexture != null)
+                _minimapCamera.targetTexture = renderTexture;
+            else
+                Debug.LogWarning("MinimapCamera: No RenderTexture assigned — camera will render to screen! " +
+                                 "Drag MinimapRenderTexture into the renderTexture field.");
+
             // Disable any AudioListener — the main camera already has one.
             AudioListener al = GetComponent<AudioListener>();
             if (al != null) al.enabled = false;
@@ -65,7 +78,7 @@ namespace DefaultNamespace
             _minimapCamera.orthographic = true;
             _minimapCamera.orthographicSize = orthographicSize;
 
-            // Render on top of the main camera output.
+            // Render after the main camera (which is at depth -1).
             _minimapCamera.depth = 1;
 
             // Exclude the UI layer (layer 5) so minimap UI elements don't render
