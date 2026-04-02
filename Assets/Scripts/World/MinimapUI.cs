@@ -58,6 +58,11 @@ namespace DefaultNamespace
         private float _npcRefreshTimer;
         private const float NPC_REFRESH_INTERVAL = 2f;
 
+        // Destroy(gameObject) is deferred to end-of-frame — Start() still runs
+        // on the same frame. This flag gates Start/Update so they are no-ops
+        // when Awake() determined this instance should be destroyed.
+        private bool _initialized;
+
         void Awake()
         {
             // Only valid in SmugglersIsland — destroy immediately in any other scene
@@ -74,10 +79,12 @@ namespace DefaultNamespace
                 return;
             }
             Instance = this;
+            _initialized = true;
         }
 
         void Start()
         {
+            if (!_initialized) return;
             BuildMinimapUI();
 
             // Always pull the RenderTexture from MinimapCamera — it creates a
@@ -152,6 +159,7 @@ namespace DefaultNamespace
 
         void Update()
         {
+            if (!_initialized) return;
             if (_playerTransform == null)
             {
                 GameObject p = GameObject.FindWithTag("Player");
