@@ -1,3 +1,4 @@
+using DefaultNamespace;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -10,18 +11,22 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        FindObjectOfType<InventoryUI>().Initialize(new Inventory(5));
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 1;
     }
 
     void Update()
     {
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
+        float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
 
-        movement = new Vector2(x, y);
+        movement = new Vector2(x, y).normalized;
     }
 
     void FixedUpdate()
     {
-        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
+        rb.linearVelocity = new Vector2(movement.x * speed, movement.y * speed);
     }
 }
