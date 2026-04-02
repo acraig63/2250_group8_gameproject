@@ -5,6 +5,7 @@ public class CameraFollow : MonoBehaviour
     public Transform target;
 
     [Header("Map Bounds (world units)")]
+    // Tilemap origin is (0,0,0); MAP_WIDTH=80, MAP_HEIGHT=60 tiles at 1 unit each.
     public float mapMinX = 0f;
     public float mapMaxX = 80f;
     public float mapMinY = 0f;
@@ -17,24 +18,39 @@ public class CameraFollow : MonoBehaviour
         _cam = GetComponent<Camera>();
     }
 
+    void Start()
+    {
+        // Compute bounds once at startup and log so they can be verified in Console.
+        float halfH  = _cam != null ? _cam.orthographicSize : 5f;
+        float aspect = (_cam != null && _cam.aspect > 0f && !float.IsNaN(_cam.aspect))
+                       ? _cam.aspect
+                       : (Screen.height > 0 ? Screen.width / (float)Screen.height : 16f / 9f);
+        float halfW  = halfH * aspect;
+        Debug.Log($"[CameraFollow] orthoSize={halfH:F2}  aspect={aspect:F3}  " +
+                  $"halfW={halfW:F2}  halfH={halfH:F2}  " +
+                  $"clampX=[{mapMinX + halfW:F2}, {mapMaxX - halfW:F2}]  " +
+                  $"clampY=[{mapMinY + halfH:F2}, {mapMaxY - halfH:F2}]");
+    }
+
     void LateUpdate()
     {
         if (target == null) return;
 
-        float halfH = (_cam != null) ? _cam.orthographicSize : 5f;
-        float aspect = (_cam != null) ? _cam.aspect : 0f;
-        // Fallback: compute aspect from screen size if camera reports 0 or NaN.
-        if (aspect <= 0f || float.IsNaN(aspect))
-            aspect = Screen.width / (float)Screen.height;
-        float halfW = halfH * aspect;
+        // Step 1: Move camera to follow player exactly.
+        Vector3 pos = new Vector3(target.position.x, target.position.y, transform.position.z);
 
-        float mapH = mapMaxY - mapMinY;
-        if (halfH > mapH * 0.5f)
-            Debug.LogWarning($"CameraFollow: orthoSize {halfH} is larger than half the map height {mapH * 0.5f} — camera cannot fit within bounds.");
+        // Step 2: Clamp so the camera never shows outside the tilemap.
+        float halfH  = _cam != null ? _cam.orthographicSize : 5f;
+        float aspect = (_cam != null && _cam.aspect > 0f && !float.IsNaN(_cam.aspect))
+                       ? _cam.aspect
+                       : (Screen.height > 0 ? Screen.width / (float)Screen.height : 16f / 9f);
+        float halfW  = halfH * aspect;
 
-        float x = Mathf.Clamp(target.position.x, mapMinX + halfW, mapMaxX - halfW);
-        float y = Mathf.Clamp(target.position.y, mapMinY + halfH, mapMaxY - halfH);
+        if (halfH > (mapMaxY - mapMinY) * 0.5f)
+            Debug.LogWarning($"[CameraFollow] orthoSize {halfH} exceeds half the map height — bounds will invert.");
 
-        transform.position = new Vector3(x, y, transform.position.z);
+        pos.x = Mathf.Clamp(pos.x, mapMinX + halfW, mapMaxX - halfW);
+        pos.y = Mathf.Clamp(pos.y, mapMinY + halfH, mapMaxY - halfH);
+        transform.position = pos;
     }
 }
