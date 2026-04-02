@@ -36,12 +36,16 @@ public class CameraFollow : MonoBehaviour
         _maxY = mapMaxY - halfH;
         _boundsReady = true;
 
-        // Match camera background to sand colour so any sub-pixel gap at the
-        // map edge blends in rather than showing the default grey/blue.
         if (_cam != null)
         {
-            _cam.clearFlags     = CameraClearFlags.SolidColor;
-            _cam.backgroundColor = new Color(0.88f, 0.76f, 0.50f, 1f); // sand
+            // HDR in URP 2D causes a washed-out grey appearance when no
+            // tone mapping is applied. Disable it, same as MinimapCamera.
+            _cam.allowHDR = false;
+
+            // Match background to sand so any sub-pixel gap at the map
+            // edge blends in rather than showing the default grey/blue.
+            _cam.clearFlags      = CameraClearFlags.SolidColor;
+            _cam.backgroundColor = new Color(0.88f, 0.76f, 0.50f, 1f);
         }
 
         if (halfH > (mapMaxY - mapMinY) * 0.5f)
@@ -63,9 +67,5 @@ public class CameraFollow : MonoBehaviour
         pos.y = Mathf.Clamp(pos.y, _minY, _maxY);
 
         transform.position = pos;
-        // Proof log — fires once per 300 frames (~5 s at 60 fps).
-        if (Time.frameCount % 300 == 1)
-            Debug.Log($">>> CAMERAFOLLOW CLAMPING ACTIVE: target=({target.position.x:F1},{target.position.y:F1}) "
-                      + $"clamped=({pos.x:F2},{pos.y:F2}) bounds=[{_minX:F1},{_maxX:F1}]x[{_minY:F1},{_maxY:F1}]");
     }
 }

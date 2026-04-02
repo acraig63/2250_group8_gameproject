@@ -28,8 +28,8 @@ namespace DefaultNamespace
         [Tooltip("Z distance above the map plane.")]
         public float heightAboveMap = 20f;
 
-        [Tooltip("Orthographic size — 10 shows ~20 world units of height around the player.")]
-        public float orthographicSize = 10f;
+        [Tooltip("Orthographic size — 20 shows ~40 world units of height around the player (~half the map).")]
+        public float orthographicSize = 20f;
 
         private Camera _cam;
 
@@ -68,7 +68,6 @@ namespace DefaultNamespace
             renderTexture.name = "MinimapRT_Runtime";
             renderTexture.Create();
             _cam.targetTexture = renderTexture;
-            Debug.Log($"MinimapCamera.Awake: Instance={(Instance != null)} RT={(renderTexture != null)} cam={(_cam != null)}");
 
             // Silence any extra audio listener.
             AudioListener al = GetComponent<AudioListener>();
