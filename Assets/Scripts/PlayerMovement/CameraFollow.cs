@@ -5,13 +5,17 @@ public class CameraFollow : MonoBehaviour
     public Transform target;
 
     [Header("Map Bounds (world units)")]
-    // Tilemap origin is (0,0,0); MAP_WIDTH=80, MAP_HEIGHT=60 tiles at 1 unit each.
+    // Tilemap origin (0,0,0); MAP_WIDTH=80, MAP_HEIGHT=60 tiles × 1 unit/tile.
     public float mapMinX = 0f;
     public float mapMaxX = 80f;
     public float mapMinY = 0f;
     public float mapMaxY = 60f;
 
     private Camera _cam;
+
+    // Clamp limits precomputed once in Start() — never recomputed per-frame.
+    private float _minX, _maxX, _minY, _maxY;
+    private bool  _boundsReady;
 
     void Awake()
     {
@@ -20,37 +24,36 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        // Compute bounds once at startup and log so they can be verified in Console.
         float halfH  = _cam != null ? _cam.orthographicSize : 5f;
         float aspect = (_cam != null && _cam.aspect > 0f && !float.IsNaN(_cam.aspect))
                        ? _cam.aspect
                        : (Screen.height > 0 ? Screen.width / (float)Screen.height : 16f / 9f);
         float halfW  = halfH * aspect;
-        Debug.Log($"[CameraFollow] orthoSize={halfH:F2}  aspect={aspect:F3}  " +
-                  $"halfW={halfW:F2}  halfH={halfH:F2}  " +
-                  $"clampX=[{mapMinX + halfW:F2}, {mapMaxX - halfW:F2}]  " +
-                  $"clampY=[{mapMinY + halfH:F2}, {mapMaxY - halfH:F2}]");
+
+        _minX = mapMinX + halfW;
+        _maxX = mapMaxX - halfW;
+        _minY = mapMinY + halfH;
+        _maxY = mapMaxY - halfH;
+        _boundsReady = true;
+
+        if (halfH > (mapMaxY - mapMinY) * 0.5f)
+            Debug.LogWarning($"[CameraFollow] orthoSize {halfH} exceeds half the map height — clamp bounds will invert.");
+
+        Debug.Log($"[CameraFollow] bounds ready — orthoSize={halfH:F2} aspect={aspect:F3} " +
+                  $"halfW={halfW:F2} clampX=[{_minX:F2},{_maxX:F2}] clampY=[{_minY:F2},{_maxY:F2}]");
     }
 
     void LateUpdate()
     {
-        if (target == null) return;
+        if (target == null || !_boundsReady) return;
 
-        // Step 1: Move camera to follow player exactly.
+        // Step 1: Move camera to player position.
         Vector3 pos = new Vector3(target.position.x, target.position.y, transform.position.z);
 
-        // Step 2: Clamp so the camera never shows outside the tilemap.
-        float halfH  = _cam != null ? _cam.orthographicSize : 5f;
-        float aspect = (_cam != null && _cam.aspect > 0f && !float.IsNaN(_cam.aspect))
-                       ? _cam.aspect
-                       : (Screen.height > 0 ? Screen.width / (float)Screen.height : 16f / 9f);
-        float halfW  = halfH * aspect;
+        // Step 2: Clamp using precomputed limits so camera never shows outside the map.
+        pos.x = Mathf.Clamp(pos.x, _minX, _maxX);
+        pos.y = Mathf.Clamp(pos.y, _minY, _maxY);
 
-        if (halfH > (mapMaxY - mapMinY) * 0.5f)
-            Debug.LogWarning($"[CameraFollow] orthoSize {halfH} exceeds half the map height — bounds will invert.");
-
-        pos.x = Mathf.Clamp(pos.x, mapMinX + halfW, mapMaxX - halfW);
-        pos.y = Mathf.Clamp(pos.y, mapMinY + halfH, mapMaxY - halfH);
         transform.position = pos;
     }
 }
