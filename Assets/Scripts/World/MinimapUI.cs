@@ -80,11 +80,18 @@ namespace DefaultNamespace
             }
             Instance = this;
             _initialized = true;
+            Debug.Log(">>> NEW CODE RUNNING: MinimapUI._initialized = " + _initialized
+                      + " | scene = " + SceneManager.GetActiveScene().name);
         }
 
         void Start()
         {
-            if (!_initialized) return;
+            if (!_initialized)
+            {
+                Debug.Log(">>> MinimapUI.Start() skipped (not initialized) | scene = "
+                          + SceneManager.GetActiveScene().name);
+                return;
+            }
             BuildMinimapUI();
 
             // Always pull the RenderTexture from MinimapCamera — it creates a
