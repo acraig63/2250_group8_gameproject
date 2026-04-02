@@ -85,8 +85,10 @@ namespace DefaultNamespace
             _minimapCamera.orthographic = true;
             _minimapCamera.orthographicSize = orthographicSize;
 
-            // Render after the main camera (which is at depth -1).
-            _minimapCamera.depth = 1;
+            // Render BEFORE the main camera (depth -2 < main camera depth -1) so that
+            // even if URP composites this camera's output to the screen, the main camera
+            // renders last and overwrites it. The minimap is seen via its RenderTexture only.
+            _minimapCamera.depth = -2;
 
             // Exclude the UI layer (layer 5) so minimap UI elements don't render
             // inside the minimap texture itself.
