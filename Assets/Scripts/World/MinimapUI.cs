@@ -79,6 +79,16 @@ namespace DefaultNamespace
         void Start()
         {
             BuildMinimapUI();
+
+            // If the RenderTexture wasn't assigned in the Inspector (common when
+            // the GameObject starts inactive), grab it from MinimapCamera at runtime.
+            if (minimapRenderTexture == null && MinimapCamera.Instance != null)
+            {
+                minimapRenderTexture = MinimapCamera.Instance.renderTexture;
+                if (_minimapImage != null)
+                    _minimapImage.texture = minimapRenderTexture;
+            }
+
             RefreshNPCTrackers();
         }
 
