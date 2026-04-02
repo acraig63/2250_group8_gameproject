@@ -4,34 +4,35 @@ namespace DefaultNamespace
 {
     /// <summary>
     /// Attach this to a dedicated Minimap Camera GameObject.
-    /// The camera follows the player from above and renders to a RenderTexture
-    /// which is displayed in the MinimapUI panel in the top-left corner.
+    /// The camera is fixed above the centre of the map and renders the entire
+    /// island to a RenderTexture displayed in the MinimapUI panel.
     ///
     /// Setup steps (do once in Unity Editor):
     ///   1. Create a new Camera GameObject — name it "MinimapCamera"
     ///   2. Attach this script to it
-    ///   3. Drag your Player GameObject into the "playerTransform" field in the Inspector
-    ///   4. Create a RenderTexture asset (Project panel → right-click → Create → Render Texture)
+    ///   3. Create a RenderTexture asset (Project panel → right-click → Create → Render Texture)
     ///      Set size to 256x256. Name it "MinimapRenderTexture"
-    ///   5. Drag that RenderTexture into the "targetTexture" field of the MinimapCamera's
+    ///   4. Drag that RenderTexture into the "targetTexture" field of the MinimapCamera's
     ///      Camera component (not this script — the Camera component itself)
-    ///   6. Set the MinimapCamera's Culling Mask to whatever layers you want shown
-    ///   7. Also drag the same RenderTexture into the "minimapRenderTexture" field on this script
+    ///   5. Set orthographicSize to cover half the map height (e.g. 40 for an 80x60 map)
     /// </summary>
     public class MinimapCamera : MonoBehaviour
     {
         public static MinimapCamera Instance;
 
-        [Header("Target")]
-        [Tooltip("Drag your Player GameObject here.")]
-        public Transform playerTransform;
+        [Header("Map Centre")]
+        [Tooltip("World-space X of the map centre.")]
+        public float mapCenterX = 40f;
+
+        [Tooltip("World-space Y of the map centre.")]
+        public float mapCenterY = 30f;
 
         [Header("Camera Settings")]
-        [Tooltip("How high above the player the minimap camera sits (orthographic size controls zoom).")]
-        public float heightAbovePlayer = 20f;
+        [Tooltip("How far above the map (Z offset in 2D) the minimap camera sits.")]
+        public float heightAboveMap = 20f;
 
-        [Tooltip("Orthographic size — smaller = more zoomed in. 10 is a good starting point.")]
-        public float orthographicSize = 10f;
+        [Tooltip("Orthographic size — set to half the map's longest dimension. 40 covers an 80-unit-wide map.")]
+        public float orthographicSize = 40f;
 
         private Camera _minimapCamera;
 
@@ -56,67 +57,30 @@ namespace DefaultNamespace
                 return;
             }
 
-            // Disable any AudioListener — the main camera already has one and Unity
-            // will warn about duplicates if this camera also has one active.
+            // Disable any AudioListener — the main camera already has one.
             AudioListener al = GetComponent<AudioListener>();
             if (al != null) al.enabled = false;
 
-            // Force orthographic — minimap should never have perspective distortion
+            // Force orthographic — minimap should never have perspective distortion.
             _minimapCamera.orthographic = true;
             _minimapCamera.orthographicSize = orthographicSize;
 
-            // Render on top of everything else but after the main camera
+            // Render on top of the main camera output.
             _minimapCamera.depth = 1;
 
-            // Include all layers so Default-layer tilemaps are always visible.
-            // Restrict this in the Inspector if you need to hide specific layers.
-            _minimapCamera.cullingMask = ~0;
+            // Exclude the UI layer (layer 5) so minimap UI elements don't render
+            // inside the minimap texture itself.
+            _minimapCamera.cullingMask = ~(1 << 5);
 
-            // In Unity 2D the camera sits at a negative Z and everything rendered
-            // is at Z = 0.  The default near clip (0.3) is fine, but make sure
-            // the far clip reaches well past the Z offset we apply in LateUpdate.
+            // Use a solid dark background so areas outside the tilemap look clean.
+            _minimapCamera.clearFlags = CameraClearFlags.SolidColor;
+            _minimapCamera.backgroundColor = new Color(0.05f, 0.05f, 0.08f, 1f);
+
             _minimapCamera.nearClipPlane = 0.1f;
-            _minimapCamera.farClipPlane  = heightAbovePlayer + 50f;
-        }
+            _minimapCamera.farClipPlane  = heightAboveMap + 50f;
 
-        void Start()
-        {
-            if (playerTransform == null)
-            {
-                // Attempt to find the player automatically by tag as a fallback
-                GameObject playerObj = GameObject.FindWithTag("Player");
-                if (playerObj != null)
-                {
-                    playerTransform = playerObj.transform;
-                    Debug.Log("MinimapCamera: Player found automatically via 'Player' tag.");
-                }
-                else
-                {
-                    Debug.LogWarning("MinimapCamera: No player assigned and none found with tag 'Player'. " +
-                                     "Drag the Player into the playerTransform field in the Inspector.");
-                }
-            }
-        }
-
-        // LateUpdate runs after all movement scripts — ensures camera never lags behind player
-        void LateUpdate()
-        {
-            // Re-find player after scene transitions (DontDestroyOnLoad means Start won't re-run)
-            if (playerTransform == null)
-            {
-                GameObject playerObj = GameObject.FindWithTag("Player");
-                if (playerObj != null)
-                    playerTransform = playerObj.transform;
-                return;
-            }
-
-            // Unity 2D: the scene sits at Z = 0 and the camera must look down the
-            // negative-Z axis.  heightAbovePlayer becomes a Z offset, NOT a Y offset.
-            transform.position = new Vector3(
-                playerTransform.position.x,
-                playerTransform.position.y,
-                playerTransform.position.z - heightAbovePlayer
-            );
+            // Fix the camera above the map centre — it never moves.
+            transform.position = new Vector3(mapCenterX, mapCenterY, -heightAboveMap);
         }
     }
 }
