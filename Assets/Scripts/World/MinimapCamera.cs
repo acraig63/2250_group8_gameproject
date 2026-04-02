@@ -43,10 +43,17 @@ namespace DefaultNamespace
 
         void Awake()
         {
+            // Minimap is only valid in SmugglersIsland — destroy immediately in any other scene
+            // so DontDestroyOnLoad objects can never block input on OpeningScreen or CharacterCustomization.
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "SmugglersIsland")
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -62,8 +69,8 @@ namespace DefaultNamespace
                 return;
             }
 
-            // Explicitly assign target texture in code so it survives DontDestroyOnLoad
-            // and is not lost if the serialized reference on the Camera component drops.
+            // Explicitly assign target texture in code as a safeguard in case the serialized
+            // reference on the Camera component is not loaded yet.
             if (renderTexture != null)
                 _minimapCamera.targetTexture = renderTexture;
             else
