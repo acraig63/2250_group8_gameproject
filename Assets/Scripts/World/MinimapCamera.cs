@@ -20,6 +20,8 @@ namespace DefaultNamespace
     /// </summary>
     public class MinimapCamera : MonoBehaviour
     {
+        public static MinimapCamera Instance;
+
         [Header("Target")]
         [Tooltip("Drag your Player GameObject here.")]
         public Transform playerTransform;
@@ -35,6 +37,17 @@ namespace DefaultNamespace
 
         void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             _minimapCamera = GetComponent<Camera>();
 
             if (_minimapCamera == null)
@@ -49,6 +62,16 @@ namespace DefaultNamespace
 
             // Render on top of everything else but after the main camera
             _minimapCamera.depth = 1;
+
+            // Include all layers so Default-layer tilemaps are always visible.
+            // Restrict this in the Inspector if you need to hide specific layers.
+            _minimapCamera.cullingMask = ~0;
+
+            // In Unity 2D the camera sits at a negative Z and everything rendered
+            // is at Z = 0.  The default near clip (0.3) is fine, but make sure
+            // the far clip reaches well past the Z offset we apply in LateUpdate.
+            _minimapCamera.nearClipPlane = 0.1f;
+            _minimapCamera.farClipPlane  = heightAbovePlayer + 50f;
         }
 
         void Start()
@@ -73,13 +96,21 @@ namespace DefaultNamespace
         // LateUpdate runs after all movement scripts — ensures camera never lags behind player
         void LateUpdate()
         {
-            if (playerTransform == null) return;
+            // Re-find player after scene transitions (DontDestroyOnLoad means Start won't re-run)
+            if (playerTransform == null)
+            {
+                GameObject playerObj = GameObject.FindWithTag("Player");
+                if (playerObj != null)
+                    playerTransform = playerObj.transform;
+                return;
+            }
 
-            // Follow the player's X and Z position, stay at a fixed height above them
+            // Unity 2D: the scene sits at Z = 0 and the camera must look down the
+            // negative-Z axis.  heightAbovePlayer becomes a Z offset, NOT a Y offset.
             transform.position = new Vector3(
                 playerTransform.position.x,
-                playerTransform.position.y + heightAbovePlayer,
-                playerTransform.position.z
+                playerTransform.position.y,
+                playerTransform.position.z - heightAbovePlayer
             );
         }
     }
