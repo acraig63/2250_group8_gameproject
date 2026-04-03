@@ -36,7 +36,7 @@ namespace DefaultNamespace
         {
             // Only valid in SmugglersIsland — destroy immediately in any other scene
             // so this Canvas's GraphicRaycaster cannot block input elsewhere.
-            if (SceneManager.GetActiveScene().name != "SmugglersIsland")
+            if (SceneManager.GetActiveScene().name != "SmugglersIsland" && SceneManager.GetActiveScene().name != "StormbreakerIsland")
             {
                 Destroy(gameObject);
                 return;
