@@ -55,6 +55,30 @@ public class CameraFollow : MonoBehaviour
                   $"halfW={halfW:F2} clampX=[{_minX:F2},{_maxX:F2}] clampY=[{_minY:F2},{_maxY:F2}]");
     }
 
+    /// <summary>
+    /// Override the map bounds at runtime (called by scene builders for non-standard map sizes).
+    /// Recomputes clamp limits immediately using the current camera state.
+    /// </summary>
+    public void SetBounds(float minX, float maxX, float minY, float maxY)
+    {
+        mapMinX = minX;
+        mapMaxX = maxX;
+        mapMinY = minY;
+        mapMaxY = maxY;
+
+        float halfH  = _cam != null ? _cam.orthographicSize : 5f;
+        float aspect = (_cam != null && _cam.aspect > 0f && !float.IsNaN(_cam.aspect))
+                       ? _cam.aspect
+                       : (Screen.height > 0 ? Screen.width / (float)Screen.height : 16f / 9f);
+        float halfW  = halfH * aspect;
+
+        _minX = mapMinX + halfW;
+        _maxX = mapMaxX - halfW;
+        _minY = mapMinY + halfH;
+        _maxY = mapMaxY - halfH;
+        _boundsReady = true;
+    }
+
     void LateUpdate()
     {
         if (target == null || !_boundsReady) return;
