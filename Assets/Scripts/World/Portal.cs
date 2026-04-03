@@ -35,6 +35,7 @@ namespace DefaultNamespace
 
         void OnTriggerEnter2D(Collider2D other)
         {
+            Debug.Log($"[Portal] Trigger entered by {other.gameObject.name}, justTeleported={_justTeleported}, targetScene={targetScene}");
             if (!other.CompareTag("Player")) return;
             if (_justTeleported) return;
 
@@ -47,6 +48,7 @@ namespace DefaultNamespace
 
         void OnTriggerExit2D(Collider2D other)
         {
+            Debug.Log($"[Portal] Trigger exited by {other.gameObject.name}, resetting _justTeleported");
             if (other.CompareTag("Player"))
                 _justTeleported = false;
         }

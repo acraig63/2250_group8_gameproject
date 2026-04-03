@@ -72,17 +72,21 @@ namespace DefaultNamespace
                     break;
                 case "BlackwaterLowerDeck":
                     SetupCameraBounds(LOWERDECK_W, LOWERDECK_H);
+                    SetupMinimap(40f);
                     break;
                 case "BlackwaterArmory":
                 case "BlackwaterMessHall":
                     SetupCameraBounds(20f, 15f);
+                    SetupMinimap(10f);
                     break;
                 case "BlackwaterBrig":
                 case "BlackwaterNavigationRoom":
                     SetupCameraBounds(15f, 15f);
+                    SetupMinimap(8f);
                     break;
                 case "BlackwaterCaptainsQuarters":
                     SetupCameraBounds(25f, 20f);
+                    SetupMinimap(13f);
                     break;
             }
 
@@ -244,7 +248,7 @@ namespace DefaultNamespace
             // Captain's Quarters hatch — quarterdeck center (y=12)
             // Return spawn 2 tiles north → y=14
             PlacePortal("Captains",   44, 12, "BlackwaterCaptainsQuarters",
-                        new Vector2(12f, 10f), "door_captains");
+                        new Vector2(12f, 10f), "door_marker");
 
             // Brig hatch — main deck, left, lower area (y=35)
             // Return spawn 2 tiles south → (32,33)
@@ -254,7 +258,7 @@ namespace DefaultNamespace
             // Lower Deck hatch — dead center of main deck (y=38)
             // Return spawn 2 tiles south → (44,36)
             PlacePortal("LowerDeck",  44, 38, "BlackwaterLowerDeck",
-                        new Vector2(39f, 40f), "hatch_marker");
+                        new Vector2(39f, 40f), "door_marker");
 
             // Armory hatch — main deck, left, upper area (y=46)
             // Return spawn 2 tiles south → (32,44)
@@ -361,7 +365,7 @@ namespace DefaultNamespace
             // Ladder back up — at (39,38), matching flagship hatch (44,38) offset -5 in x.
             // Flagship return-spawn is 2 tiles south of the flagship hatch → (44,36).
             PlacePortal("Flagship", 39, 38, "BlackwaterFlagship",
-                        new Vector2(44f, 36f), "hatch_marker");
+                        new Vector2(44f, 36f), "door_marker");
         }
 
         /// Returns true if (x,y) is inside the lower-deck interior.
@@ -452,7 +456,7 @@ namespace DefaultNamespace
 
             // Exit hatch on inner TOP wall (y=13). Return-spawn on flagship 2 south of (32,46).
             PlacePortal("FlagshipArmory", 10, 13, "BlackwaterFlagship",
-                        new Vector2(32f, 44f), "hatch_marker");
+                        new Vector2(32f, 44f), "door_marker");
         }
 
         // ── Mess Hall  20×15 ─────────────────────────────────────────────────
@@ -470,7 +474,7 @@ namespace DefaultNamespace
 
             // Exit hatch top-center. Return-spawn 2 south of flagship (57,46).
             PlacePortal("FlagshipMess", 10, 13, "BlackwaterFlagship",
-                        new Vector2(57f, 44f), "hatch_marker");
+                        new Vector2(57f, 44f), "door_marker");
         }
 
         // ── Brig  15×15 ──────────────────────────────────────────────────────
@@ -488,7 +492,7 @@ namespace DefaultNamespace
 
             // Exit hatch top-center. Return-spawn 2 south of flagship (32,35).
             PlacePortal("FlagshipBrig", 7, 13, "BlackwaterFlagship",
-                        new Vector2(32f, 33f), "hatch_marker");
+                        new Vector2(32f, 33f), "door_marker");
         }
 
         // ── Navigation Room  15×15 ───────────────────────────────────────────
@@ -506,7 +510,7 @@ namespace DefaultNamespace
 
             // Exit hatch top-center. Return-spawn 2 south of flagship (44,65).
             PlacePortal("FlagshipNav", 7, 13, "BlackwaterFlagship",
-                        new Vector2(44f, 63f), "hatch_marker");
+                        new Vector2(44f, 63f), "door_marker");
         }
 
         // ── Captain's Quarters  25×20 ────────────────────────────────────────
@@ -527,7 +531,7 @@ namespace DefaultNamespace
 
             // Exit hatch inner TOP wall (y=18). Return-spawn 2 north of flagship (44,12) → y=14.
             PlacePortal("FlagshipCaptains", 12, 18, "BlackwaterFlagship",
-                        new Vector2(44f, 14f), "hatch_marker");
+                        new Vector2(44f, 14f), "door_marker");
         }
 
         // ═══════════════════════════════════════════════════════════════════════
@@ -606,6 +610,11 @@ namespace DefaultNamespace
 
             var go = new GameObject("Portal_" + id);
             go.transform.position = new Vector3(tx + 0.5f, ty + 0.5f, 0f);
+
+            // Kinematic Rigidbody2D required so Unity sends trigger events to
+            // this GameObject's OnTriggerEnter2D even without a dynamic body here.
+            var rb2d      = go.AddComponent<Rigidbody2D>();
+            rb2d.bodyType = RigidbodyType2D.Kinematic;
 
             var col       = go.AddComponent<BoxCollider2D>();
             col.isTrigger = true;
