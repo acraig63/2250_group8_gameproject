@@ -28,15 +28,27 @@ namespace DefaultNamespace
         private static Vector2 _pendingSpawn;
         private static bool    _hasPendingSpawn;
 
+        // Set to true after ApplyPendingSpawn repositions the player.
+        // Prevents the portal the player just arrived near from firing immediately.
+        // Cleared when the player physically exits any portal trigger collider.
+        private static bool _justTeleported;
+
         void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.CompareTag("Player")) return;
+            if (_justTeleported) return;
 
             _pendingSpawn    = spawnPosition;
             _hasPendingSpawn = true;
 
             Debug.Log($"[Portal] Loading scene '{targetScene}', spawn at {spawnPosition}");
             SceneManager.LoadScene(targetScene);
+        }
+
+        void OnTriggerExit2D(Collider2D other)
+        {
+            if (other.CompareTag("Player"))
+                _justTeleported = false;
         }
 
         /// <summary>
@@ -47,6 +59,7 @@ namespace DefaultNamespace
         {
             if (!_hasPendingSpawn) return;
             _hasPendingSpawn = false;
+            _justTeleported  = true;
 
             GameObject player = GameObject.FindWithTag("Player");
             if (player != null)

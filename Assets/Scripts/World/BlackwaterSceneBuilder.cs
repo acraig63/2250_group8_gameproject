@@ -213,8 +213,9 @@ namespace DefaultNamespace
                 wallTilemap.SetTile(new Vector3Int(bx[i], by[i], 0), barrel);
 
             // Hatch back to main deck
+            // Spawn 2 tiles south of the flagship hatch (y=33, not y=35)
             PlacePortal("Flagship", 30, 30, "BlackwaterFlagship",
-                        new Vector2(35f, 35f), wallTilemap, "hatch_marker");
+                        new Vector2(35f, 33f), wallTilemap, "hatch_marker");
         }
 
         // ---------------------------------------------------------------
@@ -231,8 +232,9 @@ namespace DefaultNamespace
             FillBorder(wallTilemap, 0, 0, W - 1, H - 1, 2, "room_wall");
 
             // Exit door on the left wall, center row
+            // Spawn 2 tiles right of the Armory door on the flagship (x=29, not x=27)
             PlacePortal("FlagshipArmory", 1, 7, "BlackwaterFlagship",
-                        new Vector2(27f, 38f), wallTilemap, "door_marker");
+                        new Vector2(29f, 38f), wallTilemap, "door_marker");
         }
 
         // ---------------------------------------------------------------
@@ -249,8 +251,9 @@ namespace DefaultNamespace
             FillBorder(wallTilemap, 0, 0, W - 1, H - 1, 2, "room_wall");
 
             // Exit door on the right wall, center row
+            // Spawn 2 tiles left of the MessHall door on the flagship (x=40, not x=42)
             PlacePortal("FlagshipMess", 18, 7, "BlackwaterFlagship",
-                        new Vector2(42f, 38f), wallTilemap, "door_marker");
+                        new Vector2(40f, 38f), wallTilemap, "door_marker");
         }
 
         // ---------------------------------------------------------------
@@ -267,8 +270,9 @@ namespace DefaultNamespace
             FillBorder(wallTilemap, 0, 0, W - 1, H - 1, 2, "room_wall");
 
             // Exit door on the left wall, center row
+            // Spawn 2 tiles right of the Brig door on the flagship (x=30, not x=28)
             PlacePortal("FlagshipBrig", 1, 7, "BlackwaterFlagship",
-                        new Vector2(28f, 22f), wallTilemap, "door_marker");
+                        new Vector2(30f, 22f), wallTilemap, "door_marker");
         }
 
         // ---------------------------------------------------------------
@@ -285,8 +289,10 @@ namespace DefaultNamespace
             FillBorder(wallTilemap, 0, 0, W - 1, H - 1, 2, "room_wall");
 
             // Exit door on the bottom wall, center column
-            PlacePortal("FlagshipNav", 7, 1, "BlackwaterFlagship",
-                        new Vector2(35f, 63f), wallTilemap, "door_marker");
+            // Spawn 2 tiles south of the Navigation door on the flagship (y=61, not y=63)
+            // Also offset the in-room spawn away from this exit portal (y=3, not y=1)
+            PlacePortal("FlagshipNav", 7, 3, "BlackwaterFlagship",
+                        new Vector2(35f, 61f), wallTilemap, "door_marker");
         }
 
         // ---------------------------------------------------------------
@@ -312,8 +318,9 @@ namespace DefaultNamespace
                     groundTilemap.SetTile(new Vector3Int(x, y, 0), accent);
 
             // Exit door on the top wall (near bow of ship → stern marker)
+            // Spawn 2 tiles north of the Captains door on the flagship (y=7, not y=5)
             PlacePortal("FlagshipCaptains", 12, 18, "BlackwaterFlagship",
-                        new Vector2(35f, 5f), wallTilemap, "door_marker");
+                        new Vector2(35f, 7f), wallTilemap, "door_marker");
         }
 
         // ===============================================================
@@ -361,8 +368,9 @@ namespace DefaultNamespace
                                   string targetScene, Vector2 spawnPos,
                                   Tilemap markerTilemap, string markerTag)
         {
-            // Visual marker tile
-            markerTilemap.SetTile(new Vector3Int(tx, ty, 0), GetTileAsset(markerTag));
+            // Visual marker tile always goes on the ground layer (no collision)
+            // so the player can walk onto it and trigger the portal.
+            groundTilemap.SetTile(new Vector3Int(tx, ty, 0), GetTileAsset(markerTag));
 
             // Portal GameObject
             var go  = new GameObject("Portal_" + id);
