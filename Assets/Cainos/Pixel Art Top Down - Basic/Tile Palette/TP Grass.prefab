@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &843343545590631724
@@ -1054,7 +1054,7 @@ MonoBehaviour:
   m_Name: Palette Settings
   m_EditorClassIdentifier: 
   cellSizing: 0
-=======
+
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &843343545590631724
@@ -2160,4 +2160,4 @@ MonoBehaviour:
   cellSizing: 0
   m_TransparencySortMode: 0
   m_TransparencySortAxis: {x: 0, y: 0, z: 1}
->>>>>>> mike-level
+
