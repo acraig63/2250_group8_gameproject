@@ -32123,8 +32123,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 2, y: 2}
+  m_Offset: {x: 0, y: -0.26157427}
+  m_Size: {x: 2, y: 2.5231485}
   m_Direction: 0
 --- !u!95 &1617789636
 Animator:
@@ -32217,7 +32217,7 @@ Transform:
   m_GameObject: {fileID: 1617789632}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.66, y: 0.34, z: 0}
+  m_LocalPosition: {x: 8.35, y: -8.94, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -35844,7 +35844,7 @@ MonoBehaviour:
   dialogueLines:
   - Defeat 3 Pirate Guards to continue to the next level.
   - One is near the docks.
-  - Another is hiding in the jungle.
+  - Another is hiding in the graveyard.
   - The last is near the end.
   dialogueUI: {fileID: 459113670}
 --- !u!50 &1927327977
@@ -35908,8 +35908,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 2, y: 2}
+  m_Offset: {x: 0.004632118, y: 0.9828726}
+  m_Size: {x: 0.60104066, y: 0.901856}
   m_Direction: 0
 --- !u!95 &1927327979
 Animator:
@@ -36002,7 +36002,7 @@ Transform:
   m_GameObject: {fileID: 1927327975}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.9, y: 2.98, z: 0}
+  m_LocalPosition: {x: 3.95, y: 2.65, z: 0}
   m_LocalScale: {x: 2.0137157, y: 1.7557831, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
