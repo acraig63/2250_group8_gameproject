@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: NPC Animations
+  m_Name: MonkIdle
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -23,19 +23,19 @@ AnimationClip:
     - time: 0
       value: {fileID: 4723107735738678597, guid: d50c3be86b3744b2c8f36e3330414dfd,
         type: 3}
-    - time: 0.11666667
+    - time: 0.15
       value: {fileID: -7385789195546760866, guid: d50c3be86b3744b2c8f36e3330414dfd,
         type: 3}
-    - time: 0.23333333
+    - time: 0.3
       value: {fileID: 3234629978573100161, guid: d50c3be86b3744b2c8f36e3330414dfd,
         type: 3}
-    - time: 0.35
+    - time: 0.46666667
       value: {fileID: 6373048116405451881, guid: d50c3be86b3744b2c8f36e3330414dfd,
         type: 3}
-    - time: 0.46666667
+    - time: 0.6166667
       value: {fileID: 7264182050183361747, guid: d50c3be86b3744b2c8f36e3330414dfd,
         type: 3}
-    - time: 0.5833333
+    - time: 0.76666665
       value: {fileID: -2834552850196481573, guid: d50c3be86b3744b2c8f36e3330414dfd,
         type: 3}
     attribute: m_Sprite
@@ -71,7 +71,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.59999996
+    m_StopTime: 0.7833333
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0

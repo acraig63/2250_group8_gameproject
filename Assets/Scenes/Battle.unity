@@ -2377,11 +2377,11 @@ MonoBehaviour:
   - characterName: Archer
     idleFrames:
     - {fileID: 7257567913506708742, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
-    - {fileID: -7989796299022447421, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
-    - {fileID: 7725435616784934678, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
-    - {fileID: -1293103732667120055, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
-    - {fileID: 427913027731640163, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
-    - {fileID: -9045297040117572726, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
+    - {fileID: 2075218701, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
+    - {fileID: 1280706754, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
+    - {fileID: 234217503, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
+    - {fileID: 1675158772, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
+    - {fileID: 1016073088, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
     attackFrames:
     - {fileID: -3522987849309635434, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
     - {fileID: -1068665928, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
