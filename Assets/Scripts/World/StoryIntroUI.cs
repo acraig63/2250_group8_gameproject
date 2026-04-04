@@ -206,39 +206,39 @@ namespace DefaultNamespace
                      new Vector2(0.1f,0.04f), new Vector2(0.9f,0.12f), TextAnchor.LowerCenter);
         }
 
-        private Text MakeText(string name, string content, int size, Color color,
-                               Vector2 aMin, Vector2 aMax, TextAnchor align)
-        {
-            var go = new GameObject(name);
-            go.transform.SetParent(_panel.transform, false);
-            var rt = go.AddComponent<RectTransform>();
-            rt.anchorMin = aMin; rt.anchorMax = aMax;
-            rt.offsetMin = rt.offsetMax = Vector2.zero;
-
-            // FIX: use current scene name instead of hardcoded "Smuggler's Island"
-            string sceneName = SceneManager.GetActiveScene().name;
-            string titleLine = $"— {FormatSceneName(sceneName)} —";
-
-            // If player was defeated, show death message above the title
-            bool diedAndRestarted = BattleData.DiedInBattle;
-            BattleData.DiedInBattle = false;
-
-            if (diedAndRestarted)
-            {
-                MakeText("Death", "⚔ You were defeated and must start again...", 18, deathColor,
-                         new Vector2(0.1f, 0.88f), new Vector2(0.9f, 0.96f), TextAnchor.UpperCenter);
-            }
-
-            MakeText("Title",  titleLine, titleSize, titleColor,
-                     new Vector2(0.1f, 0.78f), new Vector2(0.9f, 0.92f), TextAnchor.UpperCenter);
-            MakeText("Sep",    "────────────────────────", 13,
-                     new Color(titleColor.r, titleColor.g, titleColor.b, 0.4f),
-                     new Vector2(0.15f, 0.73f), new Vector2(0.85f, 0.80f), TextAnchor.UpperCenter);
-            MakeText("Body",   introText, bodySize, textColor,
-                     new Vector2(0.12f, 0.12f), new Vector2(0.88f, 0.72f), TextAnchor.UpperLeft);
-            _promptText = MakeText("Prompt", "[ Press any key to continue ]", promptSize, promptColor,
-                     new Vector2(0.1f, 0.04f), new Vector2(0.9f, 0.12f), TextAnchor.LowerCenter);
-        }
+        // private Text MakeText(string name, string content, int size, Color color,
+        //                        Vector2 aMin, Vector2 aMax, TextAnchor align)
+        // {
+        //     var go = new GameObject(name);
+        //     go.transform.SetParent(_panel.transform, false);
+        //     var rt = go.AddComponent<RectTransform>();
+        //     rt.anchorMin = aMin; rt.anchorMax = aMax;
+        //     rt.offsetMin = rt.offsetMax = Vector2.zero;
+        //
+        //     // FIX: use current scene name instead of hardcoded "Smuggler's Island"
+        //     string sceneName = SceneManager.GetActiveScene().name;
+        //     string titleLine = $"— {FormatSceneName(sceneName)} —";
+        //
+        //     // If player was defeated, show death message above the title
+        //     bool diedAndRestarted = BattleData.DiedInBattle;
+        //     BattleData.DiedInBattle = false;
+        //
+        //     if (diedAndRestarted)
+        //     {
+        //         MakeText("Death", "⚔ You were defeated and must start again...", 18, deathColor,
+        //                  new Vector2(0.1f, 0.88f), new Vector2(0.9f, 0.96f), TextAnchor.UpperCenter);
+        //     }
+        //
+        //     MakeText("Title",  titleLine, titleSize, titleColor,
+        //              new Vector2(0.1f, 0.78f), new Vector2(0.9f, 0.92f), TextAnchor.UpperCenter);
+        //     MakeText("Sep",    "────────────────────────", 13,
+        //              new Color(titleColor.r, titleColor.g, titleColor.b, 0.4f),
+        //              new Vector2(0.15f, 0.73f), new Vector2(0.85f, 0.80f), TextAnchor.UpperCenter);
+        //     MakeText("Body",   introText, bodySize, textColor,
+        //              new Vector2(0.12f, 0.12f), new Vector2(0.88f, 0.72f), TextAnchor.UpperLeft);
+        //     _promptText = MakeText("Prompt", "[ Press any key to continue ]", promptSize, promptColor,
+        //              new Vector2(0.1f, 0.04f), new Vector2(0.9f, 0.12f), TextAnchor.LowerCenter);
+        // }
 
         /// <summary>
         /// Converts a camelCase or PascalCase scene name into a readable title.
@@ -282,5 +282,5 @@ namespace DefaultNamespace
 
 }
 
-}
+
 
