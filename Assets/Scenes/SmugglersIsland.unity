@@ -568,11 +568,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 96328125}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da420c22f51e443728d771fd7f8b0c40, type: 3}
+  m_Script: {fileID: 11500000, guid: a305882b25644a07a495ff15f3105891, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPCDialogueTrigger
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+  enemyDisplayName: Pirate Grunt
+  enemyMaxHealth: 20
+  enemyAttackPower: 10
+  enemySprite: {fileID: -5948806968594788206, guid: 6316e0a1587d44b0e9c338f02edb9d5a,
+    type: 3}
+  enemyType: Archer
   questionLevel: 1
-  quizUIManager: {fileID: 2043541355}
+  returnScene: SmugglersIsland
 --- !u!1 &172440494
 GameObject:
   m_ObjectHideFlags: 0
@@ -1180,6 +1186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HealthBarUI
   slider: {fileID: 356483649}
   playerManager: {fileID: 0}
+  healthText: {fileID: 0}
 --- !u!114 &356483649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4475,6 +4482,7 @@ MonoBehaviour:
   textColor: {r: 0.88, g: 0.8, b: 0.6, a: 1}
   titleColor: {r: 1, g: 0.84, b: 0.15, a: 1}
   promptColor: {r: 0.7, g: 0.65, b: 0.5, a: 1}
+  deathColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
   titleSize: 28
   bodySize: 16
   promptSize: 13
@@ -6227,17 +6235,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
-
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
-
 --- !u!223 &5000000042
 Canvas:
   m_ObjectHideFlags: 0
