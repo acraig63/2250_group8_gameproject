@@ -2339,41 +2339,41 @@ MonoBehaviour:
   - characterName: Michael
     idleFrames:
     - {fileID: 7257567913506708742, guid: 98ac1951489534b2688d279a2163d437, type: 3}
-    - {fileID: -7989796299022447421, guid: 98ac1951489534b2688d279a2163d437, type: 3}
-    - {fileID: 7725435616784934678, guid: 98ac1951489534b2688d279a2163d437, type: 3}
-    - {fileID: -1293103732667120055, guid: 98ac1951489534b2688d279a2163d437, type: 3}
-    - {fileID: 427913027731640163, guid: 98ac1951489534b2688d279a2163d437, type: 3}
-    - {fileID: -9045297040117572726, guid: 98ac1951489534b2688d279a2163d437, type: 3}
+    - {fileID: 670876191, guid: 98ac1951489534b2688d279a2163d437, type: 3}
+    - {fileID: 1910478143, guid: 98ac1951489534b2688d279a2163d437, type: 3}
+    - {fileID: -1338149721, guid: 98ac1951489534b2688d279a2163d437, type: 3}
+    - {fileID: 1806383133, guid: 98ac1951489534b2688d279a2163d437, type: 3}
+    - {fileID: 504234078, guid: 98ac1951489534b2688d279a2163d437, type: 3}
     attackFrames:
     - {fileID: -3522987849309635434, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
-    - {fileID: 1796539565894229437, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
-    - {fileID: -6164423668334797513, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
-    - {fileID: 8855168420743222378, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
-    - {fileID: 8284549177786691415, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
-    - {fileID: -2689744893154487746, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
-    - {fileID: 500622343033487627, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
-    - {fileID: 7309834836266252465, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
-    - {fileID: -3824891087949102326, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
-    - {fileID: -7300129399355975757, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
+    - {fileID: 1347469493, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
+    - {fileID: -482700973, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
+    - {fileID: 167624819, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
+    - {fileID: 359726701, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
+    - {fileID: 1500336559, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
+    - {fileID: 967101735, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
+    - {fileID: 1097860291, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
+    - {fileID: -1580453890, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
+    - {fileID: -1863848510, guid: 561100a3ab41247cfa9bcc6fd887433f, type: 3}
   - characterName: Rory
     idleFrames:
     - {fileID: 7257567913506708742, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
-    - {fileID: -7989796299022447421, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
-    - {fileID: 7725435616784934678, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
-    - {fileID: -1293103732667120055, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
-    - {fileID: 427913027731640163, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
-    - {fileID: -9045297040117572726, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
+    - {fileID: 2075218701, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
+    - {fileID: 1280706754, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
+    - {fileID: 234217503, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
+    - {fileID: 1675158772, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
+    - {fileID: 1016073088, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
     attackFrames:
     - {fileID: -3522987849309635434, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: 1796539565894229437, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: -6164423668334797513, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: 8855168420743222378, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: 8284549177786691415, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: -2689744893154487746, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: 500622343033487627, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: 7309834836266252465, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: -3824891087949102326, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: -7300129399355975757, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: -1068665928, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: 1256700146, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: 313943367, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: -247435083, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: -1996467873, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: 1854424784, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: 451701251, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: -612021799, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: 783803655, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
   - characterName: Archer
     idleFrames:
     - {fileID: 7257567913506708742, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
@@ -2384,15 +2384,15 @@ MonoBehaviour:
     - {fileID: -9045297040117572726, guid: 6fc162cabcb1f4b94b2f8d9481c2b660, type: 3}
     attackFrames:
     - {fileID: -3522987849309635434, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: 1796539565894229437, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: -6164423668334797513, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: 8855168420743222378, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: 8284549177786691415, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: -2689744893154487746, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: 500622343033487627, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: 7309834836266252465, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: -3824891087949102326, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
-    - {fileID: -7300129399355975757, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: -1068665928, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: 1256700146, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: 313943367, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: -247435083, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: -1996467873, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: 1854424784, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: 451701251, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: -612021799, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
+    - {fileID: 783803655, guid: 3699aa03122cc47758e5895fa5f9d6dd, type: 3}
   - characterName: Toby
     idleFrames:
     - {fileID: 7257567913506708742, guid: 72492d0e95a714323827411cc1d189d0, type: 3}
