@@ -34,8 +34,6 @@ namespace DefaultNamespace
                     10,
                     1,
                     "Used to define types"
-<<<<<<< HEAD
-=======
                 ),
 
                 new MultipleChoiceQuestion(
@@ -126,7 +124,6 @@ namespace DefaultNamespace
                     10,
                     1,
                     "Object.property"
->>>>>>> mike-level
                 )
             };
         }
@@ -161,8 +158,8 @@ namespace DefaultNamespace
                     15,
                     2,
                     "Strings print directly"
-<<<<<<< HEAD
-=======
+
+
                 ),
 
                 new MultipleChoiceQuestion(
@@ -253,7 +250,7 @@ namespace DefaultNamespace
                     15,
                     2,
                     "Strings join"
->>>>>>> mike-level
+
                 )
             };
         }
@@ -288,8 +285,8 @@ namespace DefaultNamespace
                     20,
                     3,
                     "0+1+2 = 3"
-<<<<<<< HEAD
-=======
+
+
                 ),
 
                 new MultipleChoiceQuestion(
@@ -380,7 +377,7 @@ namespace DefaultNamespace
                     20,
                     3,
                     "1→2→4"
->>>>>>> mike-level
+
                 )
             };
         }
@@ -433,8 +430,8 @@ namespace DefaultNamespace
                     25,
                     4,
                     "C# requires ;"
-<<<<<<< HEAD
-=======
+
+
                 ),
 
                 new MultipleChoiceQuestion(
@@ -525,7 +522,7 @@ namespace DefaultNamespace
                     25,
                     4,
                     "Declaration is valid"
->>>>>>> mike-level
+
                 )
             };
         }
@@ -560,8 +557,8 @@ namespace DefaultNamespace
                     30,
                     5,
                     "5 + 2 = 7"
-<<<<<<< HEAD
-=======
+
+
                 ),
 
                 new MultipleChoiceQuestion(
@@ -782,7 +779,7 @@ namespace DefaultNamespace
                     40,
                     6,
                     "1×1×2×3"
->>>>>>> mike-level
+
                 )
             };
         }

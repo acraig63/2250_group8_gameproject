@@ -1,8 +1,8 @@
-<<<<<<< HEAD
-=======
+
+
 using UnityEngine;
 
->>>>>>> mike-level
+
 namespace DefaultNamespace
 {
     public class HealthBar
@@ -11,12 +11,12 @@ namespace DefaultNamespace
         private int _currentHP;
         private int _maxHP;
 
-<<<<<<< HEAD
-=======
+
+
         // property
         public int CurrentHP => _currentHP;
         
->>>>>>> mike-level
+
         //constructor
         public HealthBar(int maxHP)
         {
@@ -34,14 +34,13 @@ namespace DefaultNamespace
                 _currentHP = 0;
             }
         }
-<<<<<<< HEAD
-=======
+
         
         public void SetCurrentHP(int hp)
         {
             _currentHP = Mathf.Clamp(hp, 0, _maxHP);
         }
->>>>>>> mike-level
+
     
         //adds a specified amount of HP to the currentHP
         public void Heal(int amount)

@@ -32,23 +32,25 @@ namespace DefaultNamespace
         // when Awake() determined this instance should be destroyed.
         private bool _initialized;
 
-<<<<<<< HEAD
+
         // Scenes that use the minimap system.
         private static bool IsMinimapScene(string s)
             => s == "SmugglersIsland" || s.StartsWith("Blackwater");
 
-        void Awake()
-        {
-            // Only valid in minimap-enabled scenes — destroy immediately elsewhere
-            // so this Canvas's GraphicRaycaster cannot block input elsewhere.
-            if (!IsMinimapScene(SceneManager.GetActiveScene().name))
-=======
+        // void Awake()
+        // {
+        //     // Only valid in minimap-enabled scenes — destroy immediately elsewhere
+        //     // so this Canvas's GraphicRaycaster cannot block input elsewhere.
+        //     if (!IsMinimapScene(SceneManager.GetActiveScene().name))
+
         void Awake()
         {
             // Only valid in SmugglersIsland — destroy immediately in any other scene
             // so this Canvas's GraphicRaycaster cannot block input elsewhere.
-            if (SceneManager.GetActiveScene().name != "SmugglersIsland" && SceneManager.GetActiveScene().name != "StormbreakerIsland")
->>>>>>> mike-level
+            if (SceneManager.GetActiveScene().name != "SmugglersIsland" &&
+                SceneManager.GetActiveScene().name != "StormbreakerIsland" &&
+                SceneManager.GetActiveScene().name != "JungleRuinsIsland") ;
+
             {
                 Destroy(gameObject);
                 return;

@@ -1,14 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
-<<<<<<< HEAD
-=======
+
+
 using UnityEngine.SceneManagement;
->>>>>>> mike-level
+
 
 namespace DefaultNamespace
 {
     /// <summary>
-<<<<<<< HEAD
+
     /// Displays a pirate-themed story intro panel when the SmugglersIsland scene loads.
     /// Fades in → holds → fades out. Skippable with any key or screen tap.
     ///
@@ -19,7 +19,7 @@ namespace DefaultNamespace
     ///   introText     — body text shown in the panel.
     ///   holdDuration  — seconds at full opacity before auto-dismiss.
     ///   fadeDuration  — seconds for each fade transition.
-=======
+
     /// Displays a pirate-themed story intro panel when a scene loads.
     /// Fades in → holds → fades out. Skippable with any key or screen tap.
     ///
@@ -28,7 +28,7 @@ namespace DefaultNamespace
     /// - Shows a "You were defeated..." message when restarting after a loss.
     ///
     /// Attach to any Canvas in the scene.
->>>>>>> mike-level
+
     /// </summary>
     public class StoryIntroUI : MonoBehaviour
     {
@@ -55,10 +55,10 @@ namespace DefaultNamespace
         [SerializeField] private Color textColor   = new Color(0.88f, 0.80f, 0.60f, 1f);
         [SerializeField] private Color titleColor  = new Color(1.00f, 0.84f, 0.15f, 1f);
         [SerializeField] private Color promptColor = new Color(0.70f, 0.65f, 0.50f, 1f);
-<<<<<<< HEAD
-=======
+
+
         [SerializeField] private Color deathColor  = new Color(0.90f, 0.20f, 0.20f, 1f);
->>>>>>> mike-level
+
 
         [Header("Font Sizes")]
         [SerializeField] private int titleSize  = 28;
@@ -76,8 +76,8 @@ namespace DefaultNamespace
 
         void Start()
         {
-<<<<<<< HEAD
-=======
+
+
             // Skip intro entirely when returning from a won battle
             if (BattleData.ReturningFromBattle)
             {
@@ -86,7 +86,7 @@ namespace DefaultNamespace
                 return;
             }
 
->>>>>>> mike-level
+
             BuildUI();
             _phase = Phase.FadeIn;
             _timer = 0f;
@@ -113,12 +113,11 @@ namespace DefaultNamespace
                     if (_promptText != null)
                     {
                         float p = 0.5f + 0.5f * Mathf.Sin(Time.time * 2.5f);
-<<<<<<< HEAD
-                        Color c = _promptText.color; _promptText.color = new Color(c.r,c.g,c.b,p);
-=======
+                        
+
                         Color c = _promptText.color;
                         _promptText.color = new Color(c.r, c.g, c.b, p);
->>>>>>> mike-level
+
                     }
                     if (_timer >= holdDuration) Next();
                     break;
@@ -138,7 +137,7 @@ namespace DefaultNamespace
                 case Phase.Hold:    _phase = Phase.FadeOut; break;
                 case Phase.FadeOut:
                     _phase = Phase.Done;
-<<<<<<< HEAD
+
                     if (_panel != null) _panel.SetActive(false);
                     // Activate MinimapCamera FIRST so its Awake() creates the
                     // RenderTexture before MinimapUI.Start() tries to read it.
@@ -148,15 +147,15 @@ namespace DefaultNamespace
                     foreach (Canvas c in FindObjectsOfType<Canvas>(true))
                         if (c.gameObject.name == "MinimapCanvas")
                         { c.gameObject.SetActive(true); break; }
-=======
+
                     FinishIntro();
->>>>>>> mike-level
+
                     break;
             }
         }
 
-<<<<<<< HEAD
-=======
+
+
         /// <summary>Hides the panel and activates minimap — called on finish or skip.</summary>
         private void FinishIntro()
         {
@@ -170,7 +169,7 @@ namespace DefaultNamespace
                 { c.gameObject.SetActive(true); break; }
         }
 
->>>>>>> mike-level
+
         private void SetAlpha(float a) { if (_group != null) _group.alpha = a; }
 
         private void BuildUI()
@@ -195,7 +194,7 @@ namespace DefaultNamespace
             rt.offsetMin = rt.offsetMax = Vector2.zero;
             _panel.AddComponent<Image>().color = panelColor;
 
-<<<<<<< HEAD
+
             MakeText("Title",  "— Smuggler's Island —", titleSize, titleColor,
                      new Vector2(0.1f,0.78f), new Vector2(0.9f,0.92f), TextAnchor.UpperCenter);
             MakeText("Sep",    "────────────────────────", 13,
@@ -215,7 +214,7 @@ namespace DefaultNamespace
             var rt = go.AddComponent<RectTransform>();
             rt.anchorMin = aMin; rt.anchorMax = aMax;
             rt.offsetMin = rt.offsetMax = Vector2.zero;
-=======
+
             // FIX: use current scene name instead of hardcoded "Smuggler's Island"
             string sceneName = SceneManager.GetActiveScene().name;
             string titleLine = $"— {FormatSceneName(sceneName)} —";
@@ -267,7 +266,7 @@ namespace DefaultNamespace
             var r = go.AddComponent<RectTransform>();
             r.anchorMin = aMin; r.anchorMax = aMax;
             r.offsetMin = r.offsetMax = Vector2.zero;
->>>>>>> mike-level
+
             var t = go.AddComponent<Text>();
             t.text = content; t.fontSize = size; t.color = color;
             t.alignment = align;
@@ -280,8 +279,8 @@ namespace DefaultNamespace
         public void SkipIntro() { _skipped = true; _phase = Phase.FadeOut; _timer = 0f; }
         public bool IsRunning() => _phase != Phase.Done;
     }
-<<<<<<< HEAD
+
 }
-=======
+
 }
->>>>>>> mike-level
+

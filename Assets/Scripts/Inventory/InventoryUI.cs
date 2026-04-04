@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using DefaultNamespace;
 
-<<<<<<< HEAD
+
 /// <summary>
 /// Unity UI controller for the player's inventory panel.
 /// Attach this to the InventoryPanel GameObject in your Canvas.
@@ -18,9 +18,9 @@ using DefaultNamespace;
 /// CONTROLS:
 ///   Press Tab to open/close the inventory panel.
 /// </summary>
-=======
 
->>>>>>> mike-level
+
+
 public class InventoryUI : MonoBehaviour
 {
     [Header("UI References")]
@@ -67,7 +67,7 @@ public class InventoryUI : MonoBehaviour
         // Clear existing slots
         foreach (Transform child in itemSlotsContainer)
             Destroy(child.gameObject);
-<<<<<<< HEAD
+
 
         // Rebuild from inventory
         // foreach (Item item in _inventory.Items)
@@ -83,9 +83,9 @@ public class InventoryUI : MonoBehaviour
         //     if (slotImage != null)
         //         slotImage.color = RarityColor(item.Rarity);
         // }
-=======
+
         
->>>>>>> mike-level
+
         
         foreach (Item item in _inventory.Items)
         {

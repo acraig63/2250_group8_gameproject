@@ -32,9 +32,9 @@ namespace DefaultNamespace
             _bossDefeatedHandled = false;
         }
 
-        // =====================================================================
+        // ======
         // Initialization
-        // =====================================================================
+        // ======
 
         public override void Initialize()
         {
@@ -45,9 +45,9 @@ namespace DefaultNamespace
             Debug.Log("Smuggler's Island ready.");
         }
 
-        // =====================================================================
+        // ======
         // BuildMapLayout — three-zone island
-        // =====================================================================
+        // ======
 
         private void BuildMapLayout()
         {
@@ -64,9 +64,9 @@ namespace DefaultNamespace
             SetCol(1, 1, MAP_HEIGHT - 2, TileType.Water, "water");
             SetCol(MAP_WIDTH-2, 1, MAP_HEIGHT - 2, TileType.Water, "water");
 
-            // =================================================================
+            // ==
             // ZONE 1 — BEACH  (y 1–19)
-            // =================================================================
+            // ==
             // y 1–3  : shallow water fringe
             // y 4–5  : wet sand strip
             // y 6–19 : open beach
@@ -74,7 +74,7 @@ namespace DefaultNamespace
             // West and east rock clusters frame the beach
             // Driftwood scatter breaks up the open sand
             // Three hidden treasure chests
-            // =================================================================
+            // ==
 
             // Shallow water fringe
             for (int y = 1; y <= 3; y++)
@@ -145,9 +145,9 @@ namespace DefaultNamespace
             // Friendly NPC spot beside the dock
             _mapLayout.SetTile(44, 6, TileType.NPCSpawn, "sand");
 
-            // =================================================================
+            // ==
             // ZONE 2 — CAMP  (y 20–42)
-            // =================================================================
+            // ==
             // y 20–21 : sandy transition strip (worn path through middle)
             // y 22–42 : camp interior, sand_path ground
             // Outer wall ring with south entrance (y=22, x 35–44)
@@ -158,7 +158,7 @@ namespace DefaultNamespace
             //   command tent, boss spawn, gold treasure
             // South courtyard (y 32–41): crossing paths, merchant spawn,
             //   courtyard treasure, quicksand hazard pocket
-            // =================================================================
+            // ==
 
             // Transition strip
             for (int y = 20; y <= 21; y++)
@@ -254,16 +254,16 @@ namespace DefaultNamespace
             // Quicksand hazard pocket (north-west of courtyard)
             FillRect(10, 33, 19, 40, TileType.Hazard, "quicksand");
 
-            // =================================================================
+            // ==
             // ZONE 3 — JUNGLE  (y 43–58)
-            // =================================================================
+            // ==
             // y 43–44: sandy transition strip into the jungle edge
             // y 45–58: dense jungle canopy (Obstacle, "jungle_tree")
             //   Central path  x 34–45: cuts straight through from camp to north exit
             //   West clearing x  5–22, y 48–56: jungle floor, secret treasure, NPC
             //   East clearing x 57–74, y 48–56: jungle floor, treasure
             //   Path stubs connecting clearings to the central corridor
-            // =================================================================
+            // ==
 
             // Transition strip
             for (int y = 43; y <= 44; y++)
@@ -336,7 +336,7 @@ namespace DefaultNamespace
             Debug.Log("BuildMapLayout complete: 80×60, 3 zones.");
         }
 
-        // =====================================================================
+        // ===========================
         // Layout helpers
         // =====================================================================
 

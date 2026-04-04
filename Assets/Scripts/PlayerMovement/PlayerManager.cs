@@ -5,10 +5,9 @@ public class PlayerManager : MonoBehaviour
 {
     public Player player;
     private SpriteRenderer spriteRenderer;
-<<<<<<< HEAD
-=======
+
     public static string playerType = "Archer";
->>>>>>> mike-level
+
 
     void Start()
     {
@@ -22,10 +21,9 @@ public class PlayerManager : MonoBehaviour
         if (spriteRenderer != null && selectedSprite != null)
         {
             spriteRenderer.sprite = selectedSprite;
-<<<<<<< HEAD
-=======
 
->>>>>>> mike-level
+
+
         }
 
         Debug.Log("Spawned player: " + selectedName);

@@ -97,8 +97,7 @@ namespace DefaultNamespace
         {
             return health.GetNormalizedValue();
         }
-<<<<<<< HEAD
-=======
+
         
         public void SetCurrentHealth(int hp)
         {
@@ -109,6 +108,6 @@ namespace DefaultNamespace
         {
             return health.CurrentHP;
         }
->>>>>>> mike-level
+
     }
 }
