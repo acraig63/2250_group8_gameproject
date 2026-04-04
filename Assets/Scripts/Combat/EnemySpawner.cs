@@ -14,7 +14,8 @@ public class EnemySpawner : MonoBehaviour
 
     [Header("Battle Settings")]
     [SerializeField] private int    questionLevel    = 1;
-    [SerializeField] private string returnScene      = "SmugglersIsland";
+
+    private string returnScene;  
 
     private bool _defeated = false;
 
@@ -22,6 +23,8 @@ public class EnemySpawner : MonoBehaviour
     {
         if (_defeated) return;
         if (!other.CompareTag("Player")) return;
+        
+        returnScene = SceneManager.GetActiveScene().name;
 
         // Write data for BattleManager to read
         BattleData.EnemyName        = enemyDisplayName;
