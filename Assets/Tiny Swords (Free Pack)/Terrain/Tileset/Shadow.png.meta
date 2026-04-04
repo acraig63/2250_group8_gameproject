@@ -43,7 +43,11 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
+<<<<<<< HEAD
     filterMode: 1
+=======
+    filterMode: 0
+>>>>>>> mike-level
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -57,7 +61,11 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
+<<<<<<< HEAD
   spritePixelsToUnits: 100
+=======
+  spritePixelsToUnits: 64
+>>>>>>> mike-level
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -80,7 +88,11 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
+<<<<<<< HEAD
     textureFormat: -1
+=======
+    textureFormat: 4
+>>>>>>> mike-level
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -122,12 +134,21 @@ TextureImporter:
       name: Shadow_0
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 56
         y: 57
         width: 80
         height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 64
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> mike-level
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -144,12 +165,21 @@ TextureImporter:
       name: Shadow_1
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 130
         y: 122
         width: 7
         height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 128
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> mike-level
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -166,12 +196,21 @@ TextureImporter:
       name: Shadow_2
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 117
         y: 55
         width: 15
         height: 10
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 0
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> mike-level
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,11 +223,106 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+<<<<<<< HEAD
+=======
+    - serializedVersion: 2
+      name: Shadow_3
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ebd34f8517998c46a3cea6d82fe54ea
+      internalID: 1828485876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadow_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 722489070166ce446809103a26c4821a
+      internalID: -21565513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadow_5
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbed390cd17f3aa4f94c893d407694e9
+      internalID: 456148830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadow_6
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c347787a7b67b041816c77c190ef8c9
+      internalID: -1000612041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+>>>>>>> mike-level
     outline: []
     customData: 
     physicsShape: []
     bones: []
+<<<<<<< HEAD
     spriteID: 
+=======
+    spriteID: 54f7d5d981fce2743ba8e0ef3ed67873
+>>>>>>> mike-level
     internalID: 0
     vertices: []
     indices: 
@@ -196,11 +330,24 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
+<<<<<<< HEAD
       entries: []
+=======
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+>>>>>>> mike-level
     nameFileIdTable:
       Shadow_0: 4093480436322176185
       Shadow_1: -6472874401326232
       Shadow_2: -2578634290482498685
+<<<<<<< HEAD
+=======
+      Shadow_3: 1828485876
+      Shadow_4: -21565513
+      Shadow_5: 456148830
+      Shadow_6: -1000612041
+>>>>>>> mike-level
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

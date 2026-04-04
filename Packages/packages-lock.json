@@ -1,11 +1,19 @@
 {
   "dependencies": {
     "com.unity.2d.animation": {
+<<<<<<< HEAD
       "version": "13.0.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.2d.common": "12.0.1",
+=======
+      "version": "13.0.4",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.2d.common": "12.0.2",
+>>>>>>> mike-level
         "com.unity.2d.sprite": "1.0.0",
         "com.unity.collections": "2.4.3",
         "com.unity.modules.animation": "1.0.0",
@@ -27,8 +35,13 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.common": {
+<<<<<<< HEAD
       "version": "12.0.1",
       "depth": 1,
+=======
+      "version": "12.0.2",
+      "depth": 2,
+>>>>>>> mike-level
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.8.4",
@@ -41,6 +54,18 @@
       },
       "url": "https://packages.unity.com"
     },
+<<<<<<< HEAD
+=======
+    "com.unity.2d.pixel-perfect": {
+      "version": "5.1.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.imgui": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+>>>>>>> mike-level
     "com.unity.2d.psdimporter": {
       "version": "12.0.1",
       "depth": 0,
@@ -90,11 +115,19 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.tooling": {
+<<<<<<< HEAD
       "version": "1.0.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.2d.common": "12.0.1",
+=======
+      "version": "1.0.2",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.2d.common": "12.0.2",
+>>>>>>> mike-level
         "com.unity.modules.uielements": "1.0.0"
       },
       "url": "https://packages.unity.com"
@@ -118,7 +151,11 @@
     },
     "com.unity.collections": {
       "version": "2.6.2",
+<<<<<<< HEAD
       "depth": 1,
+=======
+      "depth": 2,
+>>>>>>> mike-level
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.8.23",
@@ -135,6 +172,25 @@
       "source": "builtin",
       "dependencies": {}
     },
+<<<<<<< HEAD
+=======
+    "com.unity.feature.2d": {
+      "version": "2.0.2",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.2d.animation": "13.0.4",
+        "com.unity.2d.pixel-perfect": "5.1.1",
+        "com.unity.2d.psdimporter": "12.0.1",
+        "com.unity.2d.sprite": "1.0.0",
+        "com.unity.2d.spriteshape": "13.0.0",
+        "com.unity.2d.tilemap": "1.0.0",
+        "com.unity.2d.tilemap.extras": "6.0.1",
+        "com.unity.2d.aseprite": "3.0.1",
+        "com.unity.2d.tooling": "1.0.2"
+      }
+    },
+>>>>>>> mike-level
     "com.unity.ide.rider": {
       "version": "3.0.38",
       "depth": 0,
@@ -179,7 +235,11 @@
     },
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.6",
+<<<<<<< HEAD
       "depth": 2,
+=======
+      "depth": 3,
+>>>>>>> mike-level
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -244,7 +304,11 @@
     },
     "com.unity.test-framework.performance": {
       "version": "3.2.0",
+<<<<<<< HEAD
       "depth": 2,
+=======
+      "depth": 3,
+>>>>>>> mike-level
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.33",

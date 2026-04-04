@@ -36,7 +36,11 @@ ScriptedImporter:
     spriteMeshType: 1
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
+<<<<<<< HEAD
     spritePixelsToUnits: 100
+=======
+    spritePixelsToUnits: 64
+>>>>>>> mike-level
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -102,7 +106,11 @@ ScriptedImporter:
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   importFileNodeState: 1
+<<<<<<< HEAD
   platformSettingsDirtyTick: 0
+=======
+  platformSettingsDirtyTick: 639107601371254354
+>>>>>>> mike-level
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -627,7 +635,35 @@ ScriptedImporter:
     tileSetIndex: 0
     parentIndex: -1
   tileSets: []
+<<<<<<< HEAD
   platformSettings: []
+=======
+  platformSettings:
+  - name: DefaultTexturePlatform
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Standalone
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+>>>>>>> mike-level
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 

@@ -55,6 +55,7 @@ public class CameraFollow : MonoBehaviour
                   $"halfW={halfW:F2} clampX=[{_minX:F2},{_maxX:F2}] clampY=[{_minY:F2},{_maxY:F2}]");
     }
 
+<<<<<<< HEAD
     /// <summary>
     /// Override the map bounds at runtime (called by scene builders for non-standard map sizes).
     /// Recomputes clamp limits immediately using the current camera state.
@@ -79,6 +80,8 @@ public class CameraFollow : MonoBehaviour
         _boundsReady = true;
     }
 
+=======
+>>>>>>> mike-level
     void LateUpdate()
     {
         if (target == null || !_boundsReady) return;

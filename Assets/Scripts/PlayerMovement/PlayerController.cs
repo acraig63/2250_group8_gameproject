@@ -7,6 +7,11 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 movement;
+<<<<<<< HEAD
+=======
+    public int MaxHealth { get; private set; } = 100;
+    private int _currentHealth = 100;
+>>>>>>> mike-level
 
     void Start()
     {
@@ -29,4 +34,23 @@ public class PlayerController : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(movement.x * speed, movement.y * speed);
     }
+<<<<<<< HEAD
+=======
+    
+    public void SetHealth(int hp)
+    {
+        _currentHealth = Mathf.Clamp(hp, 0, MaxHealth);
+
+        PlayerManager pm = GetComponent<PlayerManager>();
+        Debug.Log($"SetHealth called: hp={hp}, pm={pm}, player={pm?.player}");
+        if (pm != null && pm.player != null)
+        {
+            pm.player.SetCurrentHealth(_currentHealth);
+            Debug.Log($"SetCurrentHealth called with {_currentHealth}");
+        }
+    }
+    public int GetHealth() => _currentHealth;
+    
+    
+>>>>>>> mike-level
 }

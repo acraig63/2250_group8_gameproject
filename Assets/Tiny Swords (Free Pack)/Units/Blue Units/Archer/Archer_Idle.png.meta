@@ -131,12 +131,21 @@ TextureImporter:
       name: Archer_Idle_0
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 57
         y: 55
         width: 72
         height: 90
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 58
+        y: 56
+        width: 70
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> mike-level
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -153,12 +162,21 @@ TextureImporter:
       name: Archer_Idle_1
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 248
         y: 55
         width: 73
         height: 90
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 249
+        y: 56
+        width: 71
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> mike-level
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -175,12 +193,21 @@ TextureImporter:
       name: Archer_Idle_2
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 439
         y: 55
         width: 74
         height: 90
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 440
+        y: 56
+        width: 72
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> mike-level
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -197,12 +224,21 @@ TextureImporter:
       name: Archer_Idle_3
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 632
         y: 55
         width: 73
         height: 91
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 633
+        y: 56
+        width: 71
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> mike-level
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -219,12 +255,21 @@ TextureImporter:
       name: Archer_Idle_4
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 825
         y: 55
         width: 72
         height: 90
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 826
+        y: 56
+        width: 70
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> mike-level
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -241,12 +286,21 @@ TextureImporter:
       name: Archer_Idle_5
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 1017
         y: 55
         width: 72
         height: 88
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 1020
+        y: 54
+        width: 70
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> mike-level
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -263,7 +317,11 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
+<<<<<<< HEAD
     spriteID: 
+=======
+    spriteID: 96759672ca8379447a077221ce6c9a7c
+>>>>>>> mike-level
     internalID: 0
     vertices: []
     indices: 
@@ -271,7 +329,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
+<<<<<<< HEAD
       entries: []
+=======
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+>>>>>>> mike-level
     nameFileIdTable:
       Archer_Idle_0: 7257567913506708742
       Archer_Idle_1: -7989796299022447421
