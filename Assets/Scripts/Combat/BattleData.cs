@@ -27,6 +27,8 @@ public static class BattleData
     public static Sprite EnemySprite  = null;
 
     // Battle → Overworld 
+    public static bool ReturningFromBattle = false;
+    public static bool DiedInBattle = false;
 
     // Set by BattleManager before returning to overworld
     public static bool PlayerWon           = false;

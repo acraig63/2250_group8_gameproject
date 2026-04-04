@@ -217,6 +217,7 @@ public class BattleManager : MonoBehaviour
         // Tell the overworld whether the player won so the NPC can be destroyed
         BattleData.PlayerWon     = won;
         BattleData.PlayerCurrentHealth = _playerHP; // carry HP back
+        BattleData.ReturningFromBattle  = true;
 
         SceneManager.LoadScene(BattleData.ReturnScene);
     }

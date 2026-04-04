@@ -36,10 +36,13 @@ public class PlayerController : MonoBehaviour
     {
         _currentHealth = Mathf.Clamp(hp, 0, MaxHealth);
 
-        // Update the actual Player object so HealthBarUI reflects it
         PlayerManager pm = GetComponent<PlayerManager>();
+        Debug.Log($"SetHealth called: hp={hp}, pm={pm}, player={pm?.player}");
         if (pm != null && pm.player != null)
+        {
             pm.player.SetCurrentHealth(_currentHealth);
+            Debug.Log($"SetCurrentHealth called with {_currentHealth}");
+        }
     }
     public int GetHealth() => _currentHealth;
     
