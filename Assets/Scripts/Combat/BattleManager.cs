@@ -27,6 +27,11 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private TMP_Text   questionText;
     [SerializeField] private TMP_Text   feedbackText;
     [SerializeField] private Button[]   answerButtons;
+    
+    [Header("Animation Controllers")]
+    [SerializeField] private BattleAnimationController playerAnim;
+    [SerializeField] private BattleAnimationController enemyAnim;
+    [SerializeField] private CharacterSpriteData       characterSpriteData;
 
     // Battle state
     private int _playerHP;
@@ -41,6 +46,7 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
+        
         // Read data written by EnemySpawner
         _playerMaxHP   = BattleData.PlayerMaxHealth;
         _playerHP      = _playerMaxHP;
@@ -63,8 +69,28 @@ public class BattleManager : MonoBehaviour
         if (quizPanel != null) quizPanel.SetActive(false);
 
         RefreshHealthBars();
+        // Load the correct colour variant for the selected character
+        // Load the correct colour variant for the selected character
+        if (characterSpriteData != null && playerAnim != null)
+        {
+            if (characterSpriteData.TryGetFrames(CharacterSelectManager.selectedCharacter,
+                    out Sprite[] idle, out Sprite[] attack))
+            {
+                playerAnim.SetFrames(idle, attack);
+            }
+        }
 
-        // Start the first player turn after a short delay
+        // Load the correct enemy type animation
+        if (characterSpriteData != null && enemyAnim != null)
+        {
+            if (characterSpriteData.TryGetFrames(BattleData.EnemyType,
+                    out Sprite[] idle, out Sprite[] attack))
+            {
+                enemyAnim.SetFrames(idle, attack);
+            }
+        }
+
+// Start the first player turn after a short delay
         StartCoroutine(StartPlayerTurn(0.5f));
     }
     
@@ -135,25 +161,35 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator PlayerAttack()
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.3f);
         quizPanel.SetActive(false);
-
+ 
+        // Play player attack animation
+        if (playerAnim != null)
+            yield return StartCoroutine(playerAnim.PlayAttack());
+ 
         _enemyHP -= _playerAttack;
         _enemyHP  = Mathf.Max(0, _enemyHP);
         RefreshHealthBars();
-
+ 
+        // Play enemy hit effect
+        if (enemyAnim != null)
+            StartCoroutine(enemyAnim.PlayHit(isPlayer: false));
+ 
         if (statusText != null)
             statusText.text = $"You dealt {_playerAttack} damage!";
-
-        yield return new WaitForSeconds(1.0f);
-
+ 
+        yield return new WaitForSeconds(0.5f);
+ 
         if (_enemyHP <= 0)
         {
+            if (enemyAnim != null)
+                yield return StartCoroutine(enemyAnim.PlayDeath());
             EndBattle(playerWon: true);
         }
         else
         {
-            StartCoroutine(EnemyTurn(0.5f));
+            StartCoroutine(EnemyTurn(0.3f));
         }
     }
     
@@ -164,23 +200,31 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         quizPanel.SetActive(false);
         if (_battleOver) yield break;
-
+ 
         if (statusText != null)
             statusText.text = $"{BattleData.EnemyName} attacks!";
-
-        yield return new WaitForSeconds(1.0f);
-
+ 
+        // Play enemy attack animation
+        if (enemyAnim != null)
+            yield return StartCoroutine(enemyAnim.PlayAttack());
+ 
         _playerHP -= _enemyAttack;
         _playerHP  = Mathf.Max(0, _playerHP);
         RefreshHealthBars();
-
+ 
+        // Play player hit effect
+        if (playerAnim != null)
+            StartCoroutine(playerAnim.PlayHit(isPlayer: true));
+ 
         if (statusText != null)
             statusText.text = $"{BattleData.EnemyName} dealt {_enemyAttack} damage!";
-
-        yield return new WaitForSeconds(1.0f);
-
+ 
+        yield return new WaitForSeconds(0.5f);
+ 
         if (_playerHP <= 0)
         {
+            if (playerAnim != null)
+                yield return StartCoroutine(playerAnim.PlayDeath());
             EndBattle(playerWon: false);
         }
         else

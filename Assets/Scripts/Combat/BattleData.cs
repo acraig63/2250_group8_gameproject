@@ -25,6 +25,11 @@ public static class BattleData
     // Sprites
     public static Sprite PlayerSprite = null;
     public static Sprite EnemySprite  = null;
+    
+    // Type
+    public static string EnemyType = "Archer"; // e.g. "Archer", "Lancer", "Monk", "Pawn", "Warrior"
+    public static string PlayerType = "Archer";
+    
 
     // Battle → Overworld 
     public static bool ReturningFromBattle = false;

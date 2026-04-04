@@ -23,5 +23,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Battle.unity
     guid: 55aadaad068bbda4596cd69b6e4347c9
+  - enabled: 1
+    path: Assets/Scenes/StormbreakerIsland.unity
+    guid: 59ad2c5dfccec3f4e8e86f923633c1ae
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

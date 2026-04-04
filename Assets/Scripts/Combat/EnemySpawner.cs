@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DefaultNamespace;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
@@ -9,6 +10,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int    enemyMaxHealth   = 50;
     [SerializeField] private int    enemyAttackPower = 10;
     [SerializeField] private Sprite enemySprite;
+    [SerializeField] private string enemyType = "Archer";
 
     [Header("Battle Settings")]
     [SerializeField] private int    questionLevel    = 1;
@@ -29,6 +31,8 @@ public class EnemySpawner : MonoBehaviour
         BattleData.ReturnScene      = returnScene;
         BattleData.EnemySprite  = enemySprite;
         BattleData.PlayerSprite = other.GetComponent<SpriteRenderer>()?.sprite;
+        BattleData.EnemyType = enemyType;
+        BattleData.PlayerType = PlayerManager.playerType;
 
         // Carry player health into battle
         PlayerController pc = other.GetComponent<PlayerController>();
