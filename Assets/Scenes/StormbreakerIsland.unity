@@ -7648,7 +7648,7 @@ GameObject:
   - component: {fileID: 181358281}
   - component: {fileID: 181358280}
   m_Layer: 5
-  m_Name: QuizCanvas
+  m_Name: IntroCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7688,12 +7688,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a9af2cc38f0ea43bbade148816d95d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.StoryIntroUI
-  introText: "Ye have washed ashore at Smuggler's Island...\n\nThree territories
+  introText: "Ye have washed ashore at Stormbreaker Island...\n\nThree territories
     divide this wretched cove:\nthe open beach where ye first land,\nthe walled pirate
     camp patrolled by the Camp Leader,\nand the dense jungle hiding secrets to the
-    north.\n\nDefeat the Camp Leader to claim Key 1 and Map 1.\nBeware the quicksand
-    fields \u2014 many have sunk without trace.\n\nA hidden passage waits at the
-    jungle's northern edge.\nFind it and ye may escape without another fight.\n\nGood
+    north.\n\nDefeat the Camp Leader to claim Key 3 and Map 3.\nBeware the storm
+    \u2014 many have been swallowed without trace.\n\nA hidden passage waits at the
+    storm's\n northern edge.\nFind it and ye may escape without another fight.\n\nGood
     luck, sailor."
   holdDuration: 30
   fadeDuration: 1.2
@@ -34150,7 +34150,7 @@ GameObject:
   - component: {fileID: 783019221}
   - component: {fileID: 783019220}
   - component: {fileID: 783019219}
-  - component: {fileID: 783019218}
+  - component: {fileID: 783019224}
   m_Layer: 0
   m_Name: Npc
   m_TagString: Untagged
@@ -34158,20 +34158,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &783019218
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 783019217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da420c22f51e443728d771fd7f8b0c40, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPCDialogueTrigger
-  questionLevel: 1
-  quizUIManager: {fileID: 1663433917}
 --- !u!50 &783019219
 Rigidbody2D:
   serializedVersion: 5
@@ -34333,6 +34319,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &783019224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783019217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a305882b25644a07a495ff15f3105891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+  enemyDisplayName: Pirate Guard
+  enemyMaxHealth: 50
+  enemyAttackPower: 10
+  enemySprite: {fileID: -5948806968594788206, guid: 6316e0a1587d44b0e9c338f02edb9d5a,
+    type: 3}
+  questionLevel: 1
+  returnScene: StormbreakerIsland
 --- !u!1 &857589227
 GameObject:
   m_ObjectHideFlags: 0
@@ -34907,6 +34912,7 @@ GameObject:
   - component: {fileID: 1434500573}
   - component: {fileID: 1434500572}
   - component: {fileID: 1434500571}
+  - component: {fileID: 1434500576}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -35087,6 +35093,18 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1434500576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1434500569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2621c3862473484d88c39b18bc5fb1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleResultHandler
 --- !u!1 &1485434081
 GameObject:
   m_ObjectHideFlags: 0
@@ -35382,7 +35400,7 @@ MonoBehaviour:
   minimapSize: 200
   borderThickness: 3
   screenPadding: 15
-  borderColor: {r: 0.6, g: 0.4, b: 0.1, a: 1}
+  borderColor: {r: 0.20012344, g: 0.101960786, b: 0.6, a: 1}
 --- !u!114 &1508405061
 MonoBehaviour:
   m_ObjectHideFlags: 0

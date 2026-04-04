@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace DefaultNamespace
 {
     public class HealthBar
@@ -6,6 +8,9 @@ namespace DefaultNamespace
         private int _currentHP;
         private int _maxHP;
 
+        // property
+        public int CurrentHP => _currentHP;
+        
         //constructor
         public HealthBar(int maxHP)
         {
@@ -22,6 +27,11 @@ namespace DefaultNamespace
             {
                 _currentHP = 0;
             }
+        }
+        
+        public void SetCurrentHP(int hp)
+        {
+            _currentHP = Mathf.Clamp(hp, 0, _maxHP);
         }
     
         //adds a specified amount of HP to the currentHP

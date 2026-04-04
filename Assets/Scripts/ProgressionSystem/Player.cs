@@ -97,5 +97,15 @@ namespace DefaultNamespace
         {
             return health.GetNormalizedValue();
         }
+        
+        public void SetCurrentHealth(int hp)
+        {
+            health.SetCurrentHP(hp);
+        }
+
+        public int GetCurrentHealth()
+        {
+            return health.CurrentHP;
+        }
     }
 }

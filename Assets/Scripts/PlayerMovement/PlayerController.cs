@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 movement;
+    public int MaxHealth { get; private set; } = 100;
+    private int _currentHealth = 100;
 
     void Start()
     {
@@ -29,4 +31,17 @@ public class PlayerController : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(movement.x * speed, movement.y * speed);
     }
+    
+    public void SetHealth(int hp)
+    {
+        _currentHealth = Mathf.Clamp(hp, 0, MaxHealth);
+
+        // Update the actual Player object so HealthBarUI reflects it
+        PlayerManager pm = GetComponent<PlayerManager>();
+        if (pm != null && pm.player != null)
+            pm.player.SetCurrentHealth(_currentHealth);
+    }
+    public int GetHealth() => _currentHealth;
+    
+    
 }
