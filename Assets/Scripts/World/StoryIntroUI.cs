@@ -154,7 +154,7 @@ namespace DefaultNamespace
             rt.offsetMin = rt.offsetMax = Vector2.zero;
             _panel.AddComponent<Image>().color = panelColor;
 
-            // FIX: use current scene name instead of hardcoded "Smuggler's Island"
+
             string sceneName = SceneManager.GetActiveScene().name;
             string titleLine = $"— {FormatSceneName(sceneName)} —";
 
