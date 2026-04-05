@@ -47,5 +47,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StormbreakerIsland.unity
     guid: 59ad2c5dfccec3f4e8e86f923633c1ae
+  - enabled: 1
+    path: Assets/Scenes/TwistedGardens.unity
+    guid: 7c8c881f1a80b4103a1a80038dc42042
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
