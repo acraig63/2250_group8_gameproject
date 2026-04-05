@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 public class IntroNPC : MonoBehaviour
@@ -6,8 +7,9 @@ public class IntroNPC : MonoBehaviour
     private bool _isShowing  = false;
     private int  _currentLine = 0;
     private bool _isOnCooldown = false;
+    private bool _playerInside = false;
     
-    [SerializeField] private float cooldown = 5f;
+    [SerializeField] private float cooldown = 3f;
 
     private readonly string[] _lines = new string[]
     {
@@ -21,8 +23,9 @@ public class IntroNPC : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+        _playerInside = true;
         
-        if (_isOnCooldown || _isShowing)
+        if (_isOnCooldown)
         {
             NPCDialoguePanel.Instance?.ShowPersistent(
                 "Whoo, let me catch me breath young one!\nCome back in a moment and I'll have more to say. Arrr!");
@@ -37,13 +40,18 @@ public class IntroNPC : MonoBehaviour
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+        _playerInside = false;
         NPCDialoguePanel.Instance?.Hide();
+        _isShowing = false;
+        _currentLine = 0;
+
+        if (!_isOnCooldown) StartCoroutine(CooldownRoutine());
         //StartCoroutine(ResetAfterDelay());
     }
 
     void Update()
     {
-        if (!_isShowing) return;
+        if (!_playerInside || !_isShowing) return;
 
         if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space))
         {
@@ -51,7 +59,9 @@ public class IntroNPC : MonoBehaviour
             if (_currentLine >= _lines.Length)
             {
                 NPCDialoguePanel.Instance?.Hide();
-                StartCoroutine(ResetAfterDelay()); // same as monk's cooldown
+                _isShowing = false;
+                _currentLine = 0;
+                StartCoroutine(CooldownRoutine()); // same as monk's cooldown
             }
             else
             {
@@ -60,7 +70,12 @@ public class IntroNPC : MonoBehaviour
         }
     }
     
-    
+    private IEnumerator CooldownRoutine()
+    {
+        _isOnCooldown = true;
+        yield return new WaitForSeconds(cooldown);
+        _isOnCooldown = false;
+    }
 
     private IEnumerator ResetAfterDelay()
     {

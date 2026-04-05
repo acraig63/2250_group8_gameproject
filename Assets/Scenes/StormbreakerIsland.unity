@@ -7500,7 +7500,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -7552,17 +7552,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 162971009}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1571472975}
+  m_Father: {fileID: 1384963598}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 150}
+  m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &181358278
 GameObject:
@@ -9230,6 +9230,7 @@ GameObject:
   - component: {fileID: 514534483}
   - component: {fileID: 514534482}
   - component: {fileID: 514534481}
+  - component: {fileID: 514534486}
   m_Layer: 0
   m_Name: HealerNpc1 (3)
   m_TagString: Untagged
@@ -9398,6 +9399,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &514534486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514534480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7e98397776345569abe27e6abafbad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonkHealerNPC
+  healAmount: 20
+  displayDuration: 4
+  cooldown: 10
 --- !u!1 &532149659
 GameObject:
   m_ObjectHideFlags: 0
@@ -36706,6 +36722,7 @@ GameObject:
   - component: {fileID: 866329728}
   - component: {fileID: 866329727}
   - component: {fileID: 866329726}
+  - component: {fileID: 866329731}
   m_Layer: 0
   m_Name: HealerNpc1 (1)
   m_TagString: Untagged
@@ -36874,6 +36891,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &866329731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866329725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7e98397776345569abe27e6abafbad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonkHealerNPC
+  healAmount: 20
+  displayDuration: 4
+  cooldown: 10
 --- !u!1 &920401919
 GameObject:
   m_ObjectHideFlags: 0
@@ -37537,8 +37569,8 @@ GameObject:
   - component: {fileID: 1047153173}
   - component: {fileID: 1047153172}
   - component: {fileID: 1047153171}
-  - component: {fileID: 1047153170}
   - component: {fileID: 1047153169}
+  - component: {fileID: 1047153174}
   m_Layer: 0
   m_Name: IntroNPC
   m_TagString: Untagged
@@ -37582,20 +37614,6 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.38
---- !u!114 &1047153170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1047153168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 299d841497f6e4571bd27d6f6ea35a9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfoNPC
-  dialogueLines: []
-  dialogueUI: {fileID: 532149660}
 --- !u!95 &1047153171
 Animator:
   serializedVersion: 7
@@ -37693,6 +37711,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1047153174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047153168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4bf3b38a184adcb987fbb437131fce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IntroNPC
+  cooldown: 3
 --- !u!1 &1109490237
 GameObject:
   m_ObjectHideFlags: 0
@@ -38004,6 +38035,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCDialoguePanel
   panel: {fileID: 1384963594}
   text: {fileID: 162971010}
+  canvas: {fileID: 1571472978}
 --- !u!114 &1384963596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38017,7 +38049,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.028301895, g: 0.0268334, b: 0.0268334, a: 0.5176471}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -38055,12 +38087,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 532149661}
+  - {fileID: 162971012}
   m_Father: {fileID: 1571472975}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 150}
+  m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &1434500569
 GameObject:
@@ -39622,6 +39655,7 @@ GameObject:
   - component: {fileID: 1571472978}
   - component: {fileID: 1571472977}
   - component: {fileID: 1571472976}
+  - component: {fileID: 1571472979}
   m_Layer: 5
   m_Name: DialogueCanvas
   m_TagString: Untagged
@@ -39641,7 +39675,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 162971012}
   - {fileID: 1384963598}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -39713,6 +39746,21 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1571472979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1571472974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7e98397776345569abe27e6abafbad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonkHealerNPC
+  healAmount: 20
+  displayDuration: 4
+  cooldown: 10
 --- !u!1 &1572867020
 GameObject:
   m_ObjectHideFlags: 0
@@ -52797,6 +52845,7 @@ GameObject:
   - component: {fileID: 2140477935}
   - component: {fileID: 2140477934}
   - component: {fileID: 2140477933}
+  - component: {fileID: 2140477938}
   m_Layer: 0
   m_Name: HealerNpc1 (2)
   m_TagString: Untagged
@@ -52965,6 +53014,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2140477938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2140477932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7e98397776345569abe27e6abafbad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonkHealerNPC
+  healAmount: 20
+  displayDuration: 4
+  cooldown: 10
 --- !u!1 &2145553503
 GameObject:
   m_ObjectHideFlags: 0
