@@ -8,6 +8,7 @@ public class NPCDialoguePanel : MonoBehaviour
 
     [SerializeField] private GameObject panel;
     [SerializeField] private TMP_Text   text;
+    [SerializeField] private Canvas canvas;
 
     void Awake()
     {
@@ -22,24 +23,28 @@ public class NPCDialoguePanel : MonoBehaviour
         StartCoroutine(ShowFor(message, duration));
     }
 
-    public void ShowPersistent(string message)
+    public void ShowPersistent(string message, string prompt = "")
     {
         StopAllCoroutines();
         text.text = message;
+        Debug.Log($"ShowPersistent called, canvas.enabled={canvas.enabled}, panel active={panel.activeSelf}");
+        canvas.enabled = true;  // use canvas instead of panel
         panel.SetActive(true);
     }
 
     public void Hide()
     {
+        if (this == null) return;
         StopAllCoroutines();
-        panel.SetActive(false);
+        canvas.enabled = false;
+        //panel.SetActive(false);
     }
 
     private IEnumerator ShowFor(string message, float duration)
     {
         text.text = message;
-        panel.SetActive(true);
+        canvas.enabled = true;
         yield return new WaitForSeconds(duration);
-        panel.SetActive(false);
+        canvas.enabled = false;
     }
 }

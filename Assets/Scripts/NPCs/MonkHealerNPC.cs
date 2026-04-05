@@ -21,7 +21,12 @@ public class MonkHealerNPC : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
-        if (_isOnCooldown) return;
+        if (_isOnCooldown)
+        {
+            NPCDialoguePanel.Instance?.Show(
+                "Arrr, give me a moment to catch me breath, ye impatient landlubber!\nI'll be ready to heal ye again shortly...", displayDuration);
+            return;
+        }
         StartCoroutine(HealAndShow(other.gameObject));
     }
 

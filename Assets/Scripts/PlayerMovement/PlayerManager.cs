@@ -25,7 +25,8 @@ public class PlayerManager : MonoBehaviour
 
 
         }
-        if (BattleData.HasReturnPosition)
+
+        if (BattleData.HasReturnPosition && BattleData.ReturningFromBattle) 
         {
             transform.position = BattleData.ReturnPlayerPosition;
             BattleData.HasReturnPosition = false;
