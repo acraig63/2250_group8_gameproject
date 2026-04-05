@@ -263,6 +263,8 @@ public class BattleManager : MonoBehaviour
         BattleData.PlayerCurrentHealth = _playerHP; // carry HP back
         BattleData.ReturningFromBattle  = true;
 
+        if (!won) BattleData.HasReturnPosition = false;
+
         SceneManager.LoadScene(BattleData.ReturnScene);
     }
 

@@ -11,6 +11,7 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
+        
         string selectedName = CharacterSelectManager.selectedCharacter;
         Sprite selectedSprite = CharacterSelectManager.selectedSprite;
 
@@ -26,10 +27,12 @@ public class PlayerManager : MonoBehaviour
 
         }
 
-        if (BattleData.HasReturnPosition && BattleData.ReturningFromBattle) 
+        Debug.Log($"HasReturnPosition: {BattleData.HasReturnPosition}, ReturningFromBattle: {BattleData.ReturningFromBattle}, Position: {BattleData.ReturnPlayerPosition}");
+        if (BattleData.HasReturnPosition) // && BattleData.ReturningFromBattle) 
         {
             transform.position = BattleData.ReturnPlayerPosition;
             BattleData.HasReturnPosition = false;
+            BattleData.ReturningFromBattle = false;
         }
 
         Debug.Log("Spawned player: " + selectedName);

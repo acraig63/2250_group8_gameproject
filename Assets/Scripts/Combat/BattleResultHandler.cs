@@ -6,6 +6,7 @@ public class BattleResultHandler : MonoBehaviour
 {
     private void Start()
     {
+        Debug.Log($"BattleResultHandler Start — PlayerWon: {BattleData.PlayerWon}, CurrentHealth: {BattleData.PlayerCurrentHealth}, HasReturnPosition: {BattleData.HasReturnPosition}, DiedInBattle: {BattleData.DiedInBattle}");
         string previousScene = BattleData.ReturnScene;
         string currentScene  = SceneManager.GetActiveScene().name;
 
@@ -41,13 +42,14 @@ public class BattleResultHandler : MonoBehaviour
             
 
             // Use coroutine so PlayerManager.Start() has time to create Player first
-            StartCoroutine(RestoreAfterDelay());
+            //StartCoroutine(RestoreAfterDelay());
         }
         else if (BattleData.PlayerCurrentHealth <= 0)
         {
             Debug.Log("Player was defeated — restarting level.");
             BattleData.DiedInBattle            = true;
             BattleData.PlayerCurrentHealth     = BattleData.PlayerMaxHealth;
+            BattleData.HasReturnPosition = false;
             BattleData.ReturningFromBattle     = false;
             SceneManager.LoadScene(currentScene);
         }

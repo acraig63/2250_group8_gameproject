@@ -1,20 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Attach to the exit tile sprite at the north end of Stormbreaker Island.
-/// Add a BoxCollider2D with Is Trigger checked.
-///
-/// The tile is RED when enemy NPCs are still alive.
-/// The tile turns GREEN when all EnemySpawner GameObjects are defeated.
-/// When the player walks onto a GREEN tile, it loads BlackFortress.
-///
-/// SETUP IN INSPECTOR:
-///   spriteRenderer — the SpriteRenderer on this tile (or leave empty to auto-find)
-///   nextScene      — scene name to load when activated (default "BlackFortress")
-///   lockedColor    — colour when enemies remain (default red)
-///   unlockedColor  — colour when all enemies defeated (default green)
-/// </summary>
 public class ExitTile : MonoBehaviour
 {
     [Header("Settings")]
