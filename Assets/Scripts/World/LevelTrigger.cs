@@ -7,8 +7,16 @@ public class LevelTrigger : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
-        
+        // Find all enemies
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        if (enemies.Length == 0)
+        {
             SceneManager.LoadScene("StormbreakerIsland");
-        
+        }
+        else
+        {
+            Debug.Log("Defeat all enemies first!");
+        }
     }
 }
