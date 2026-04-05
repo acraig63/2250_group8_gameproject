@@ -49,7 +49,7 @@ public class BattleManager : MonoBehaviour
         
         // Read data written by EnemySpawner
         _playerMaxHP   = BattleData.PlayerMaxHealth;
-        _playerHP      = _playerMaxHP;
+        _playerHP      = BattleData.PlayerCurrentHealth;
         _playerAttack  = BattleData.PlayerAttackPower;
 
         _enemyMaxHP    = BattleData.EnemyMaxHealth;
