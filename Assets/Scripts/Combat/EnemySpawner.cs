@@ -18,6 +18,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private string returnScene      = "SmugglersIsland";
 
     private bool _defeated = false;
+    public bool IsDefeated() => _defeated;
 
     void Start()
     {

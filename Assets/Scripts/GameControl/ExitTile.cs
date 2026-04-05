@@ -1,0 +1,102 @@
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+
+/// <summary>
+/// Attach to the exit tile sprite at the north end of Stormbreaker Island.
+/// Add a BoxCollider2D with Is Trigger checked.
+///
+/// The tile is RED when enemy NPCs are still alive.
+/// The tile turns GREEN when all EnemySpawner GameObjects are defeated.
+/// When the player walks onto a GREEN tile, it loads BlackFortress.
+///
+/// SETUP IN INSPECTOR:
+///   spriteRenderer — the SpriteRenderer on this tile (or leave empty to auto-find)
+///   nextScene      — scene name to load when activated (default "BlackFortress")
+///   lockedColor    — colour when enemies remain (default red)
+///   unlockedColor  — colour when all enemies defeated (default green)
+/// </summary>
+public class ExitTile : MonoBehaviour
+{
+    [Header("Settings")]
+    [SerializeField] private string nextScene      = "BlackFortress";
+    [SerializeField] private Color  lockedColor    = new Color(0.8f, 0.1f, 0.1f, 0.8f);
+    [SerializeField] private Color  unlockedColor  = new Color(0.1f, 0.8f, 0.1f, 0.8f);
+
+    [Header("References")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    private bool _isUnlocked = false;
+
+    void Start()
+    {
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+        UpdateVisual();
+    }
+
+    void Update()
+    {
+        // Check every frame if all enemies are defeated
+        bool allDefeated = AreAllEnemiesDefeated();
+
+        if (allDefeated != _isUnlocked)
+        {
+            _isUnlocked = allDefeated;
+            UpdateVisual();
+
+            if (_isUnlocked)
+                Debug.Log("All enemies defeated — exit tile unlocked!");
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        if (_isUnlocked)
+        {
+            Debug.Log($"Exiting Stormbreaker Island → {nextScene}");
+            SceneManager.LoadScene(nextScene);
+        }
+        else
+        {
+            Debug.Log("Exit locked — defeat all enemies first!");
+            StartCoroutine(FlashLocked());
+        }
+    }
+
+    private bool AreAllEnemiesDefeated()
+    {
+        EnemySpawner[] spawners = FindObjectsOfType<EnemySpawner>();
+
+        // If no spawners exist at all, treat as unlocked
+        if (spawners.Length == 0) return true;
+
+        // All spawners must be defeated
+        foreach (EnemySpawner s in spawners)
+            if (!s.IsDefeated()) return false;
+
+        return true;
+    }
+
+    private void UpdateVisual()
+    {
+        if (spriteRenderer != null)
+            spriteRenderer.color = _isUnlocked ? unlockedColor : lockedColor;
+    }
+
+    /// <summary>Briefly flashes the tile brighter red to indicate it's locked.</summary>
+    private System.Collections.IEnumerator FlashLocked()
+    {
+        if (spriteRenderer == null) yield break;
+
+        spriteRenderer.color = Color.white;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = lockedColor;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = Color.white;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = lockedColor;
+    }
+}
