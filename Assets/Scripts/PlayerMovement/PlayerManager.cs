@@ -25,6 +25,11 @@ public class PlayerManager : MonoBehaviour
 
 
         }
+        if (BattleData.HasReturnPosition)
+        {
+            transform.position = BattleData.ReturnPlayerPosition;
+            BattleData.HasReturnPosition = false;
+        }
 
         Debug.Log("Spawned player: " + selectedName);
     }

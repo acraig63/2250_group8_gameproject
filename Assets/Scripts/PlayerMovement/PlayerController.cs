@@ -19,6 +19,12 @@ public class PlayerController : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
+        
+        // if (BattleData.HasReturnPosition)
+        // {
+        //     transform.position = BattleData.ReturnPlayerPosition;
+        //     BattleData.HasReturnPosition = false;
+        // }
     }
 
     void Update()
