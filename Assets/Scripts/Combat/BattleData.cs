@@ -1,9 +1,19 @@
 ﻿
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class BattleData
 {
     // Overworld → Battle
+    
+    // Player Position
+    public static Vector3 ReturnPlayerPosition;
+    public static bool HasReturnPosition = false;
+    
+    // NPC Object
+    public static GameObject DefeatedNpc;
+    public static List<string> DefeatedEnemies = new List<string>();
+    
 
     // Which island scene to return to after the battle
     public static string ReturnScene = "StormbreakerIsland";

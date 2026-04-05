@@ -1,24 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DefaultNamespace;
-
-
-/// <summary>
-/// Unity UI controller for the player's inventory panel.
-/// Attach this to the InventoryPanel GameObject in your Canvas.
-///
-/// SETUP IN INSPECTOR:
-///   inventoryPanel     — the Panel GameObject to show/hide (can be this GameObject)
-///   itemSlotPrefab     — prefab with an Image + TMP_Text child for the item name
-///   itemSlotsContainer — GridLayoutGroup parent that holds all slots
-///   goldText           — TMP_Text showing "Gold: 0"
-///   fullText           — TMP_Text shown when inventory is full (can leave empty)
-///
-/// CONTROLS:
-///   Press Tab to open/close the inventory panel.
-/// </summary>
-
 
 
 public class InventoryUI : MonoBehaviour
@@ -46,6 +30,8 @@ public class InventoryUI : MonoBehaviour
         if (fullText != null) fullText.gameObject.SetActive(false);
     }
 
+    private List<(RectTransform rect, Item item)> _slotRects = new List<(RectTransform, Item)>();
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -53,6 +39,23 @@ public class InventoryUI : MonoBehaviour
             _isOpen = !_isOpen;
             inventoryPanel.SetActive(_isOpen);
             if (_isOpen) RefreshUI();
+            
+            if (!_isOpen && itemDetailPopup != null)
+                itemDetailPopup.Hide();
+        }
+
+        if (_isOpen && Input.GetMouseButtonDown(0))
+        {
+            foreach (var (rect, item) in _slotRects)
+            {
+                if (RectTransformUtility.RectangleContainsScreenPoint(rect, Input.mousePosition))
+                {
+                    Debug.Log($"Clicked slot: {item.Name}");
+                    if (itemDetailPopup != null)
+                        itemDetailPopup.Show(item, _inventory, this, playerTransform);
+                    break;
+                }
+            }
         }
     }
 
@@ -67,26 +70,10 @@ public class InventoryUI : MonoBehaviour
         // Clear existing slots
         foreach (Transform child in itemSlotsContainer)
             Destroy(child.gameObject);
-
-
-        // Rebuild from inventory
-        // foreach (Item item in _inventory.Items)
-        // {
-        //     GameObject slot = Instantiate(itemSlotPrefab, itemSlotsContainer);
-        //
-        //     TMP_Text label = slot.GetComponentInChildren<TMP_Text>();
-        //     if (label != null)
-        //         label.text = $"<b><size=14>{item.Name}</size></b>\n<size=8>{item.Rarity} {item.Type}</size>";
-        //
-        //     // Colour slot by rarity
-        //     Image slotImage = slot.GetComponent<Image>();
-        //     if (slotImage != null)
-        //         slotImage.color = RarityColor(item.Rarity);
-        // }
-
         
-
         
+        _slotRects.Clear();
+
         foreach (Item item in _inventory.Items)
         {
             GameObject slot = Instantiate(itemSlotPrefab, itemSlotsContainer);
@@ -99,15 +86,13 @@ public class InventoryUI : MonoBehaviour
             if (slotImage != null)
                 slotImage.color = RarityColor(item.Rarity);
 
-            // Make slot clickable — capture item in local variable for the lambda
-            Item capturedItem = item;
-            Button slotButton = slot.AddComponent<Button>();
-            slotButton.onClick.AddListener(() =>
-            {
-                if (itemDetailPopup != null)
-                    itemDetailPopup.Show(capturedItem, _inventory, this, playerTransform);
-            });
+            // Register slot rect for manual hit detection
+            RectTransform rect = slot.GetComponent<RectTransform>();
+            if (rect != null)
+                _slotRects.Add((rect, item));
         }
+        
+
 
         if (goldText != null)
             goldText.text = $"Gold: {_inventory.Gold}";

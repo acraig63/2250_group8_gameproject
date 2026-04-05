@@ -3,10 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using DefaultNamespace;
 
-/// <summary>
-/// Handles the item detail popup shown when clicking an inventory slot.
-/// Attach to the ItemDetailPopup Panel in your Canvas.
-/// </summary>
+
 public class ItemDetailPopup : MonoBehaviour
 {
     [Header("UI References")]
@@ -23,12 +20,38 @@ public class ItemDetailPopup : MonoBehaviour
     private Inventory _inventory;
     private InventoryUI _inventoryUI;
     private Transform _playerTransform;
+    private RectTransform _dropButtonRect;
+    private RectTransform _closeButtonRect;
 
     void Start()
     {
-        closeButton.onClick.AddListener(Hide);
-        dropButton.onClick.AddListener(DropItem);
+        _dropButtonRect  = dropButton.GetComponent<RectTransform>();
+        _closeButtonRect = closeButton.GetComponent<RectTransform>();
         gameObject.SetActive(false);
+    }
+    
+    void Update()
+    {
+        if (!gameObject.activeSelf) return;
+    
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (_closeButtonRect != null && 
+                RectTransformUtility.RectangleContainsScreenPoint(_closeButtonRect, Input.mousePosition))
+            {
+                Debug.Log("Close clicked");
+                Hide();
+                return;
+            }
+        
+            if (_dropButtonRect != null && 
+                RectTransformUtility.RectangleContainsScreenPoint(_dropButtonRect, Input.mousePosition))
+            {
+                Debug.Log("Drop clicked");
+                DropItem();
+                return;
+            }
+        }
     }
 
     /// <summary>
