@@ -49,6 +49,24 @@ namespace DefaultNamespace
             savedHealth       = -1;
             savedSpeed        = -1f;
             hasSavedState     = false;
+
+            // Reset sub-system counters and state
+            KeyPiecePickup.ResetPieceCounter();
+            HazardImmunityManager.Reset();
+
+            // Clear Blackwater enemies from BattleData so they respawn correctly
+            // after a death reset. BattleData.DefeatedEnemies is public static —
+            // we read but do not modify BattleData.cs itself (teammate file).
+            string[] blackwaterNPCs =
+            {
+                "Blackwater Armsman",
+                "Blackwater Cook",
+                "Blackwater Jailer",
+                "Blackwater Navigator",
+                "Captain Blackwater",
+            };
+            foreach (string npc in blackwaterNPCs)
+                BattleData.DefeatedEnemies.Remove(npc);
         }
     }
 }
