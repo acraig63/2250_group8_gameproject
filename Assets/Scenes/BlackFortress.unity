@@ -15058,35 +15058,14 @@ GameObject:
   - component: {fileID: 680843957}
   - component: {fileID: 680843956}
   - component: {fileID: 680843955}
-  - component: {fileID: 680843954}
+  - component: {fileID: 680843960}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Enemy1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &680843954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 680843953}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a305882b25644a07a495ff15f3105891, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyDisplayName: Pirate Guard 1
-  enemyMaxHealth: 50
-  enemyAttackPower: 10
-  enemySprite: {fileID: -5948806968594788206, guid: 6316e0a1587d44b0e9c338f02edb9d5a,
-    type: 3}
-  enemyType: Pawn
-  enemyNpc: {fileID: 0}
-  questionLevel: 4
-  returnScene: 
 --- !u!50 &680843955
 Rigidbody2D:
   serializedVersion: 5
@@ -15248,6 +15227,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &680843960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680843953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d51ae093a0d646f2b3d682004370d47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner4
+  enemyDisplayName: Enemy1
+  enemyMaxHealth: 50
+  enemyAttackPower: 10
+  enemySprite: {fileID: 7257567913506708742, guid: 4a3b125f2a5ef45f5914bbfd3b0c23c4,
+    type: 3}
+  enemyType: Archer
+  enemyNpc: {fileID: 0}
+  questionLevel: 4
+  returnScene: 
 --- !u!4 &681242604 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2055102311959635375, guid: 5c635e5bc09c93043a53ee0e17e89d0f,
@@ -28324,35 +28324,14 @@ GameObject:
   - component: {fileID: 1389927338}
   - component: {fileID: 1389927337}
   - component: {fileID: 1389927336}
-  - component: {fileID: 1389927335}
+  - component: {fileID: 1389927341}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Enemy3
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1389927335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1389927334}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a305882b25644a07a495ff15f3105891, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyDisplayName: Pirate Guard 3
-  enemyMaxHealth: 50
-  enemyAttackPower: 10
-  enemySprite: {fileID: -5948806968594788206, guid: 6316e0a1587d44b0e9c338f02edb9d5a,
-    type: 3}
-  enemyType: Pawn
-  enemyNpc: {fileID: 0}
-  questionLevel: 4
-  returnScene: 
 --- !u!50 &1389927336
 Rigidbody2D:
   serializedVersion: 5
@@ -28514,6 +28493,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1389927341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389927334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d51ae093a0d646f2b3d682004370d47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner4
+  enemyDisplayName: Enemy3
+  enemyMaxHealth: 50
+  enemyAttackPower: 10
+  enemySprite: {fileID: 7257567913506708742, guid: 72492d0e95a714323827411cc1d189d0,
+    type: 3}
+  enemyType: Archer
+  enemyNpc: {fileID: 0}
+  questionLevel: 4
+  returnScene: 
 --- !u!1001 &1391418185
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32061,35 +32061,14 @@ GameObject:
   - component: {fileID: 1617789636}
   - component: {fileID: 1617789635}
   - component: {fileID: 1617789634}
-  - component: {fileID: 1617789633}
+  - component: {fileID: 1617789639}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Enemy2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1617789633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1617789632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a305882b25644a07a495ff15f3105891, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyDisplayName: Pirate Guard 2
-  enemyMaxHealth: 50
-  enemyAttackPower: 10
-  enemySprite: {fileID: -5948806968594788206, guid: 6316e0a1587d44b0e9c338f02edb9d5a,
-    type: 3}
-  enemyType: Pawn
-  enemyNpc: {fileID: 0}
-  questionLevel: 4
-  returnScene: 
 --- !u!50 &1617789634
 Rigidbody2D:
   serializedVersion: 5
@@ -32251,6 +32230,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1617789639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617789632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d51ae093a0d646f2b3d682004370d47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner4
+  enemyDisplayName: Enemy2
+  enemyMaxHealth: 50
+  enemyAttackPower: 10
+  enemySprite: {fileID: 427913027731640163, guid: 35c125aba981345ccb82f32d2397e879,
+    type: 3}
+  enemyType: Archer
+  enemyNpc: {fileID: 0}
+  questionLevel: 4
+  returnScene: BlackFortress
 --- !u!1001 &1621208460
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32331,7 +32331,7 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5628018140380570485}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1622224637
+--- !u!114 &1622224643
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -32340,9 +32340,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 853825080}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2621c3862473484d88c39b18bc5fb1b5, type: 3}
+  m_Script: {fileID: 11500000, guid: c03f3a43a0b164413b0a3bbd4062a80d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BattleResultHandler
+  m_EditorClassIdentifier: Assembly-CSharp::BattleResultHandler4
 --- !u!1 &1622312049
 GameObject:
   m_ObjectHideFlags: 0
@@ -40154,7 +40154,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5628018141983903104, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1622224637}
+      addedObject: {fileID: 1622224643}
   m_SourcePrefab: {fileID: 100100000, guid: ef67ba864d1ecc042b5f4cf48455c0a6, type: 3}
 --- !u!1001 &5724624599686979093
 PrefabInstance:
