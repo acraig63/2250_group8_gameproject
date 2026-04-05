@@ -35874,6 +35874,7 @@ MonoBehaviour:
   - One is near the docks.
   - Another is hiding in the graveyard.
   - The last is near the end.
+  - The portal will only open after defeating all enemies on the level
   dialogueUI: {fileID: 459113670}
 --- !u!50 &1927327977
 Rigidbody2D:
