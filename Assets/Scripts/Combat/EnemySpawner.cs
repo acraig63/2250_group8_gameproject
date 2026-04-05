@@ -44,7 +44,7 @@ public class EnemySpawner : MonoBehaviour
         BattleData.EnemyMaxHealth   = enemyMaxHealth;
         BattleData.EnemyAttackPower = enemyAttackPower;
         BattleData.QuestionLevel    = questionLevel;
-        BattleData.ReturnScene      = returnScene;
+        BattleData.ReturnScene = SceneManager.GetActiveScene().name;        
         BattleData.EnemySprite  = enemySprite;
         BattleData.PlayerSprite = other.GetComponent<SpriteRenderer>()?.sprite;
         BattleData.EnemyType = enemyType;
