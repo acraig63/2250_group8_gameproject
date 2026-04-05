@@ -12,7 +12,7 @@ public class LevelTrigger : MonoBehaviour
 
         if (enemies.Length == 0)
         {
-            SceneManager.LoadScene("StormbreakerIsland");
+            SceneManager.LoadScene("BlackwaterFlagship");
         }
         else
         {
