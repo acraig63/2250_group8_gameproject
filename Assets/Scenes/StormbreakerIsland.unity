@@ -7945,7 +7945,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyDisplayName: Pirate Warrior
   enemyMaxHealth: 50
-  enemyAttackPower: 50
+  enemyAttackPower: 33
   enemySprite: {fileID: 7384290322352760091, guid: 1a718cbcb9b7140278bd39c6ad0a363e,
     type: 3}
   enemyType: Warrior
@@ -8148,7 +8148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyDisplayName: Pirate Warrior
   enemyMaxHealth: 50
-  enemyAttackPower: 50
+  enemyAttackPower: 33
   enemySprite: {fileID: 7384290322352760091, guid: 1a718cbcb9b7140278bd39c6ad0a363e,
     type: 3}
   enemyType: Warrior
@@ -10167,7 +10167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyDisplayName: Pirate Warrior
   enemyMaxHealth: 50
-  enemyAttackPower: 50
+  enemyAttackPower: 33
   enemySprite: {fileID: 7384290322352760091, guid: 1a718cbcb9b7140278bd39c6ad0a363e,
     type: 3}
   enemyType: Warrior
@@ -36265,8 +36265,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyDisplayName: Pirate Guard
-  enemyMaxHealth: 50
-  enemyAttackPower: 100
+  enemyMaxHealth: 20
+  enemyAttackPower: 50
   enemySprite: {fileID: -5948806968594788206, guid: 6316e0a1587d44b0e9c338f02edb9d5a,
     type: 3}
   enemyType: Pawn
@@ -37980,7 +37980,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyDisplayName: Pirate Warrior
   enemyMaxHealth: 40
-  enemyAttackPower: 50
+  enemyAttackPower: 33
   enemySprite: {fileID: 7384290322352760091, guid: 1a718cbcb9b7140278bd39c6ad0a363e,
     type: 3}
   enemyType: Warrior
