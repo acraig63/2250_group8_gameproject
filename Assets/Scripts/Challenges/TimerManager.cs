@@ -12,8 +12,11 @@ public class TimerManager : MonoBehaviour
 
     public void StartTimer()
     {
-        timeRemaining = countdownTime;
-        isRunning = true;
+        if (isRunning == false)
+        {
+            timeRemaining = countdownTime;
+            isRunning = true;
+        }
     }
 
     public void StopTimer()
