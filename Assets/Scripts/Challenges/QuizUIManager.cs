@@ -79,7 +79,7 @@ public class QuizUIManager : MonoBehaviour
 
         if (correct)
         {
-            feedbackText.text = "✓ Correct! The smuggler has been defeated!";
+            feedbackText.text = "Correct! The smuggler has been defeated!";
             feedbackText.color = Color.green;
 
             // Defeat the NPC after a short delay so the player can read the feedback
@@ -87,7 +87,7 @@ public class QuizUIManager : MonoBehaviour
         }
         else
         {
-            feedbackText.text = "✗ Wrong! Try again.";
+            feedbackText.text = "Wrong! Try again.";
             feedbackText.color = Color.red;
 
             //  player can bump into the NPC again to retry

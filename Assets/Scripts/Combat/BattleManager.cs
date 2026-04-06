@@ -146,13 +146,13 @@ public class BattleManager : MonoBehaviour
 
         if (correct)
         {
-            feedbackText.text  = "✓ Correct! You dealt damage!";
+            feedbackText.text  = "Correct! You dealt damage!";
             feedbackText.color = Color.green;
             StartCoroutine(PlayerAttack());
         }
         else
         {
-            feedbackText.text  = "✗ Wrong! No damage dealt.";
+            feedbackText.text  = "Wrong! No damage dealt.";
             feedbackText.color = Color.red;
             // No damage — go straight to enemy turn
             StartCoroutine(EnemyTurn(1.2f));
