@@ -391,12 +391,12 @@ namespace DefaultNamespace
                     "What is wrong with this code?\nint x = \"5\";",
                     new List<string>
                     {
-                        "Wrong type assignment",
+                        "Wrong type",
                         "Missing semicolon",
                         "Syntax is correct",
                         "Variable not declared"
                     },
-                    "Wrong type assignment",
+                    "Wrong type",
                     25,
                     4,
                     "int cannot hold string"
@@ -490,8 +490,8 @@ namespace DefaultNamespace
 
                 new MultipleChoiceQuestion(
                     "Error?\nint 5 = x;",
-                    new List<string> { "Invalid variable name", "Correct", "Missing ;", "Wrong type" },
-                    "Invalid variable name",
+                    new List<string> { "Invalid var name", "Correct", "Missing ;", "Wrong type" },
+                    "Invalid var name",
                     25,
                     4,
                     "Variable names cannot start with number"
@@ -499,8 +499,8 @@ namespace DefaultNamespace
 
                 new MultipleChoiceQuestion(
                     "Issue?\nif(x = 5)",
-                    new List<string> { "Assignment instead of comparison", "Correct", "Missing ;", "Wrong keyword" },
-                    "Assignment instead of comparison",
+                    new List<string> { "Assignment instead", "Correct", "Missing ;", "Wrong keyword" },
+                    "Assignment instead",
                     25,
                     4,
                     "Use =="
