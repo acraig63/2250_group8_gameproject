@@ -10,8 +10,10 @@ public class PlayerController : MonoBehaviour
 
     public int MaxHealth { get; private set; } = 100;
     private int _currentHealth = 100;
-
-
+    
+    private Animator animator;
+    private SpriteRenderer sr;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -23,6 +25,9 @@ public class PlayerController : MonoBehaviour
         // Restore health from BattleData if returning from battle
         if (BattleData.PlayerCurrentHealth > 0)
             _currentHealth = BattleData.PlayerCurrentHealth;
+        
+        animator = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -31,6 +36,18 @@ public class PlayerController : MonoBehaviour
         float y = Input.GetAxisRaw("Vertical");
 
         movement = new Vector2(x, y).normalized;
+        
+        float move = movement.magnitude;
+        animator.SetFloat("Speed", move);
+        
+        if (movement.x > 0)
+        {
+            sr.flipX = false; // facing right
+        }
+        else if (movement.x < 0)
+        {
+            sr.flipX = true; // facing left
+        }
     }
 
     void FixedUpdate()
