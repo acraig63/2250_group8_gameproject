@@ -36,7 +36,7 @@ namespace DefaultNamespace
 
         // Scenes that use the minimap system.
         private static bool IsMinimapScene(string s)
-            => s == "SmugglersIsland" || s.StartsWith("Blackwater");
+            => s == "SmugglersIsland" || s.StartsWith("Blackwater") || s == "TwistedGardens";
 
         // void Awake()
         // {
@@ -45,9 +45,8 @@ namespace DefaultNamespace
 
         void Awake()
         {
-            // Only valid in SmugglersIsland — destroy immediately in any other scene.
-            if (SceneManager.GetActiveScene().name != "SmugglersIsland" && SceneManager.GetActiveScene().name != "StormbreakerIsland")
-
+            // Only valid in minimap-enabled scenes — destroy immediately elsewhere.
+            if (!IsMinimapScene(SceneManager.GetActiveScene().name))
             {
                 Destroy(gameObject);
                 return;
