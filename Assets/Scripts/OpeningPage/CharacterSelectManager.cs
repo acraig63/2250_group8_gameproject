@@ -18,6 +18,6 @@ public class CharacterSelectManager : MonoBehaviour
 
         Debug.Log("Selected: " + selectedCharacter);
 
-        SceneManager.LoadScene("StormbreakerIsland");
+        SceneManager.LoadScene("SmugglersIsland");
     }
 }
