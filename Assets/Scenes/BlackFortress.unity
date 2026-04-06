@@ -4367,11 +4367,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.StoryIntroUI
   introText: "Ye have entered the Black Fortress\u2026\n\nAn ancient stronghold where
-    only the cunning survive.\n\nA hostile guard stands watch within these ruins.\nDefeat
-    them to prove your strength.\n\nScattered across the fortress lie heavy crates.\nPush
-    one onto the marked green tile to unlock the path forward.\n\nThink carefully
-    \u2014 brute force alone will not be enough.\n\nComplete both tasks to advance.\n\nGood
-    luck, warrior."
+    only the cunning survive.\n\n3 hostile guard stands watch within these ruins.\nDefeat
+    them to prove your strength.\n\nScattered across the fortress lie these gaurds,
+    navigate around the map to find these enemies and beat them! Then go to the portal
+    at the end and advance to the next level.\n\nThink carefully, brute force alone
+    will not be enough.\n\nComplete all tasks to advance.\n\nGood luck, warrior."
   holdDuration: 30
   fadeDuration: 1.2
   panelColor: {r: 0.05, g: 0.07, b: 0.12, a: 0.92}
