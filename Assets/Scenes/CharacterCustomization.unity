@@ -630,7 +630,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterButton
   characterName: Richard
-  characterSprite: {fileID: 8882666270506729424, guid: 1416070fb60cd40aa88ba8a1371a9061,
+  characterPrefab: {fileID: 4366639678894556108, guid: 0064fdb3614264a018f20300f17e2610,
     type: 3}
 --- !u!1 &450953364
 GameObject:
@@ -916,7 +916,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterButton
   characterName: Rory
-  characterSprite: {fileID: 8882666270506729424, guid: 7486bb0446b2348d9918e4ca1d7f7c5a,
+  characterPrefab: {fileID: 6962346419067332597, guid: c1f87abe0afaa469891fcbe97303208c,
     type: 3}
 --- !u!1 &902416057
 GameObject:
@@ -1642,7 +1642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterButton
   characterName: Toby
-  characterSprite: {fileID: 8882666270506729424, guid: e596e9c8d583042babb0271b5b4f4877,
+  characterPrefab: {fileID: 3410228316715923610, guid: afc0ed3c2da5049dea95da376b5b39a9,
     type: 3}
 --- !u!1 &1474958830
 GameObject:
@@ -1791,7 +1791,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterButton
   characterName: Kabi
-  characterSprite: {fileID: 8882666270506729424, guid: b6ceae578699545c49de69452d5107aa,
+  characterPrefab: {fileID: 6556375629273320344, guid: 83fa9ec06c09d42afb0e358e29c88fa4,
     type: 3}
 --- !u!1 &1537952450
 GameObject:
@@ -2387,7 +2387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterButton
   characterName: Michael
-  characterSprite: {fileID: 8882666270506729424, guid: 1b733697d703944eea133f7bcabaefb4,
+  characterPrefab: {fileID: 8994483418662667129, guid: f8522e9313c164ceb83cea432fd7d8dd,
     type: 3}
 --- !u!1 &1998373213
 GameObject:

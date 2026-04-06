@@ -3,18 +3,21 @@ using UnityEngine.SceneManagement;
 
 public class CharacterSelectManager : MonoBehaviour
 {
+    public static GameObject selectedCharacterPrefab;
     public static string selectedCharacter;
-    public static Sprite selectedSprite;
     public static string selectedCharacterType;
 
-    public void SelectCharacter(string characterName, Sprite sprite)
+    public void SelectCharacter(GameObject prefab)
     {
-        selectedCharacter = characterName;
-        selectedSprite = sprite;
-        SceneManager.LoadScene("SmugglersIsland");
-        Debug.unityLogger.Log("selectedCharacter: " + sprite.name);
-        selectedCharacterType = sprite.name.Split('_')[0];
+        selectedCharacterPrefab = prefab;
+
+        selectedCharacter = prefab.name;              // MUST match sprite data
+        selectedCharacterType = prefab.name;          // same here
+
         PlayerManager.playerType = selectedCharacterType;
-        Debug.unityLogger.Log("selectedCharacterType: " + selectedCharacterType);
+
+        Debug.Log("Selected: " + selectedCharacter);
+
+        SceneManager.LoadScene("TwistedGardens");
     }
 }

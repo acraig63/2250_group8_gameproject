@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class CharacterButton : MonoBehaviour
 {
     public string characterName;
-    public Sprite characterSprite;
+    public GameObject characterPrefab;
 
     private CharacterSelectManager manager;
 
@@ -12,6 +12,6 @@ public class CharacterButton : MonoBehaviour
     {
         manager = FindObjectOfType<CharacterSelectManager>();
         GetComponent<Button>().onClick.AddListener(() => 
-            manager.SelectCharacter(characterName, characterSprite));
+            manager.SelectCharacter(characterPrefab));
     }
 }
