@@ -295,8 +295,11 @@ namespace DefaultNamespace
                                        new Vector2(0.5f, 0.5f), 1f);
 
             GameObject go = new GameObject("DroppedItemTemplate");
-            go.transform.localScale = new Vector3(1.5f, 1.5f, 1f);
-            go.SetActive(false);  // inactive = acts as a prefab
+            go.transform.localScale  = new Vector3(1.5f, 1.5f, 1f);
+            // CRITICAL: Keep ACTIVE — Instantiate preserves activeSelf, so an inactive
+            // template produces an inactive clone that never renders or triggers.
+            // Position far offscreen so the persistent template is invisible.
+            go.transform.position = new Vector3(-9999f, -9999f, 0f);
             DontDestroyOnLoad(go);
 
             SpriteRenderer sr = go.AddComponent<SpriteRenderer>();

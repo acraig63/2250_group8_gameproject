@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -54,49 +53,27 @@ namespace DefaultNamespace
 
         private static int SumStat(bool isAtk)
         {
-            // Use the direct static reference set by Level5InventoryBridge.
-            // This avoids FindObjectOfType returning null (canvas is inactive during Battle)
-            // or returning a different InventoryUI that exists in the Battle scene.
-            InventoryUI ui = Level5InventoryBridge.KnownInventoryUI;
-            if (ui == null)
-            {
-                // Fallback: search including inactive objects (canvas hidden during Battle).
-                ui = Object.FindObjectOfType<InventoryUI>(true);
-                Debug.LogWarning("[Level5EquipManager] KnownInventoryUI was null; " +
-                                 "fell back to FindObjectOfType → " + (ui == null ? "NULL" : ui.name));
-            }
-
-            Debug.Log("[Level5EquipManager] SumStat: ui=" + (ui == null ? "NULL" : ui.name));
-            if (ui == null) return 0;
-
-            // InventoryUI._inventory is private — access via reflection
-            FieldInfo invField = typeof(InventoryUI).GetField(
-                "_inventory", BindingFlags.NonPublic | BindingFlags.Instance);
-
-            if (invField == null)
-            {
-                Debug.LogWarning("[Level5EquipManager] InventoryUI._inventory field not found.");
-                return 0;
-            }
-
-            Inventory inv = invField.GetValue(ui) as Inventory;
-            Debug.Log("[Level5EquipManager] Inventory=" + inv +
-                      " itemCount=" + (inv?.Items != null ? inv.Items.Count.ToString() : "null"));
-            if (inv == null) return 0;
-
+            // Read directly from BlackwaterState.heldItems — NOT from InventoryUI.
+            //
+            // ROOT CAUSE OF OLD BUG: PlayerController.Start() calls
+            //   FindObjectOfType<InventoryUI>().Initialize(new Inventory(5))
+            // on every scene load, wiping the visual inventory. Reading from
+            // InventoryUI._inventory therefore always returns 0 after the first
+            // scene transition. heldItems is unaffected by that reset.
             int total = 0;
-            foreach (Item item in inv.Items)
+            foreach (string name in BlackwaterState.heldItems)
             {
-                Debug.Log("[Level5EquipManager] Checking item: '" + item.Name + "'");
-                if (_stats.TryGetValue(item.Name, out var bonus))
+                if (_stats.TryGetValue(name, out var bonus))
                 {
                     int contribution = isAtk ? bonus.atk : bonus.def;
-                    Debug.Log("[Level5EquipManager]   → matched, +" + contribution +
-                              (isAtk ? " ATK" : " DEF"));
+                    if (contribution != 0)
+                        Debug.Log("[Level5EquipManager] " + name + " +" + contribution +
+                                  (isAtk ? " ATK" : " DEF"));
                     total += contribution;
                 }
             }
-            Debug.Log("[Level5EquipManager] Total " + (isAtk ? "ATK" : "DEF") + " = " + total);
+            Debug.Log("[Level5EquipManager] Total " + (isAtk ? "ATK" : "DEF") + " = " + total +
+                      "  (heldItems=[" + string.Join(", ", BlackwaterState.heldItems) + "])");
             return total;
         }
 

@@ -261,6 +261,60 @@ namespace DefaultNamespace
         /// Spawns a single enemy NPC with EnemySpawner + Level5NPCReward.
         /// Returns immediately if the NPC was already defeated this session.
         /// </summary>
+        /// <summary>
+        /// Tries to load the Pawn_Idle_0 sprite from the Tiny Swords pack.
+        /// Works in the Unity Editor (AssetDatabase). Falls back to null in builds.
+        /// </summary>
+        private static Sprite LoadPawnSprite()
+        {
+#if UNITY_EDITOR
+            UnityEngine.Object[] assets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(
+                "Assets/Tiny Swords (Free Pack)/Units/Purple Units/Pawn/Pawn_Idle.png");
+            if (assets != null)
+            {
+                foreach (UnityEngine.Object obj in assets)
+                    if (obj is Sprite s && s.name == "Pawn_Idle_0")
+                        return s;
+            }
+            Debug.LogWarning("[Level5NPCSetup] Pawn_Idle_0 sprite not found at expected path.");
+#endif
+            return null;
+        }
+
+        /// <summary>
+        /// Tries to load the Pawn animator controller.
+        /// Works in the Unity Editor only.
+        /// </summary>
+        private static RuntimeAnimatorController LoadPawnController()
+        {
+#if UNITY_EDITOR
+            var ctrl = UnityEditor.AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
+                "Assets/Tiny Swords (Free Pack)/Units/Purple Units/Pawn/Pawn_Idle_0 1.controller");
+            if (ctrl == null)
+            {
+                // Try alternate name
+                ctrl = UnityEditor.AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
+                    "Assets/Tiny Swords (Free Pack)/Units/Purple Units/Pawn/Pawn_Idle_0.controller");
+            }
+            return ctrl;
+#else
+            return null;
+#endif
+        }
+
+        private static Color NpcTint(string name)
+        {
+            switch (name)
+            {
+                case "Blackwater Armsman":   return new Color(1f, 0.7f, 0.7f);   // red tint
+                case "Blackwater Cook":      return new Color(1f, 0.85f, 0.7f);  // orange tint
+                case "Blackwater Jailer":    return new Color(0.7f, 0.7f, 0.7f); // gray tint
+                case "Blackwater Navigator": return new Color(0.7f, 0.7f, 1f);   // blue tint
+                case "Captain Blackwater":   return new Color(0.8f, 0.4f, 0.4f); // dark red tint
+                default:                     return Color.white;
+            }
+        }
+
         public static void SpawnEnemyNPC(
             string name, float x, float y,
             int hp, int attack, int questionLevel,
@@ -272,33 +326,65 @@ namespace DefaultNamespace
             GameObject npcObj = new GameObject(name);
             npcObj.transform.position = new Vector3(x, y, 0f);
 
-            // ── SpriteRenderer ────────────────────────────────────────────
+            // ── Sprite (try Pawn_Idle_0, fall back to pixel art) ──────────
+            Sprite pawnSprite  = LoadPawnSprite();
+            Sprite displaySprite;
+
             SpriteRenderer sr = npcObj.AddComponent<SpriteRenderer>();
-            sr.sprite       = GetNPCSprite(name);
-            sr.sortingOrder = 3;
-            npcObj.transform.localScale = new Vector3(2f, 2f, 1f);
+            sr.sortingOrder = 5;  // matches SmugglersIsland EnemyNpc1
 
-            // ── Collider + Rigidbody ──────────────────────────────────────
-            BoxCollider2D col = npcObj.AddComponent<BoxCollider2D>();
-            col.isTrigger = true;
-            col.size      = new Vector2(2f, 2f);
+            if (pawnSprite != null)
+            {
+                sr.sprite = pawnSprite;
+                sr.color  = NpcTint(name);
+                npcObj.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f); // matches SmugglersIsland
+                displaySprite = pawnSprite;
 
+                // ── Animator (editor only) ────────────────────────────────
+                RuntimeAnimatorController ctrl = LoadPawnController();
+                if (ctrl != null)
+                {
+                    Animator anim = npcObj.AddComponent<Animator>();
+                    anim.runtimeAnimatorController = ctrl;
+                }
+            }
+            else
+            {
+                // Fallback: pixel-art sprite with colour baked in
+                sr.sprite = GetNPCSprite(name);
+                sr.color  = Color.white;
+                npcObj.transform.localScale = new Vector3(2f, 2f, 1f);
+                displaySprite = sr.sprite;
+                Debug.Log("[Level5NPCSetup] Using pixel-art fallback sprite for " + name);
+            }
+
+            // ── CapsuleCollider2D (matches SmugglersIsland) ───────────────
+            CapsuleCollider2D col = npcObj.AddComponent<CapsuleCollider2D>();
+            col.isTrigger  = true;
+            col.size        = new Vector2(2f, 2f);
+            col.direction   = CapsuleDirection2D.Vertical;
+
+            // ── Rigidbody2D Dynamic, gravity=0 (matches SmugglersIsland) ──
             Rigidbody2D rb = npcObj.AddComponent<Rigidbody2D>();
-            rb.bodyType = RigidbodyType2D.Static;
+            rb.bodyType     = RigidbodyType2D.Dynamic;
+            rb.gravityScale = 0f;
+            rb.constraints  = RigidbodyConstraints2D.FreezeRotation;
 
             // ── EnemySpawner via reflection ───────────────────────────────
             EnemySpawner spawner = npcObj.AddComponent<EnemySpawner>();
             var flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
             Type t = typeof(EnemySpawner);
 
-            SetField(spawner, t, "enemyDisplayName", name,    flags);
-            SetField(spawner, t, "enemyMaxHealth",   hp,      flags);
-            SetField(spawner, t, "enemyAttackPower", attack,  flags);
-            SetField(spawner, t, "questionLevel",    questionLevel, flags);
+            SetField(spawner, t, "enemyDisplayName", name,                            flags);
+            SetField(spawner, t, "enemyMaxHealth",   hp,                              flags);
+            SetField(spawner, t, "enemyAttackPower", attack,                          flags);
+            SetField(spawner, t, "questionLevel",    questionLevel,                   flags);
             SetField(spawner, t, "returnScene",      SceneManager.GetActiveScene().name, flags);
-            SetField(spawner, t, "enemyType",        "Warrior", flags);
-            SetField(spawner, t, "enemySprite",      GetNPCSprite(name), flags);
-            // enemyNpc left null — OnPlayerWon() calls Destroy(null) which is safe
+            SetField(spawner, t, "enemyType",        "Pawn",                          flags); // matches SmugglersIsland
+            SetField(spawner, t, "enemySprite",      displaySprite,                   flags); // shown in battle
+            SetField(spawner, t, "enemyNpc",         npcObj,                          flags); // self-ref (matches SmugglersIsland)
+
+            Debug.Log("[Level5NPCSetup] Spawned " + name + " pawnSprite=" + (pawnSprite != null));
 
             // ── Reward component ──────────────────────────────────────────
             Level5NPCReward reward = npcObj.AddComponent<Level5NPCReward>();
@@ -506,6 +592,11 @@ namespace DefaultNamespace
         {
             if (!other.CompareTag("Player")) return;
             BlackwaterState.collectedItems.Add(trackedItemName);
+            // Also track in heldItems so Level5EquipManager can apply stat bonuses
+            // even after PlayerController.Start() wipes the visual InventoryUI.
+            BlackwaterState.heldItems.Add(trackedItemName);
+            Debug.Log("[DeckItemTracker] Picked up '" + trackedItemName + "' → heldItems=" +
+                      string.Join(", ", BlackwaterState.heldItems));
         }
     }
 }

@@ -148,6 +148,9 @@ namespace DefaultNamespace
 
             // ── Death handler ─────────────────────────────────────────────────
             Level5DeathHandler.EnsureExists();
+
+            // ── Item drop handler ─────────────────────────────────────────────
+            Level5ItemDropHandler.EnsureExists();
         }
 
         // -----------------------------------------------------------------------
@@ -455,74 +458,69 @@ namespace DefaultNamespace
                         new Vector2(44f, 36f), "door_marker");
 
             // ══════════════════════════════════════════════════════════════════
-            // REDESIGNED MAZE — replaces the old 9-wall simple layout
+            // REDESIGNED MAZE  —  replaces all previous maze walls
             //
-            // Interior bounds (main hold): y=31..55, x=23..56 (34×25 area)
-            // Player spawns at (39,40) when entering from flagship portal.
-            // Portal back to flagship sits at tile (39,38) — keep clear.
+            // Hull interior (main section): y=31..55, x=23..56
+            // Player spawns at (39,40) from the Flagship portal at tile (39,38).
+            // Portal back to Flagship stays at (39,38) — keep clear.
             //
-            // CORRECT PATH through maze:
-            //   Start (39,40)
-            //   → NORTH along centre column to y=42 (avoid portal at y=38)
-            //   → WEST through gap between V1(x=35,y=37-41) and V3(x=35,y=43-55)
-            //     at y=42 to reach x≈30
-            //   → SOUTH through x=32-34 corridor (left of H6 at y=37.5 x=23-31,
-            //     right of V1 at x=35) down to y=36
-            //   → EAST along y=36 to MazeKeyDoor at (39,35)
-            //   → Through MazeKeyDoor (requires ≥4 key pieces)
-            //   → Descend to GAUNTLET at y=33
-            //   → Walk EAST along gauntlet (31 units) to GauntletReward at (55,33)
+            // ─── CORRECT PATH ─────────────────────────────────────────────────
+            //   1. Spawn (39,40)
+            //   2. Go NORTH to y≈53 (no walls block x=39 heading north)
+            //   3. Go WEST at y=53 to x=24
+            //      (W_WV ends at y=50, so the west passage opens above y=50)
+            //   4. Go SOUTH in the left corridor (x=24, y=53→36)
+            //      (W_SB covers x=27–55; x=24 is in the gap x=23–26)
+            //   5. Go EAST at y=36 from x=24 to x=38 → reach MazeKeyDoor (39,35)
+            //   6. Pass through MazeKeyDoor (requires ≥4 key pieces)
+            //   7. Descend into the GAUNTLET at y=33
+            //   8. Walk EAST along gauntlet to GauntletReward at (55,33)
             //
-            // DEAD ENDS:
-            //   A) Going straight EAST from spawn at y=38-41 → blocked by V2/H7
-            //   B) Going NORTH beyond y=51 in centre → blocked by H3
-            //   C) Upper-left pocket (x=23-35, y=48-55) → no exit downward
-            //   D) Going west to far-left (x=23) column below H6 → dead end
+            // ─── DEAD ENDS ────────────────────────────────────────────────────
+            //   A. Going south from spawn:   W_SB at y=37 (x=27–55) blocks directly
+            //   B. Going east from spawn:    east wing dead end (x=46–56, y=37–53),
+            //                                 capped at y=49 by W_EC
+            //   C. Going west from spawn at y<51: W_WV at x=30 (y=37–50) blocks;
+            //                                 must detour north past y=50 first
+            //
+            // ─── WALLS ────────────────────────────────────────────────────────
+            //   W_SB  — South Blocker:    y=37,  x=27–55   (gap x=23–26 = correct exit)
+            //   W_EV  — East Vertical:    x=46,  y=37–53   (east dead-end divider)
+            //   W_EC  — East Cap:         y=49,  x=46–56   (caps east dead end)
+            //   W_WV  — West Vertical:    x=30,  y=37–50   (forces north detour)
+            //   + fixed separator at y=35 (no gaps with MazeKeyDoor)
             // ══════════════════════════════════════════════════════════════════
 
-            // ── Maze walls (solid BoxCollider2D, NOT trigger) ─────────────────
+            // W_SB: blocks going south from spawn toward MazeKeyDoor directly
+            // Covers x=27–55; gap at x=23–26 is the correct southward passage.
+            CreateWall(41f,  37f,  28f, 1.5f);   // center=(41,37), w=28 → x=27–55
 
-            // HORIZONTAL walls (block vertical movement):
-            CreateWall(26f,  43.5f,  6f,  1.5f);  // H1 upper-left  (x=23-29, y=43.5)
-            CreateWall(49f,  43.5f, 12f,  1.5f);  // H2 upper-right (x=43-55, y=43.5)
-            CreateWall(39f,  51.5f, 10f,  1.5f);  // H3 upper-centre (x=34-44, y=51.5)
-            CreateWall(26f,  53.5f,  6f,  1.5f);  // H4 far-upper-left dead end
-            CreateWall(51f,  53.5f,  8f,  1.5f);  // H5 far-upper-right dead end
-            CreateWall(27f,  37.5f,  8f,  1.5f);  // H6 lower-left (x=23-31, y=37.5)
-            CreateWall(50f,  37.5f, 12f,  1.5f);  // H7 lower-right (x=44-56, y=37.5)
-            CreateWall(32f,  47.5f,  6f,  1.5f);  // H8 left-mid upper (x=29-35, y=47.5)
-            CreateWall(49f,  47.5f,  8f,  1.5f);  // H9 right-mid upper (x=45-53, y=47.5)
+            // W_EV: east dead-end divider — separates the east wing from spawn area
+            CreateWall(46f,  45f,  1.5f, 16f);   // center=(46,45), h=16 → x=46, y=37–53
 
-            // VERTICAL walls (block horizontal movement):
-            CreateWall(35f,  39f,   1.5f,  4f);   // V1 left of spawn zone  (x=35, y=37-41)
-            CreateWall(43f,  39f,   1.5f,  4f);   // V2 right of spawn zone (x=43, y=37-41)
-            CreateWall(35f,  49f,   1.5f, 12f);   // V3 upper-left divider  (x=35, y=43-55)
-            CreateWall(43f,  49f,   1.5f, 12f);   // V4 upper-right divider (x=43, y=43-55)
-            CreateWall(26f,  40.5f, 1.5f,  5f);   // V5 far-left lower      (x=26, y=38-43)
-            CreateWall(54f,  40.5f, 1.5f,  5f);   // V6 far-right lower     (x=54, y=38-43)
-            CreateWall(32f,  46f,   1.5f,  5f);   // V7 left-centre upper   (x=32, y=43.5-48.5)
-            CreateWall(46f,  46f,   1.5f,  5f);   // V8 right-centre upper  (x=46, y=43.5-48.5)
+            // W_EC: caps the east dead-end at the top
+            CreateWall(51f,  49f,  10f,  1.5f);  // center=(51,49), w=10 → y=49, x=46–56
 
-            // ── Maze-to-gauntlet separator at y=35 ───────────────────────────
-            // Solid wall spanning full width except for MazeKeyDoor gap at x=37-41.
-            CreateWall(29f,  35f,   14f,  1.5f);  // Left part  (x=22-36)
-            CreateWall(48f,  35f,   14f,  1.5f);  // Right part (x=41-55)
+            // W_WV: prevents cutting west from spawn to the left corridor below y=50
+            // Player must go NORTH past y=50 before going west to x=24.
+            CreateWall(30f,  43.5f, 1.5f, 13f);  // center=(30,43.5), h=13 → x=30, y=37–50
 
-            // ── MazeKeyDoor — blocks the only passage to the gauntlet ─────────
-            // Requires hasMazeKey (≥4 key pieces from the 4 NPC rooms).
+            // ── Maze-to-gauntlet separator at y=35 (gap-free with MazeKeyDoor) ──
+            // MazeKeyDoor.Create() spawns a 3×3 BoxCollider2D at x=39.
+            // Left wall ends at x=39; right wall starts at x=39 → walls and door
+            // overlap at the centre, so there is no gap a player can slip through.
+            CreateWall(30.5f, 35f, 17f, 1.5f);   // left:  center=(30.5,35), w=17 → x=22–39
+            CreateWall(47.5f, 35f, 17f, 1.5f);   // right: center=(47.5,35), w=17 → x=39–56
+
+            // ── MazeKeyDoor ────────────────────────────────────────────────────
             MazeKeyDoor.Create(new Vector3(39f, 35f, 0f));
 
-            // ── Gauntlet corridor (y=31..34 strip of the main hold) ───────────
+            // ── Gauntlet corridor (y=31..34) ────────────────────────────────────
             // 31-unit horizontal run: x=24 to x=54 at y=33.
-            // Lava tiles placed every 2 units using GauntletLavaHazard.
-            //
             // GauntletLavaHazard bypasses PlayerHazardShield — DEF stats do NOT
-            // reduce this damage. 8 dmg/tick at 0.5 s intervals = 16 dmg/s.
-            //   With Speed Boots (1.5×): corridor takes ~4 s → ~64 dmg (survives w/ 100 HP)
-            //   Without Speed Boots    : corridor takes ~6 s → ~96 dmg (near-lethal)
-            //
-            // Player enters the gauntlet at approximately x=39 after passing MazeKeyDoor.
-            // GauntletReward sits at x=55, y=33 — east end of the corridor.
+            // apply. 8 dmg/tick @ 0.5 s = 16 dmg/s.
+            //   With Speed Boots (1.5×): ~4 s through → ~64 dmg (survives at 100 HP)
+            //   Without Speed Boots    : ~6 s through → ~96 dmg (near-lethal)
             for (int gx = 24; gx <= 54; gx += 2)
                 GauntletLavaHazard.Create(new Vector3(gx, 33f, 0f));
 

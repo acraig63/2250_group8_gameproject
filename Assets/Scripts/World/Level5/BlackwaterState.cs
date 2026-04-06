@@ -8,6 +8,12 @@ namespace DefaultNamespace
         public static HashSet<string> defeatedNPCs      = new HashSet<string>();
         public static HashSet<string> collectedKeyPieces = new HashSet<string>();
         public static HashSet<string> collectedItems     = new HashSet<string>();
+        /// <summary>
+        /// Items the player currently holds for stat purposes (ATK/DEF bonuses).
+        /// Written by DeckItemTracker on pickup, cleared by Level5ItemDropHandler on drop.
+        /// NOT affected by PlayerController.Initialize() wiping the InventoryUI.
+        /// </summary>
+        public static HashSet<string> heldItems = new HashSet<string>();
 
         public static bool  hasSpeedBoots      = false;
         public static bool  hasHazardImmunity  = false;
@@ -47,6 +53,7 @@ namespace DefaultNamespace
             defeatedNPCs.Clear();
             collectedKeyPieces.Clear();
             collectedItems.Clear();
+            heldItems.Clear();
 
             hasSpeedBoots     = false;
             hasHazardImmunity = false;
