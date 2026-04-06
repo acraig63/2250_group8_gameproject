@@ -3,23 +3,6 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Attached to the Captain Blackwater NPC. After the player returns from
-    /// a battle quiz round (detected via BattleData.ReturningFromBattle), spawns
-    /// a ring of hazard objects that expands outward.
-    ///
-    /// DETECTION APPROACH:
-    /// Using _playerWasNull to detect "player just appeared" is not viable here
-    /// because the scene reloads after each battle, creating a fresh instance of
-    /// this component with _playerWasNull = false. Instead we use
-    /// BattleData.ReturningFromBattle, which is set to true for exactly one frame
-    /// by BattleResultHandler.Start() when the player returns victorious.
-    /// Combined with BattleData.EnemyName == "Captain Blackwater" this reliably
-    /// identifies the return from a boss battle round.
-    ///
-    /// Result: a final hazard wave spawns when the player wins the boss fight,
-    /// before Level5NPCReward.OnDestroy fires in the next frame.
-    /// </summary>
     public class BossHazardWave : MonoBehaviour
     {
         private float   _cooldown     = 0f;
@@ -39,7 +22,6 @@ namespace DefaultNamespace
                 return;
             }
 
-            // Detect player returning victorious from Captain Blackwater battle
             if (!_waveThisReturn &&
                 BattleData.ReturningFromBattle &&
                 BattleData.EnemyName == "Captain Blackwater")
@@ -49,7 +31,7 @@ namespace DefaultNamespace
                 _cooldown = 5f;
             }
 
-            // Reset the per-return guard once ReturningFromBattle clears
+            // reset guard
             if (!BattleData.ReturningFromBattle)
                 _waveThisReturn = false;
         }
@@ -121,11 +103,6 @@ namespace DefaultNamespace
         }
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // Individual hazard piece — sends damage to any player that stays inside it.
-    // Calls SendMessage("TakeDamage", int) on the player, matching HazardZone's
-    // exact signature. Intercepted by PlayerHazardShield if the player is immune.
-    // ────────────────────────────────────────────────────────────────────────────
     public class BossHazardPiece : MonoBehaviour
     {
         private void OnTriggerStay2D(Collider2D other)

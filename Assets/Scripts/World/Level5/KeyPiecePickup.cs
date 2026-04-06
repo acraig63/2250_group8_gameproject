@@ -2,18 +2,12 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Collectible key fragment dropped by defeated NPCs.
-    /// SpawnKeyPiece() is called by Level5NPCReward.OnDestroy().
-    /// ResetPieceCounter() is called by BlackwaterState.Reset() on death.
-    /// </summary>
     public class KeyPiecePickup : MonoBehaviour
     {
         public int pieceId;
 
         private static int _nextPieceId = 0;
 
-        /// <summary>Resets the piece ID counter. Call from BlackwaterState.Reset().</summary>
         public static void ResetPieceCounter()
         {
             _nextPieceId = 0;

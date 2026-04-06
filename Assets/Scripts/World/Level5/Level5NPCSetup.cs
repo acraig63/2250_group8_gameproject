@@ -1,44 +1,3 @@
-// ============================================================
-// READINGS FROM STEP 1 (teammate files)
-// ============================================================
-// EnemySpawner fields found:
-//   enemyDisplayName (string, private SerializeField)
-//   enemyMaxHealth   (int,    private SerializeField)
-//   enemyAttackPower (int,    private SerializeField)
-//   enemySprite      (Sprite, private SerializeField)
-//   enemyType        (string, private SerializeField)
-//   enemyNpc         (GameObject, private SerializeField)
-//   questionLevel    (int,    private SerializeField)
-//   returnScene      (string, private SerializeField)
-//
-// ItemPickup fields found:
-//   itemId, itemName, itemDescription, goldValue, rarity, itemType,
-//   worldSprite, baseDamage, weaponType, clothingSlot, defenseBonus
-//   Public method: SetItemData(Item item, Sprite sprite)
-//   Gold handled via ItemType.Treasure → InventoryUI.AddGold(goldValue)
-//
-// HazardZone SendMessage signature:
-//   SendMessage("TakeDamage", int damagePerTick, DontRequireReceiver)
-//   Parameter type: int
-//
-// PlayerController.TakeDamage exists: NO
-//   PlayerHazardShield is therefore the sole TakeDamage handler on the player.
-//
-// Item constructors:
-//   Weapon(id, name, desc, goldValue, rarity, baseDamage, weaponType)
-//   Clothing(id, name, desc, goldValue, rarity, slot, defenseBonus)
-//   TreasureItem(id, name, desc, goldValue, rarity, itemType)
-//
-// Scene names confirmed from BlackwaterSceneBuilder.cs:
-//   BlackwaterFlagship (main deck — NOT BlackwaterMainDeck)
-//   BlackwaterArmory   (NOTE: no 'u' — spec says Armoury but builder uses Armory)
-//   BlackwaterMessHall, BlackwaterBrig, BlackwaterNavigationRoom,
-//   BlackwaterCaptainsQuarters, BlackwaterLowerDeck
-//
-// Portal: NO SetPendingSpawn method. Use reflection on private static fields
-//   _pendingSpawn (Vector2) and _hasPendingSpawn (bool).
-// ============================================================
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -49,27 +8,17 @@ namespace DefaultNamespace
 {
     public static class Level5NPCSetup
     {
-        // ----------------------------------------------------------------
-        // Pixel-sprite helpers
-        // ----------------------------------------------------------------
-
         private static readonly Dictionary<string, Sprite> _spriteCache =
             new Dictionary<string, Sprite>();
 
-        /// <summary>
-        /// Creates (or retrieves from cache) a pixel-art Sprite.
-        /// drawFunc receives a transparent Texture2D and should paint on it;
-        /// Apply() is called automatically after drawFunc returns.
-        /// </summary>
         private static Sprite CreatePixelSprite(string key, int size,
             System.Action<Texture2D> drawFunc)
         {
             if (_spriteCache.TryGetValue(key, out Sprite cached)) return cached;
 
             Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-            tex.filterMode = FilterMode.Point;  // crisp pixel art
+            tex.filterMode = FilterMode.Point;
 
-            // Start fully transparent
             Color[] clear = new Color[size * size];
             for (int i = 0; i < clear.Length; i++) clear[i] = Color.clear;
             tex.SetPixels(clear);
@@ -83,7 +32,6 @@ namespace DefaultNamespace
             return spr;
         }
 
-        // Fills a solid rectangle on tex (y=0 is bottom).
         private static void FillPx(Texture2D tex, int x0, int y0, int x1, int y1, Color c)
         {
             for (int y = y0; y <= y1; y++)
@@ -102,72 +50,53 @@ namespace DefaultNamespace
                 Color silver = new Color(0.75f, 0.78f, 0.85f);
                 Color gold   = new Color(1f, 0.82f, 0.1f);
 
-                // ── Base humanoid silhouette (16×16, y=0 bottom) ──────
-                // Legs: rows 1-4, cols 5-6 and 9-10
                 FillPx(tex, 5, 1, 6, 4, body);
                 FillPx(tex, 9, 1, 10, 4, body);
-                // Belt/waist: row 5, cols 5-10
                 FillPx(tex, 5, 5, 10, 5, dark);
-                // Torso: rows 6-10, cols 4-11
                 FillPx(tex, 4, 6, 11, 10, body);
-                // Neck: rows 10-11, cols 7-8
                 FillPx(tex, 7, 10, 8, 11, skin);
-                // Head: rows 11-14, cols 5-10
                 FillPx(tex, 5, 11, 10, 14, skin);
-                // Eyes
                 tex.SetPixel(6, 13, black);
                 tex.SetPixel(9, 13, black);
 
-                // ── Per-NPC accessories ───────────────────────────────
                 switch (npcName)
                 {
                     case "Blackwater Armsman":
-                        // Helmet (dark) on top of head
                         FillPx(tex, 4, 14, 11, 15, dark);
                         FillPx(tex, 5, 15, 10, 15, dark);
-                        // Sword on right: diagonal
                         for (int i = 0; i < 6; i++)
                         { tex.SetPixel(12 + (i > 3 ? 1 : 0), 9 - i, silver); }
                         tex.SetPixel(12, 9, silver); tex.SetPixel(13, 9, silver);
                         break;
 
                     case "Blackwater Cook":
-                        // Chef hat: wide white block above head
                         FillPx(tex, 4, 14, 11, 15, Color.white);
                         FillPx(tex, 6, 15, 9, 15, Color.white);
-                        // Apron: white stripe down torso center
                         FillPx(tex, 7, 6, 8, 10, Color.white);
                         break;
 
                     case "Blackwater Jailer":
-                        // Dark cap
                         FillPx(tex, 4, 14, 11, 15, dark);
-                        // Key shape hanging at left hip
-                        FillPx(tex, 2, 5, 3, 7, gold);    // key handle
-                        tex.SetPixel(2, 8, gold);          // key bow
+                        FillPx(tex, 2, 5, 3, 7, gold);
+                        tex.SetPixel(2, 8, gold);
                         tex.SetPixel(3, 8, gold);
                         tex.SetPixel(1, 8, gold);
                         tex.SetPixel(2, 9, gold);
                         break;
 
                     case "Blackwater Navigator":
-                        // Blue captain's hat
                         FillPx(tex, 3, 14, 12, 15, body);
-                        // Compass: small circle on chest
                         tex.SetPixel(7, 8, gold); tex.SetPixel(8, 8, gold);
                         tex.SetPixel(6, 7, gold); tex.SetPixel(9, 7, gold);
                         tex.SetPixel(7, 6, gold); tex.SetPixel(8, 6, gold);
                         break;
 
                     case "Captain Blackwater":
-                        // Tricorn hat (dark red + gold trim)
                         FillPx(tex, 3, 14, 12, 15, dark);
                         FillPx(tex, 5, 15, 10, 15, dark);
                         tex.SetPixel(3, 15, gold); tex.SetPixel(12, 15, gold);
-                        // Gold epaulettes on shoulders
                         FillPx(tex, 3, 10, 4, 10, gold);
                         FillPx(tex, 11, 10, 12, 10, gold);
-                        // Coat collar (dark)
                         FillPx(tex, 4, 9, 5, 10, dark);
                         FillPx(tex, 10, 9, 11, 10, dark);
                         break;
@@ -191,61 +120,49 @@ namespace DefaultNamespace
                 switch (itemName)
                 {
                     case "Pirate Cutlass":
-                        // Blade: diagonal silver line (bottom-left to top-right)
                         for (int i = 0; i < 11; i++)
                         {
                             tex.SetPixel(3 + i, 3 + i, silver);
                             if (i < 10) tex.SetPixel(4 + i, 3 + i, silver);
                         }
-                        // Guard (crosspiece)
                         FillPx(tex, 2, 5, 5, 6, dark);
-                        // Hilt
                         FillPx(tex, 2, 2, 4, 4, brown);
                         break;
 
                     case "Iron Shield Vest":
-                        // Hexagonal shield shape
                         FillPx(tex, 4, 2, 11, 13, gray);
                         FillPx(tex, 2, 5, 13, 10, gray);
-                        // Darker border
                         FillPx(tex, 4, 2, 11, 2, dark);
                         FillPx(tex, 4, 13, 11, 13, dark);
                         FillPx(tex, 2, 5, 2, 10, dark);
                         FillPx(tex, 13, 5, 13, 10, dark);
-                        // Center cross
                         FillPx(tex, 7, 4, 8, 11, dark);
                         FillPx(tex, 4, 7, 11, 8, dark);
                         break;
 
                     case "Sea Boots":
-                        // Boot silhouette: foot + shaft
-                        FillPx(tex, 3, 1, 12, 4, brown);    // foot
-                        FillPx(tex, 3, 4, 7, 12, brown);    // shaft
-                        FillPx(tex, 8, 1, 12, 2, dark);     // sole edge
-                        FillPx(tex, 3, 12, 7, 13, dark);    // cuff
+                        FillPx(tex, 3, 1, 12, 4, brown);
+                        FillPx(tex, 3, 4, 7, 12, brown);
+                        FillPx(tex, 8, 1, 12, 2, dark);
+                        FillPx(tex, 3, 12, 7, 13, dark);
                         break;
 
                     case "Coral Ring":
-                        // Circle outline in cyan
                         for (int x = 4; x <= 11; x++) { tex.SetPixel(x, 3,  cyan); tex.SetPixel(x, 12, cyan); }
                         for (int y = 4; y <= 11; y++) { tex.SetPixel(3,  y,  cyan); tex.SetPixel(12, y, cyan); }
-                        // Corners
                         tex.SetPixel(4, 4, cyan); tex.SetPixel(11, 4, cyan);
                         tex.SetPixel(4, 11, cyan); tex.SetPixel(11, 11, cyan);
-                        // Inner ring (darker)
                         for (int x = 5; x <= 10; x++) { tex.SetPixel(x, 4,  dcyan); tex.SetPixel(x, 11, dcyan); }
                         for (int y = 5; y <= 10; y++) { tex.SetPixel(4,  y,  dcyan); tex.SetPixel(11, y, dcyan); }
                         break;
 
                     case "Gold Coins":
-                        // Three stacked coin circles
-                        FillPx(tex, 5, 1, 10, 5, gold);    // bottom coin
+                        FillPx(tex, 5, 1, 10, 5, gold);
                         FillPx(tex, 3, 1, 4, 5, gold); FillPx(tex, 11, 1, 12, 5, gold);
-                        FillPx(tex, 5, 5, 10, 9, gold);    // middle coin
+                        FillPx(tex, 5, 5, 10, 9, gold);
                         FillPx(tex, 3, 5, 4, 9, gold); FillPx(tex, 11, 5, 12, 9, gold);
-                        FillPx(tex, 5, 9, 10, 13, gold);   // top coin
+                        FillPx(tex, 5, 9, 10, 13, gold);
                         FillPx(tex, 3, 9, 4, 13, gold); FillPx(tex, 11, 9, 12, 13, gold);
-                        // Dark edge on each coin
                         for (int x = 3; x <= 12; x++) { tex.SetPixel(x, 1, dgold); tex.SetPixel(x, 13, dgold); }
                         for (int y = 1; y <= 13; y++) { tex.SetPixel(3, y, dgold); tex.SetPixel(12, y, dgold); }
                         break;
@@ -253,18 +170,6 @@ namespace DefaultNamespace
             });
         }
 
-        // ----------------------------------------------------------------
-        // NPC spawning
-        // ----------------------------------------------------------------
-
-        /// <summary>
-        /// Spawns a single enemy NPC with EnemySpawner + Level5NPCReward.
-        /// Returns immediately if the NPC was already defeated this session.
-        /// </summary>
-        /// <summary>
-        /// Tries to load the Pawn_Idle_0 sprite from the Tiny Swords pack.
-        /// Works in the Unity Editor (AssetDatabase). Falls back to null in builds.
-        /// </summary>
         private static Sprite LoadPawnSprite()
         {
 #if UNITY_EDITOR
@@ -281,10 +186,6 @@ namespace DefaultNamespace
             return null;
         }
 
-        /// <summary>
-        /// Tries to load the Pawn animator controller.
-        /// Works in the Unity Editor only.
-        /// </summary>
         private static RuntimeAnimatorController LoadPawnController()
         {
 #if UNITY_EDITOR
@@ -292,7 +193,6 @@ namespace DefaultNamespace
                 "Assets/Tiny Swords (Free Pack)/Units/Purple Units/Pawn/Pawn_Idle_0 1.controller");
             if (ctrl == null)
             {
-                // Try alternate name
                 ctrl = UnityEditor.AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
                     "Assets/Tiny Swords (Free Pack)/Units/Purple Units/Pawn/Pawn_Idle_0.controller");
             }
@@ -322,25 +222,23 @@ namespace DefaultNamespace
         {
             if (BlackwaterState.defeatedNPCs.Contains(name)) return;
 
-            // ── Create root object ────────────────────────────────────────
             GameObject npcObj = new GameObject(name);
             npcObj.transform.position = new Vector3(x, y, 0f);
 
-            // ── Sprite (try Pawn_Idle_0, fall back to pixel art) ──────────
+            // try Pawn_Idle_0, fall back to pixel art
             Sprite pawnSprite  = LoadPawnSprite();
             Sprite displaySprite;
 
             SpriteRenderer sr = npcObj.AddComponent<SpriteRenderer>();
-            sr.sortingOrder = 5;  // matches SmugglersIsland EnemyNpc1
+            sr.sortingOrder = 5;
 
             if (pawnSprite != null)
             {
                 sr.sprite = pawnSprite;
                 sr.color  = NpcTint(name);
-                npcObj.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f); // matches SmugglersIsland
+                npcObj.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
                 displaySprite = pawnSprite;
 
-                // ── Animator (editor only) ────────────────────────────────
                 RuntimeAnimatorController ctrl = LoadPawnController();
                 if (ctrl != null)
                 {
@@ -350,7 +248,6 @@ namespace DefaultNamespace
             }
             else
             {
-                // Fallback: pixel-art sprite with colour baked in
                 sr.sprite = GetNPCSprite(name);
                 sr.color  = Color.white;
                 npcObj.transform.localScale = new Vector3(2f, 2f, 1f);
@@ -358,19 +255,16 @@ namespace DefaultNamespace
                 Debug.Log("[Level5NPCSetup] Using pixel-art fallback sprite for " + name);
             }
 
-            // ── CapsuleCollider2D (matches SmugglersIsland) ───────────────
             CapsuleCollider2D col = npcObj.AddComponent<CapsuleCollider2D>();
             col.isTrigger  = true;
             col.size        = new Vector2(2f, 2f);
             col.direction   = CapsuleDirection2D.Vertical;
 
-            // ── Rigidbody2D Dynamic, gravity=0 (matches SmugglersIsland) ──
             Rigidbody2D rb = npcObj.AddComponent<Rigidbody2D>();
             rb.bodyType     = RigidbodyType2D.Dynamic;
             rb.gravityScale = 0f;
             rb.constraints  = RigidbodyConstraints2D.FreezeRotation;
 
-            // ── EnemySpawner via reflection ───────────────────────────────
             EnemySpawner spawner = npcObj.AddComponent<EnemySpawner>();
             var flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
             Type t = typeof(EnemySpawner);
@@ -380,20 +274,18 @@ namespace DefaultNamespace
             SetField(spawner, t, "enemyAttackPower", attack,                          flags);
             SetField(spawner, t, "questionLevel",    questionLevel,                   flags);
             SetField(spawner, t, "returnScene",      SceneManager.GetActiveScene().name, flags);
-            SetField(spawner, t, "enemyType",        "Pawn",                          flags); // matches SmugglersIsland
-            SetField(spawner, t, "enemySprite",      displaySprite,                   flags); // shown in battle
-            SetField(spawner, t, "enemyNpc",         npcObj,                          flags); // self-ref (matches SmugglersIsland)
+            SetField(spawner, t, "enemyType",        "Pawn",                          flags);
+            SetField(spawner, t, "enemySprite",      displaySprite,                   flags);
+            SetField(spawner, t, "enemyNpc",         npcObj,                          flags);
 
             Debug.Log("[Level5NPCSetup] Spawned " + name + " pawnSprite=" + (pawnSprite != null));
 
-            // ── Reward component ──────────────────────────────────────────
             Level5NPCReward reward = npcObj.AddComponent<Level5NPCReward>();
             reward.npcName          = name;
             reward.grantsSpeedBoots = grantsSpeedBoots;
             reward.dropsKeyPiece    = dropsKeyPiece;
         }
 
-        /// <summary>Sets a field by name via reflection; logs a warning if not found.</summary>
         private static void SetField(object target, System.Type type, string fieldName, object value, BindingFlags flags)
         {
             FieldInfo fi = type.GetField(fieldName, flags);
@@ -416,16 +308,60 @@ namespace DefaultNamespace
             }
         }
 
-        // ----------------------------------------------------------------
-        // Per-scene NPC setup
-        // NOTE: "BlackwaterArmory" (no 'u') matches BlackwaterSceneBuilder.cs
-        //
-        // KNOWN LIMITATION (Bug 4): BattleManager always calls EnemyTurn() after
-        // PlayerAttack() if the enemy survives (see BattleManager.PlayerAttack()).
-        // This means the NPC retaliates even on a correct answer. This is the
-        // teammate's battle-system design — BattleManager is not our file.
-        // EnemySpawner has no field that suppresses the enemy's retaliatory turn.
-        // ----------------------------------------------------------------
+        private static readonly Dictionary<string, Vector3> _npcSpawnPositions =
+            new Dictionary<string, Vector3>
+        {
+            { "Blackwater Armsman",   new Vector3(16f, 11f, 0f) },
+            { "Blackwater Cook",      new Vector3(16f, 11f, 0f) },
+            { "Blackwater Jailer",    new Vector3(11f, 11f, 0f) },
+            { "Blackwater Navigator", new Vector3(11f, 11f, 0f) },
+            { "Captain Blackwater",   new Vector3(12f, 16f, 0f) },
+        };
+
+        private static readonly Dictionary<string, (bool grantsSpeedBoots, bool dropsKeyPiece)> _npcRewardData =
+            new Dictionary<string, (bool, bool)>
+        {
+            { "Blackwater Armsman",   (false, true)  },
+            { "Blackwater Cook",      (false, true)  },
+            { "Blackwater Jailer",    (true,  true)  },
+            { "Blackwater Navigator", (false, true)  },
+            { "Captain Blackwater",   (false, false) },
+        };
+
+        public static void HandlePostBattleReward(string sceneName)
+        {
+            if (!BattleData.PlayerWon) return;
+
+            string defeatedName = BattleData.EnemyName;
+            if (!_npcRewardData.ContainsKey(defeatedName)) return;
+            if (BlackwaterState.defeatedNPCs.Contains(defeatedName)) return;
+
+            BlackwaterState.defeatedNPCs.Add(defeatedName);
+
+            var (grantsSpeedBoots, dropsKeyPiece) = _npcRewardData[defeatedName];
+
+            if (dropsKeyPiece)
+            {
+                Vector3 pos = _npcSpawnPositions.TryGetValue(defeatedName, out Vector3 p)
+                    ? p : new Vector3(12f, 12f, 0f);
+                KeyPiecePickup.SpawnKeyPiece(pos);
+                int count = BlackwaterState.collectedKeyPieces.Count;
+                PopupMessage.Show(defeatedName + " defeated! Key piece acquired. (" + count + "/5)", 3f);
+            }
+            else
+            {
+                PopupMessage.Show(defeatedName + " defeated!", 3f);
+            }
+
+            if (grantsSpeedBoots)
+            {
+                BlackwaterState.hasSpeedBoots = true;
+                PopupMessage.Show("Speed Boots acquired! You can now survive the gauntlet.", 4f);
+            }
+
+            Debug.Log("[Level5NPCSetup] HandlePostBattleReward: " + defeatedName +
+                      " → defeatedNPCs count=" + BlackwaterState.defeatedNPCs.Count);
+        }
 
         public static void SetupRoomNPCs(string sceneName)
         {
@@ -444,26 +380,13 @@ namespace DefaultNamespace
                     SpawnEnemyNPC("Blackwater Navigator", 11, 11, 70,  10, 5, false, true);
                     break;
                 case "BlackwaterCaptainsQuarters":
-                    // questionLevel 6 (harder boss questions); dropsKeyPiece=false because
-                    // all 5 keys are required BEFORE entering this room.
                     SpawnEnemyNPC("Captain Blackwater",   12, 16, 200, 20, 6, false, false);
                     break;
             }
         }
 
-        // ----------------------------------------------------------------
-        // Flagship deck items
-        // ----------------------------------------------------------------
-
-        /// <summary>
-        /// Spawns collectible items on the BlackwaterFlagship deck.
-        /// Checks BlackwaterState.collectedItems before each spawn so items
-        /// do NOT reappear when the player re-enters the scene.
-        /// </summary>
         public static void SpawnDeckItems()
         {
-            // Bug 6 verified: Pirate Cutlass baseDamage=5 here and ATK bonus=(5,0)
-            // in Level5EquipManager._stats — both agree on +5 ATK.
             SpawnWeaponItem(
                 "Pirate Cutlass",
                 new Vector3(35f, 30f, 0f),
@@ -494,8 +417,6 @@ namespace DefaultNamespace
                 50);
         }
 
-        // ── Private deck-item helpers ─────────────────────────────────────────
-
         private static void SpawnWeaponItem(
             string itemName, Vector3 position,
             string description, int goldValue, Rarity rarity,
@@ -511,7 +432,6 @@ namespace DefaultNamespace
                 itemName.ToLower().Replace(' ', '_'),
                 itemName, description,
                 goldValue, rarity, baseDamage, weaponType);
-            // Pass the sprite so dropped items remain visible (Bug 1 fix)
             pickup.SetItemData(item, spr);
 
             DeckItemTracker tracker = go.AddComponent<DeckItemTracker>();
@@ -533,7 +453,6 @@ namespace DefaultNamespace
                 itemName.ToLower().Replace(' ', '_'),
                 itemName, description,
                 goldValue, rarity, slot, defenseBonus);
-            // Pass the sprite so dropped items remain visible (Bug 1 fix)
             pickup.SetItemData(item, spr);
 
             DeckItemTracker tracker = go.AddComponent<DeckItemTracker>();
@@ -547,7 +466,6 @@ namespace DefaultNamespace
             Sprite spr = GetItemSprite(itemName);
             GameObject go = CreateItemBase(itemName, position, spr, 5, 1.5f);
 
-            // ItemType.Treasure triggers inventoryUI.AddGold(goldValue) inside ItemPickup
             ItemPickup pickup = go.AddComponent<ItemPickup>();
             TreasureItem item = new TreasureItem(
                 "gold_coins", itemName, "A pile of golden coins.",
@@ -558,7 +476,6 @@ namespace DefaultNamespace
             tracker.trackedItemName = itemName;
         }
 
-        /// <summary>Creates the shared visual base for a deck item using a pixel sprite.</summary>
         private static GameObject CreateItemBase(
             string name, Vector3 position, Sprite spr, int sortOrder, float scale)
         {
@@ -568,7 +485,7 @@ namespace DefaultNamespace
 
             SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
             sr.sprite       = spr;
-            sr.color        = Color.white;  // sprite already has colour baked in
+            sr.color        = Color.white;
             sr.sortingOrder = sortOrder;
 
             BoxCollider2D col = go.AddComponent<BoxCollider2D>();
@@ -579,11 +496,6 @@ namespace DefaultNamespace
         }
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // Tracks deck-item pickups so they don't respawn when the player re-enters
-    // BlackwaterFlagship. Fires alongside ItemPickup.OnTriggerEnter2D.
-    // (Destroy is queued by ItemPickup so both triggers run before object cleanup.)
-    // ────────────────────────────────────────────────────────────────────────────
     public class DeckItemTracker : MonoBehaviour
     {
         public string trackedItemName;
@@ -592,8 +504,6 @@ namespace DefaultNamespace
         {
             if (!other.CompareTag("Player")) return;
             BlackwaterState.collectedItems.Add(trackedItemName);
-            // Also track in heldItems so Level5EquipManager can apply stat bonuses
-            // even after PlayerController.Start() wipes the visual InventoryUI.
             BlackwaterState.heldItems.Add(trackedItemName);
             Debug.Log("[DeckItemTracker] Picked up '" + trackedItemName + "' → heldItems=" +
                       string.Join(", ", BlackwaterState.heldItems));

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,40 +8,29 @@ using TMPro;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Ensures the inventory UI canvas persists across all Blackwater scenes
-    /// and is hidden during the Battle scene so it doesn't block quiz buttons.
-    /// Call Level5InventoryBridge.EnsureInventoryExists() from BlackwaterSceneBuilder.
-    /// </summary>
     public class Level5InventoryBridge : MonoBehaviour
     {
         private static GameObject _inventoryCanvas;
 
-        /// <summary>
-        /// Direct reference to the InventoryUI we constructed.
-        /// Used by Level5EquipManager to avoid FindObjectOfType returning a
-        /// different InventoryUI (e.g. one in the Battle scene) or returning null
-        /// when the canvas is inactive.
-        /// </summary>
         public static InventoryUI KnownInventoryUI { get; private set; }
 
-        // ── Public entry point ─────────────────────────────────────────────────
+        private static Inventory _savedInventory;
+
+        private static readonly FieldInfo _inventoryField =
+            typeof(InventoryUI).GetField("_inventory",
+                BindingFlags.NonPublic | BindingFlags.Instance);
 
         public static void EnsureInventoryExists()
         {
-            // Already exists?
             if (UnityEngine.Object.FindObjectOfType<InventoryUI>() != null) return;
             if (_inventoryCanvas != null) return;
 
             _inventoryCanvas = BuildInventoryCanvas();
             DontDestroyOnLoad(_inventoryCanvas);
 
-            // Add the bridge MonoBehaviour so it can listen to scene changes
             Level5InventoryBridge bridge = _inventoryCanvas.AddComponent<Level5InventoryBridge>();
             SceneManager.sceneLoaded += bridge.OnSceneLoaded;
         }
-
-        // ── Scene visibility ───────────────────────────────────────────────────
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
@@ -49,10 +39,10 @@ namespace DefaultNamespace
             bool isBattle = scene.name == "Battle" || scene.name == "pirateBattleScene";
             _inventoryCanvas.SetActive(!isBattle);
 
-            // Refresh the playerTransform reference each non-battle scene so the
-            // ItemDetailPopup drop-position is always the current player.
             if (!isBattle)
             {
+                StartCoroutine(RestoreInventoryAfterDelay());
+
                 InventoryUI ui = _inventoryCanvas.GetComponent<InventoryUI>();
                 if (ui != null)
                 {
@@ -72,16 +62,29 @@ namespace DefaultNamespace
             }
         }
 
+        private IEnumerator RestoreInventoryAfterDelay()
+        {
+            // wait for PlayerController.Start() to wipe inventory
+            yield return null;
+            yield return null;
+
+            if (KnownInventoryUI == null || _savedInventory == null) yield break;
+            if (_inventoryField == null) yield break;
+
+            _inventoryField.SetValue(KnownInventoryUI, _savedInventory);
+            KnownInventoryUI.RefreshUI();
+
+            Debug.Log("[Level5InventoryBridge] Restored inventory (" +
+                      _savedInventory.Items.Count + " items) after scene load.");
+        }
+
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
-        // ── Canvas construction ────────────────────────────────────────────────
-
         private static GameObject BuildInventoryCanvas()
         {
-            // ── Root Canvas ───────────────────────────────────────────────────
             GameObject canvasGO = new GameObject("InventoryCanvas");
             Canvas canvas = canvasGO.AddComponent<Canvas>();
             canvas.renderMode   = RenderMode.ScreenSpaceOverlay;
@@ -94,9 +97,8 @@ namespace DefaultNamespace
             canvasGO.AddComponent<GraphicRaycaster>();
 
             InventoryUI inventoryUI = canvasGO.AddComponent<InventoryUI>();
-            KnownInventoryUI = inventoryUI;   // cache for Level5EquipManager
+            KnownInventoryUI = inventoryUI;
 
-            // ── InventoryPanel ────────────────────────────────────────────────
             GameObject panelGO = new GameObject("InventoryPanel");
             panelGO.transform.SetParent(canvasGO.transform, false);
             RectTransform panelRect = panelGO.AddComponent<RectTransform>();
@@ -105,19 +107,16 @@ namespace DefaultNamespace
             Image panelImage = panelGO.AddComponent<Image>();
             panelImage.color = new Color(1f, 1f, 1f, 0.392f);
 
-            // ── GoldText ──────────────────────────────────────────────────────
             TextMeshProUGUI goldText = MakeTMPText(panelGO.transform, "GoldText",
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                 new Vector2(5f, 70f), new Vector2(200f, 220f), new Vector2(0.5f, 0.5f),
                 "Gold: 0", 24, Color.white);
 
-            // ── FullText ──────────────────────────────────────────────────────
             TextMeshProUGUI fullText = MakeTMPText(panelGO.transform, "FullText",
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                 new Vector2(5f, 45f), new Vector2(200f, 220f), new Vector2(0.5f, 0.5f),
                 "Inventory Full!", 24, Color.white);
 
-            // ── ItemSlotsContainer ────────────────────────────────────────────
             GameObject containerGO = new GameObject("ItemSlotsContainer");
             containerGO.transform.SetParent(panelGO.transform, false);
             RectTransform containerRect = containerGO.AddComponent<RectTransform>();
@@ -129,7 +128,6 @@ namespace DefaultNamespace
             vlg.childForceExpandHeight = false;
             vlg.childForceExpandWidth  = false;
 
-            // ── Slot template (inactive parent keeps it hidden) ───────────────
             GameObject templateHolder = new GameObject("_SlotTemplate");
             templateHolder.transform.SetParent(canvasGO.transform, false);
             templateHolder.SetActive(false);
@@ -151,7 +149,6 @@ namespace DefaultNamespace
             SetRect(slotTextRect, Vector2.zero, Vector2.one,
                     Vector2.zero, Vector2.zero, new Vector2(0.5f, 0.5f));
 
-            // ── ItemDetailPopup ───────────────────────────────────────────────
             GameObject popupGO = new GameObject("ItemDetailPopup");
             popupGO.transform.SetParent(canvasGO.transform, false);
             RectTransform popupRect = popupGO.AddComponent<RectTransform>();
@@ -163,37 +160,31 @@ namespace DefaultNamespace
 
             ItemDetailPopup detailPopup = popupGO.AddComponent<ItemDetailPopup>();
 
-            // ItemNameText
             TextMeshProUGUI itemNameText = MakeTMPText(popupGO.transform, "ItemNameText",
                 new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(10f, -30f), new Vector2(200f, 50f), new Vector2(0f, 1f),
                 "", 16, new Color(0.973f, 0.898f, 0.318f));
 
-            // ItemDescriptionText
             TextMeshProUGUI itemDescText = MakeTMPText(popupGO.transform, "ItemDescriptionText",
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                 new Vector2(10f, 0f), new Vector2(200f, 125f), new Vector2(0.5f, 0.5f),
                 "", 14, Color.white);
 
-            // ItemStatsText
             TextMeshProUGUI itemStatsText = MakeTMPText(popupGO.transform, "ItemStatsText",
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                 new Vector2(10f, 0f), new Vector2(200f, 75f), new Vector2(0.5f, 0.5f),
                 "", 12, Color.white);
 
-            // DropButton
             Button dropButton = MakeButton(popupGO.transform, "DropButton",
                 new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
                 new Vector2(0f, 10f), new Vector2(100f, 20f), new Vector2(0.5f, 0f),
                 new Color(0.8f, 0.2f, 0.2f), "Drop");
 
-            // CloseButton
             Button closeButton = MakeButton(popupGO.transform, "CloseButton",
                 new Vector2(1f, 1f), new Vector2(1f, 1f),
                 Vector2.zero, new Vector2(30f, 30f), new Vector2(1f, 1f),
                 new Color(0.962f, 0.059f, 0.059f), "X");
 
-            // ── Wire fields via reflection ─────────────────────────────────────
             BindingFlags bf = BindingFlags.NonPublic | BindingFlags.Instance;
             Type uiType = typeof(InventoryUI);
             uiType.GetField("inventoryPanel",    bf).SetValue(inventoryUI, panelGO);
@@ -202,7 +193,6 @@ namespace DefaultNamespace
             uiType.GetField("goldText",          bf).SetValue(inventoryUI, goldText);
             uiType.GetField("fullText",          bf).SetValue(inventoryUI, fullText);
             uiType.GetField("itemDetailPopup",   bf).SetValue(inventoryUI, detailPopup);
-            // playerTransform is set per-scene by OnSceneLoaded
 
             Type popupType = typeof(ItemDetailPopup);
             popupType.GetField("itemNameText",       bf).SetValue(detailPopup, itemNameText);
@@ -211,18 +201,14 @@ namespace DefaultNamespace
             popupType.GetField("dropButton",         bf).SetValue(detailPopup, dropButton);
             popupType.GetField("closeButton",        bf).SetValue(detailPopup, closeButton);
 
-            // ── Dropped-item template ────────────────────────────────────────────
-            // ItemDetailPopup.DropItem() instantiates this prefab at the player's
-            // feet to create a world pickup. Without it the item just vanishes.
             GameObject dropTemplate = BuildDropTemplate();
             popupType.GetField("itemSpritePrefab", bf)?.SetValue(detailPopup, dropTemplate);
 
-            inventoryUI.Initialize(new Inventory(5));
+            _savedInventory = new Inventory(5);
+            inventoryUI.Initialize(_savedInventory);
 
             return canvasGO;
         }
-
-        // ── Helpers ────────────────────────────────────────────────────────────
 
         private static void SetRect(RectTransform rt,
             Vector2 anchorMin, Vector2 anchorMax,
@@ -266,7 +252,6 @@ namespace DefaultNamespace
             RectTransform rt = go.GetComponent<RectTransform>();
             SetRect(rt, anchorMin, anchorMax, anchoredPos, sizeDelta, pivot);
 
-            // Label child
             GameObject labelGO = new GameObject("Text (TMP)");
             labelGO.transform.SetParent(go.transform, false);
             TextMeshProUGUI tmp = labelGO.AddComponent<TextMeshProUGUI>();
@@ -281,11 +266,7 @@ namespace DefaultNamespace
             return btn;
         }
 
-        // ── Dropped-item template ──────────────────────────────────────────────
-        // Creates an inactive GameObject that acts as a prefab for
-        // ItemDetailPopup.DropItem(). When an item is dropped from inventory,
-        // ItemDetailPopup.Instantiate(dropTemplate) clones this object, then
-        // calls SetItemData() to configure the clone for the specific item.
+        // keep ACTIVE so Instantiate clones are also active
         private static GameObject BuildDropTemplate()
         {
             Texture2D tex = new Texture2D(1, 1);
@@ -296,9 +277,6 @@ namespace DefaultNamespace
 
             GameObject go = new GameObject("DroppedItemTemplate");
             go.transform.localScale  = new Vector3(1.5f, 1.5f, 1f);
-            // CRITICAL: Keep ACTIVE — Instantiate preserves activeSelf, so an inactive
-            // template produces an inactive clone that never renders or triggers.
-            // Position far offscreen so the persistent template is invisible.
             go.transform.position = new Vector3(-9999f, -9999f, 0f);
             DontDestroyOnLoad(go);
 

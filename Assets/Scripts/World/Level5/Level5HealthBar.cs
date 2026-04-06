@@ -5,25 +5,14 @@ using TMPro;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Persistent health bar for Level 5 (Blackwater) scenes.
-    /// Mirrors HealthBarUI but survives scene loads via DontDestroyOnLoad.
-    /// Reads PlayerController.GetHealth() / MaxHealth each frame.
-    /// Hides itself during Battle scenes to avoid HUD overlap.
-    /// </summary>
     public class Level5HealthBar : MonoBehaviour
     {
         private static Level5HealthBar _instance;
 
-        // UI references built at runtime
         private Slider          _slider;
         private Image           _fillImage;
         private TextMeshProUGUI _healthText;
-
-        // Cached player reference – refreshed when null (scene changes)
         private PlayerController _player;
-
-        // ── Public entry point ─────────────────────────────────────────────────
 
         public static void EnsureExists()
         {
@@ -36,8 +25,6 @@ namespace DefaultNamespace
 
             SceneManager.sceneLoaded += _instance.OnSceneLoaded;
         }
-
-        // ── Lifecycle ──────────────────────────────────────────────────────────
 
         private void OnDestroy()
         {
@@ -71,25 +58,20 @@ namespace DefaultNamespace
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            // Invalidate cached player reference on each scene load
             _player = null;
 
             bool isBattle = scene.name == "Battle" || scene.name == "pirateBattleScene";
             gameObject.SetActive(!isBattle);
         }
 
-        // ── UI construction ────────────────────────────────────────────────────
-
         private void BuildUI(GameObject root)
         {
-            // Canvas
             Canvas canvas = root.AddComponent<Canvas>();
             canvas.renderMode   = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 10;
             root.AddComponent<CanvasScaler>();
             root.AddComponent<GraphicRaycaster>();
 
-            // Slider container (top-right, matching HealthBarUI layout in SmugglersIsland)
             GameObject sliderGO = new GameObject("HealthSlider");
             sliderGO.transform.SetParent(root.transform, false);
 
@@ -100,11 +82,9 @@ namespace DefaultNamespace
             sliderRect.anchoredPosition = new Vector2(-84.9f, -10f);
             sliderRect.sizeDelta        = new Vector2(160f, 20f);
 
-            // Background image
             Image bgImage = sliderGO.AddComponent<Image>();
             bgImage.color = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 
-            // Fill area
             GameObject fillAreaGO = new GameObject("Fill Area");
             fillAreaGO.transform.SetParent(sliderGO.transform, false);
             RectTransform fillAreaRect = fillAreaGO.AddComponent<RectTransform>();
@@ -122,7 +102,6 @@ namespace DefaultNamespace
             fillRect.anchorMax = Vector2.one;
             fillRect.sizeDelta = Vector2.zero;
 
-            // Wire Slider component
             _slider = sliderGO.AddComponent<Slider>();
             _slider.fillRect      = fillRect;
             _slider.direction     = Slider.Direction.LeftToRight;
@@ -131,7 +110,6 @@ namespace DefaultNamespace
             _slider.value         = 1f;
             _slider.interactable  = false;
 
-            // HP text label (overlaid on the slider)
             GameObject textGO = new GameObject("HPText");
             textGO.transform.SetParent(sliderGO.transform, false);
             _healthText = textGO.AddComponent<TextMeshProUGUI>();

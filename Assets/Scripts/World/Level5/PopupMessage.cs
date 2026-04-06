@@ -8,7 +8,6 @@ namespace DefaultNamespace
     {
         public static void Show(string text, float duration = 3f)
         {
-            // Canvas
             GameObject canvasGO = new GameObject("PopupMessageCanvas");
             Canvas canvas = canvasGO.AddComponent<Canvas>();
             canvas.renderMode  = RenderMode.ScreenSpaceOverlay;
@@ -16,7 +15,6 @@ namespace DefaultNamespace
             canvasGO.AddComponent<CanvasScaler>();
             canvasGO.AddComponent<GraphicRaycaster>();
 
-            // Text GO centered on screen
             GameObject textGO = new GameObject("PopupText");
             textGO.transform.SetParent(canvasGO.transform, false);
 
@@ -33,7 +31,6 @@ namespace DefaultNamespace
             rt.anchoredPosition = Vector2.zero;
             rt.sizeDelta        = new Vector2(0f, 120f);
 
-            // Outline via TMP outline settings (no extra component needed)
             tmp.outlineWidth = 0.2f;
             tmp.outlineColor = Color.black;
 

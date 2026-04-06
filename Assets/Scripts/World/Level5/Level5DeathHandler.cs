@@ -4,11 +4,6 @@ using UnityEngine.SceneManagement;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Persistent singleton that watches player health in Blackwater scenes.
-    /// On death: resets all Blackwater state and returns to SmugglersIsland.
-    /// Destroys itself when the player leaves all Blackwater scenes.
-    /// </summary>
     public class Level5DeathHandler : MonoBehaviour
     {
         private static Level5DeathHandler _instance;
@@ -40,10 +35,8 @@ namespace DefaultNamespace
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            // Invalidate cached PC so we find the fresh instance in new scene.
             _cachedPC = null;
 
-            // Self-destruct once the player has fully left Blackwater.
             bool isBlackwater = scene.name.StartsWith("Blackwater");
             bool isBattle     = scene.name == "Battle" || scene.name == "pirateBattleScene";
             if (!isBlackwater && !isBattle)
@@ -57,7 +50,6 @@ namespace DefaultNamespace
         {
             string scene = SceneManager.GetActiveScene().name;
 
-            // Only monitor in overworld Blackwater scenes.
             if (!scene.StartsWith("Blackwater")) return;
             if (scene == "Battle" || scene == "pirateBattleScene") return;
 

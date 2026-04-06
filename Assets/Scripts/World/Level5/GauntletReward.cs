@@ -2,11 +2,6 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Placed at the end of the gauntlet corridor in BlackwaterLowerDeck.
-    /// Requires Speed Boots to activate. Grants: full heal, hazard immunity,
-    /// and the 5th key piece ("maze_key").
-    /// </summary>
     public class GauntletReward : MonoBehaviour
     {
         private bool _collected = false;
@@ -42,7 +37,6 @@ namespace DefaultNamespace
             if (!other.CompareTag("Player") && other.GetComponent<PlayerController>() == null)
                 return;
 
-            // Already collected in a prior visit (hasSavedState not needed here — immunity tracks it)
             if (BlackwaterState.hasHazardImmunity) return;
 
             if (!BlackwaterState.hasSpeedBoots)

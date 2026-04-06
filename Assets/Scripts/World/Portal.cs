@@ -3,19 +3,6 @@ using UnityEngine.SceneManagement;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Attach to a trigger GameObject to transition to another scene and
-    /// place the player at a specific world position in that scene.
-    ///
-    /// Usage:
-    ///   1. Add BoxCollider2D (isTrigger = true) to the same GameObject.
-    ///   2. Set targetScene  — the exact scene name (must be in Build Settings).
-    ///   3. Set spawnPosition — world position the player will appear at.
-    ///
-    ///   In the destination scene's builder (e.g. BlackwaterSceneBuilder),
-    ///   call  Portal.ApplyPendingSpawn()  at the top of Start() so the
-    ///   player is repositioned as soon as the scene loads.
-    /// </summary>
     public class Portal : MonoBehaviour
     {
         [Tooltip("Exact scene name to load (must be registered in Build Settings).")]
@@ -24,13 +11,8 @@ namespace DefaultNamespace
         [Tooltip("World position where the player will appear in the destination scene.")]
         public Vector2 spawnPosition;
 
-        // Static state: survives the scene load
         private static Vector2 _pendingSpawn;
         private static bool    _hasPendingSpawn;
-
-        // Set to true after ApplyPendingSpawn repositions the player.
-        // Prevents the portal the player just arrived near from firing immediately.
-        // Cleared when the player physically exits any portal trigger collider.
         private static bool _justTeleported;
 
         void OnTriggerEnter2D(Collider2D other)
@@ -42,7 +24,6 @@ namespace DefaultNamespace
             _pendingSpawn    = spawnPosition;
             _hasPendingSpawn = true;
 
-            // Persist player state when transitioning into or out of Blackwater scenes.
             string currentScene = SceneManager.GetActiveScene().name;
             if (currentScene.StartsWith("Blackwater") || targetScene.StartsWith("Blackwater"))
                 BlackwaterState.SavePlayerState();
@@ -58,10 +39,6 @@ namespace DefaultNamespace
                 _justTeleported = false;
         }
 
-        /// <summary>
-        /// Call this from the scene initialiser (Start or Awake) of the destination scene.
-        /// If a pending spawn is waiting it moves the Player to that position and clears the flag.
-        /// </summary>
         public static void ApplyPendingSpawn()
         {
             if (!_hasPendingSpawn) return;
@@ -80,7 +57,6 @@ namespace DefaultNamespace
             }
         }
 
-        /// <summary>Returns true when a spawn position is waiting to be applied.</summary>
         public static bool HasPendingSpawn => _hasPendingSpawn;
     }
 }

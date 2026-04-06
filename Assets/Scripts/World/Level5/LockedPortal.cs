@@ -5,11 +5,6 @@ using UnityEngine.SceneManagement;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Blocks entry to Captain's Quarters until all 5 key pieces are collected.
-    /// Uses reflection to set Portal's private static spawn fields — Portal has no
-    /// public SetPendingSpawn method (confirmed by reading Portal.cs).
-    /// </summary>
     public class LockedPortal : MonoBehaviour
     {
         public string  targetScene    = "BlackwaterCaptainsQuarters";
@@ -81,10 +76,6 @@ namespace DefaultNamespace
             }
         }
 
-        /// <summary>
-        /// Sets Portal's private static pending-spawn fields via reflection.
-        /// Portal.cs does not expose a public SetPendingSpawn method.
-        /// </summary>
         private static void SetPortalPendingSpawn(Vector2 spawn)
         {
             var flags = BindingFlags.NonPublic | BindingFlags.Static;

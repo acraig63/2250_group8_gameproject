@@ -5,22 +5,6 @@ using UnityEngine.Tilemaps;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Level 5 — Blackwater Flagship
-    ///
-    /// Handles all 7 Blackwater scenes:
-    ///   BlackwaterFlagship         — 90×90 large ship deck on water
-    ///   BlackwaterLowerDeck        — 80×80 below-deck hold (ship-shaped interior)
-    ///   BlackwaterArmory           — 20×15
-    ///   BlackwaterMessHall         — 20×15
-    ///   BlackwaterBrig             — 15×15
-    ///   BlackwaterNavigationRoom   — 15×15
-    ///   BlackwaterCaptainsQuarters — 25×20
-    ///
-    /// All hatches are ON the deck surface (not side-doors). Portal triggers,
-    /// wall collision, and the minimap are all added at runtime — no scene
-    /// YAML edits needed beyond the two Tilemap references in the Inspector.
-    /// </summary>
     public class BlackwaterSceneBuilder : MonoBehaviour
     {
         [Header("Tilemap References (drag from Hierarchy)")]
@@ -31,20 +15,19 @@ namespace DefaultNamespace
         private Dictionary<string, Sprite>   _spriteCache;
         private const int TEX = 32;
 
-        // Stored once so speed-boot multiplier never stacks on scene reloads.
         private static float _originalSpeed = -1f;
 
-        // -----------------------------------------------------------------------
-        // Map size constants
-        // -----------------------------------------------------------------------
         private const int FLAGSHIP_W  = 90;
         private const int FLAGSHIP_H  = 90;
         private const int LOWERDECK_W = 80;
         private const int LOWERDECK_H = 80;
 
-        // -----------------------------------------------------------------------
-        // Entry point
-        // -----------------------------------------------------------------------
+        void Awake()
+        {
+            string awakeScene = SceneManager.GetActiveScene().name;
+            if (awakeScene.StartsWith("Blackwater"))
+                Level5NPCSetup.HandlePostBattleReward(awakeScene);
+        }
 
         void Start()
         {
@@ -58,14 +41,11 @@ namespace DefaultNamespace
             }
 
             BuildCurrentScene();
-
-            // Add collision to wallTilemap after all tiles are final.
             SetupWallCollision();
 
             groundTilemap.RefreshAllTiles();
             wallTilemap.RefreshAllTiles();
 
-            // Per-scene camera bounds and optional minimap.
             string scene = SceneManager.GetActiveScene().name;
             switch (scene)
             {
@@ -95,16 +75,13 @@ namespace DefaultNamespace
 
             Debug.Log($"[BlackwaterSceneBuilder] Built {scene}");
 
-            // ── Part 1 persistent singletons ─────────────────────────────────
             Level5HealthBar.EnsureExists();
             Level5InventoryBridge.EnsureInventoryExists();
 
-            // ── Per-scene NPC spawning and deck items ─────────────────────────
             Level5NPCSetup.SetupRoomNPCs(scene);
             if (scene == "BlackwaterFlagship")
                 Level5NPCSetup.SpawnDeckItems();
 
-            // ── PlayerHazardShield ────────────────────────────────────────────
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             if (player == null)
             {
@@ -116,10 +93,8 @@ namespace DefaultNamespace
             else
                 Debug.LogWarning("[BlackwaterSceneBuilder] Player not found — PlayerHazardShield not attached.");
 
-            // ── Equip manager ────────────────────────────────────────────────
             Level5EquipManagerMono.EnsureExists();
 
-            // ── Speed boots (apply once; prevent stacking on reload) ─────────
             if (player != null)
             {
                 PlayerController pc = player.GetComponent<PlayerController>();
@@ -130,7 +105,6 @@ namespace DefaultNamespace
                 }
             }
 
-            // ── Save / load Blackwater player state ───────────────────────────
             if (scene.StartsWith("Blackwater") && player != null)
             {
                 if (BlackwaterState.hasSavedState)
@@ -138,7 +112,6 @@ namespace DefaultNamespace
                 BlackwaterState.SavePlayerState();
             }
 
-            // ── Boss hazard wave (attach AFTER NPC has spawned) ───────────────
             if (scene == "BlackwaterCaptainsQuarters")
             {
                 GameObject boss = GameObject.Find("Captain Blackwater");
@@ -146,16 +119,9 @@ namespace DefaultNamespace
                     boss.AddComponent<BossHazardWave>();
             }
 
-            // ── Death handler ─────────────────────────────────────────────────
             Level5DeathHandler.EnsureExists();
-
-            // ── Item drop handler ─────────────────────────────────────────────
             Level5ItemDropHandler.EnsureExists();
         }
-
-        // -----------------------------------------------------------------------
-        // Runtime systems
-        // -----------------------------------------------------------------------
 
         private void SetupWallCollision()
         {
@@ -172,7 +138,6 @@ namespace DefaultNamespace
                 var camGO = new GameObject("MinimapCamera");
                 camGO.AddComponent<Camera>();
                 camGO.AddComponent<MinimapCamera>();
-                // Override the default ortho size set in Awake().
                 var mc = camGO.GetComponent<MinimapCamera>();
                 mc.orthographicSize = orthoSize;
                 camGO.GetComponent<Camera>().orthographicSize = orthoSize;
@@ -201,10 +166,6 @@ namespace DefaultNamespace
             cf.SetBounds(0f, maxX, 0f, maxY);
         }
 
-        /// <summary>
-        /// Creates a solid maze wall GameObject with a BoxCollider2D (NOT trigger).
-        /// x,y is the world-space centre; width and height are in world units.
-        /// </summary>
         private GameObject CreateWall(float x, float y, float width, float height)
         {
             Texture2D tex = new Texture2D(1, 1);
@@ -224,13 +185,9 @@ namespace DefaultNamespace
             Rigidbody2D rb = wall.AddComponent<Rigidbody2D>();
             rb.bodyType = RigidbodyType2D.Static;
 
-            wall.AddComponent<BoxCollider2D>();   // solid, not trigger
+            wall.AddComponent<BoxCollider2D>();
             return wall;
         }
-
-        // -----------------------------------------------------------------------
-        // Scene dispatcher
-        // -----------------------------------------------------------------------
 
         private void BuildCurrentScene()
         {
@@ -250,127 +207,75 @@ namespace DefaultNamespace
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════════════
-        // FLAGSHIP  —  90×90  —  y=7..82 ship hull, centered at x=44.5
-        // ═══════════════════════════════════════════════════════════════════════
-
         private void BuildFlagship()
         {
             Portal.ApplyPendingSpawn();
 
-            // ── Step 1: ocean background ──────────────────────────────────────
             FillRect(groundTilemap, 0, 0, FLAGSHIP_W-1, FLAGSHIP_H-1, "water");
 
-            // ── Step 2: hull sections with distinct deck-zone tiles ───────────
-            //
-            // QUARTERDECK (stern, y=7–24) — warm amber-brown planks
-            // 12 sections providing smooth width transitions every few rows.
-            //   Section 1   y=7..12    x=33..56   24 wide
+            // quarterdeck
             PaintDeckRow(7,  12, 33, 56, "ship_deck_aft");
-            //   Section 2   y=13..18   x=31..58   28 wide
             PaintDeckRow(13, 18, 31, 58, "ship_deck_aft");
-            //   Section 3   y=19..24   x=29..60   32 wide
             PaintDeckRow(19, 24, 29, 60, "ship_deck_aft");
 
-            // MAIN DECK (y=25–60) — standard warm-brown planks
-            //   Section 4   y=25..30   x=27..62   36 wide
+            // main deck
             PaintDeckRow(25, 30, 27, 62, "ship_deck");
-            //   Section 5   y=31..55   x=25..64   40 wide  ← widest
             PaintDeckRow(31, 55, 25, 64, "ship_deck");
-            //   Section 6   y=56..60   x=27..62   36 wide
             PaintDeckRow(56, 60, 27, 62, "ship_deck");
 
-            // FORECASTLE (bow, y=61–82) — lighter tan planks
-            //   Section 7   y=61..65   x=29..60   32 wide
+            // forecastle
             PaintDeckRow(61, 65, 29, 60, "ship_deck_fore");
-            //   Section 8   y=66..70   x=31..58   28 wide
             PaintDeckRow(66, 70, 31, 58, "ship_deck_fore");
-            //   Section 9   y=71..74   x=33..56   24 wide
             PaintDeckRow(71, 74, 33, 56, "ship_deck_fore");
-            //   Section 10  y=75..78   x=36..53   18 wide
             PaintDeckRow(75, 78, 36, 53, "ship_deck_fore");
-            //   Section 11  y=79..80   x=39..50   12 wide
             PaintDeckRow(79, 80, 39, 50, "ship_deck_fore");
-            //   Section 12  y=81..82   x=42..47    6 wide  ← bow tip
             PaintDeckRow(81, 82, 42, 47, "ship_deck_fore");
 
-            // ── Step 3: gapless hull perimeter (rail tiles on wallTilemap) ────
             PaintHullPerimeterAuto();
 
-            // ── Step 4: deck zone transition strip ────────────────────────────
-            // A row of dock_planks trim on groundTilemap marks where the
-            // quarterdeck meets the main deck (y=24/25 boundary).
+            // deck zone trim strips
             for (int x = 27; x <= 62; x++)
                 groundTilemap.SetTile(new Vector3Int(x, 25, 0), GetTileAsset("dock_planks"));
-            // Trim at forecastle start (y=60/61 boundary).
             for (int x = 27; x <= 62; x++)
                 groundTilemap.SetTile(new Vector3Int(x, 60, 0), GetTileAsset("dock_planks"));
 
-            // ── Step 5: mast bases (3×3 obstacle tiles on wallTilemap) ────────
+            // mast bases
             PlaceRect(wallTilemap, 43, 26, 45, 28, "mast_base"); // Mizzenmast
             PlaceRect(wallTilemap, 43, 41, 45, 43, "mast_base"); // Mainmast
             PlaceRect(wallTilemap, 43, 52, 45, 54, "mast_base"); // Foremast
 
-            // ── Step 6: barrel/crate clusters (2-tile wide obstacles) ─────────
             PlaceObstacles("barrels", new int[]
             {
-                34, 22,  35, 22,          // quarterdeck left
-                54, 22,  55, 22,          // quarterdeck right
-                29, 35,  30, 35,          // main deck low-left
-                58, 35,  59, 35,          // main deck low-right
-                29, 47,  30, 47,          // main deck high-left
-                58, 47,  59, 47,          // main deck high-right
-                36, 63,  37, 63,          // forecastle left
-                51, 63,  52, 63,          // forecastle right
+                34, 22,  35, 22,
+                54, 22,  55, 22,
+                29, 35,  30, 35,
+                58, 35,  59, 35,
+                29, 47,  30, 47,
+                58, 47,  59, 47,
+                36, 63,  37, 63,
+                51, 63,  52, 63,
             });
 
-            // ── Step 7: captain's ornate floor accent (3×3 dock_planks) ───────
-            // Painted BEFORE the portal so the hatch marker overwrites center.
             PlaceRect(groundTilemap, 43, 11, 45, 13, "dock_planks");
 
-            // ── Step 8: hatch/door portals ────────────────────────────────────
-            // All hatches are well inside the deck (≥4 tiles from any rail).
-            // Return-spawn positions are 2 tiles away from the hatch tile.
-
-            // Captain's Quarters hatch — quarterdeck center (y=12).
-            // Replaced with LockedPortal: requires all 5 key pieces.
-            // Return spawn set on the LockedPortal; deck marker tile placed manually.
+            // hatches / portals
             wallTilemap.SetTile(new Vector3Int(44, 12, 0), null);
             groundTilemap.SetTile(new Vector3Int(44, 12, 0), GetTileAsset("door_marker"));
             LockedPortal.Create(new Vector3(44.5f, 12.5f, 0f),
                                 "BlackwaterCaptainsQuarters", new Vector2(12f, 10f));
 
-            // Brig hatch — main deck, left, lower area (y=35)
-            // Return spawn 2 tiles south → (32,33)
             PlacePortal("Brig",       32, 35, "BlackwaterBrig",
                         new Vector2(7f, 7f), "door_marker");
-
-            // Lower Deck hatch — dead center of main deck (y=38)
-            // Return spawn 2 tiles south → (44,36)
             PlacePortal("LowerDeck",  44, 38, "BlackwaterLowerDeck",
                         new Vector2(39f, 40f), "door_marker");
-
-            // Armory hatch — main deck, left, upper area (y=46)
-            // Return spawn 2 tiles south → (32,44)
             PlacePortal("Armory",     32, 46, "BlackwaterArmory",
                         new Vector2(10f, 7f), "door_marker");
-
-            // Mess Hall hatch — main deck, right, upper area (y=46)
-            // Return spawn 2 tiles south → (57,44)
             PlacePortal("MessHall",   57, 46, "BlackwaterMessHall",
                         new Vector2(10f, 7f), "door_marker");
-
-            // Navigation Room hatch — forecastle center (y=65)
-            // Return spawn 2 tiles south → (44,63)
             PlacePortal("Navigation", 44, 65, "BlackwaterNavigationRoom",
                         new Vector2(7f, 7f), "door_marker");
         }
 
-        // -----------------------------------------------------------------------
-        // Flagship hull helpers
-        // -----------------------------------------------------------------------
-
-        /// Paints a solid rectangle with the given deckTag on groundTilemap.
         private void PaintDeckRow(int yMin, int yMax, int xMin, int xMax, string deckTag)
         {
             TileBase t = GetTileAsset(deckTag);
@@ -379,7 +284,6 @@ namespace DefaultNamespace
                     groundTilemap.SetTile(new Vector3Int(x, y, 0), t);
         }
 
-        /// Returns true if (x,y) is inside the flagship hull shape.
         private bool IsShipDeck(int x, int y)
         {
             if (y >=  7 && y <= 12 && x >= 33 && x <= 56) return true;
@@ -397,8 +301,6 @@ namespace DefaultNamespace
             return false;
         }
 
-        /// Paints ship_rail on wallTilemap at every hull-edge tile.
-        /// Iterates the entire 90×90 grid so corner transitions are gapless.
         private void PaintHullPerimeterAuto()
         {
             TileBase rail = GetTileAsset("ship_rail");
@@ -420,22 +322,16 @@ namespace DefaultNamespace
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════════════
-        // LOWER DECK  —  80×80  —  ship-shaped interior, proportional to flagship
-        // ═══════════════════════════════════════════════════════════════════════
-
         private void BuildLowerDeck()
         {
             Portal.ApplyPendingSpawn();
 
-            // Fill everything with solid void (blocks movement).
             FillRect(groundTilemap, 0, 0, LOWERDECK_W-1, LOWERDECK_H-1, "hold_void");
             FillRect(wallTilemap,   0, 0, LOWERDECK_W-1, LOWERDECK_H-1, "hold_void");
 
-            // Carve out the ship-interior shape.
             BuildLowerDeckHull();
 
-            // Support beam pillars flanking the central corridor.
+            // support beam pillars
             PlaceObstaclesIf("support_beam", new int[]
             {
                 28, 37,  50, 37,
@@ -444,7 +340,6 @@ namespace DefaultNamespace
                 28, 50,  50, 50,
             });
 
-            // Barrel/crate clusters along the hold sides.
             PlaceObstaclesIf("barrels", new int[]
             {
                 25, 33,  26, 33,  52, 33,  53, 33,
@@ -452,84 +347,46 @@ namespace DefaultNamespace
                 34, 63,  35, 63,  43, 63,  44, 63,
             });
 
-            // Ladder back up — at (39,38), matching flagship hatch (44,38) offset -5 in x.
-            // Flagship return-spawn is 2 tiles south of the flagship hatch → (44,36).
             PlacePortal("Flagship", 39, 38, "BlackwaterFlagship",
                         new Vector2(44f, 36f), "door_marker");
 
-            // ══════════════════════════════════════════════════════════════════
-            // REDESIGNED MAZE  —  replaces all previous maze walls
-            //
-            // Hull interior (main section): y=31..55, x=23..56
-            // Player spawns at (39,40) from the Flagship portal at tile (39,38).
-            // Portal back to Flagship stays at (39,38) — keep clear.
-            //
-            // ─── CORRECT PATH ─────────────────────────────────────────────────
-            //   1. Spawn (39,40)
-            //   2. Go NORTH to y≈53 (no walls block x=39 heading north)
-            //   3. Go WEST at y=53 to x=24
-            //      (W_WV ends at y=50, so the west passage opens above y=50)
-            //   4. Go SOUTH in the left corridor (x=24, y=53→36)
-            //      (W_SB covers x=27–55; x=24 is in the gap x=23–26)
-            //   5. Go EAST at y=36 from x=24 to x=38 → reach MazeKeyDoor (39,35)
-            //   6. Pass through MazeKeyDoor (requires ≥4 key pieces)
-            //   7. Descend into the GAUNTLET at y=33
-            //   8. Walk EAST along gauntlet to GauntletReward at (55,33)
-            //
-            // ─── DEAD ENDS ────────────────────────────────────────────────────
-            //   A. Going south from spawn:   W_SB at y=37 (x=27–55) blocks directly
-            //   B. Going east from spawn:    east wing dead end (x=46–56, y=37–53),
-            //                                 capped at y=49 by W_EC
-            //   C. Going west from spawn at y<51: W_WV at x=30 (y=37–50) blocks;
-            //                                 must detour north past y=50 first
-            //
-            // ─── WALLS ────────────────────────────────────────────────────────
-            //   W_SB  — South Blocker:    y=37,  x=27–55   (gap x=23–26 = correct exit)
-            //   W_EV  — East Vertical:    x=46,  y=37–53   (east dead-end divider)
-            //   W_EC  — East Cap:         y=49,  x=46–56   (caps east dead end)
-            //   W_WV  — West Vertical:    x=30,  y=37–50   (forces north detour)
-            //   + fixed separator at y=35 (no gaps with MazeKeyDoor)
-            // ══════════════════════════════════════════════════════════════════
+            // maze walls (vertical)
+            CreateWall(29f, 41.5f, 1.5f, 4f);
+            CreateWall(39f, 45.5f, 1.5f, 4f);
+            CreateWall(39f, 49.5f, 1.5f, 4f);
+            CreateWall(44f, 37.5f, 1.5f, 4f);
+            CreateWall(44f, 45.5f, 1.5f, 4f);
+            CreateWall(44f, 49.5f, 1.5f, 4f);
+            CreateWall(49f, 49.5f, 1.5f, 4f);
 
-            // W_SB: blocks going south from spawn toward MazeKeyDoor directly
-            // Covers x=27–55; gap at x=23–26 is the correct southward passage.
-            CreateWall(41f,  37f,  28f, 1.5f);   // center=(41,37), w=28 → x=27–55
+            // maze walls (horizontal)
+            CreateWall(31f, 40f, 5f, 1.5f);
+            CreateWall(36f, 40f, 5f, 1.5f);
+            CreateWall(41f, 40f, 5f, 1.5f);
+            CreateWall(51f, 40f, 5f, 1.5f);
+            CreateWall(31f, 44f, 5f, 1.5f);
+            CreateWall(36f, 44f, 5f, 1.5f);
+            CreateWall(46f, 44f, 5f, 1.5f);
+            CreateWall(31f, 48f, 5f, 1.5f);
+            CreateWall(36f, 48f, 5f, 1.5f);
+            CreateWall(46f, 48f, 5f, 1.5f);
+            CreateWall(31f, 52f, 5f, 1.5f);
+            CreateWall(36f, 52f, 5f, 1.5f);
+            CreateWall(41f, 52f, 5f, 1.5f);
 
-            // W_EV: east dead-end divider — separates the east wing from spawn area
-            CreateWall(46f,  45f,  1.5f, 16f);   // center=(46,45), h=16 → x=46, y=37–53
+            // maze-to-gauntlet separator
+            CreateWall(30.5f, 35f, 17f, 1.5f);
+            CreateWall(47.5f, 35f, 17f, 1.5f);
 
-            // W_EC: caps the east dead-end at the top
-            CreateWall(51f,  49f,  10f,  1.5f);  // center=(51,49), w=10 → y=49, x=46–56
-
-            // W_WV: prevents cutting west from spawn to the left corridor below y=50
-            // Player must go NORTH past y=50 before going west to x=24.
-            CreateWall(30f,  43.5f, 1.5f, 13f);  // center=(30,43.5), h=13 → x=30, y=37–50
-
-            // ── Maze-to-gauntlet separator at y=35 (gap-free with MazeKeyDoor) ──
-            // MazeKeyDoor.Create() spawns a 3×3 BoxCollider2D at x=39.
-            // Left wall ends at x=39; right wall starts at x=39 → walls and door
-            // overlap at the centre, so there is no gap a player can slip through.
-            CreateWall(30.5f, 35f, 17f, 1.5f);   // left:  center=(30.5,35), w=17 → x=22–39
-            CreateWall(47.5f, 35f, 17f, 1.5f);   // right: center=(47.5,35), w=17 → x=39–56
-
-            // ── MazeKeyDoor ────────────────────────────────────────────────────
             MazeKeyDoor.Create(new Vector3(39f, 35f, 0f));
 
-            // ── Gauntlet corridor (y=31..34) ────────────────────────────────────
-            // 31-unit horizontal run: x=24 to x=54 at y=33.
-            // GauntletLavaHazard bypasses PlayerHazardShield — DEF stats do NOT
-            // apply. 8 dmg/tick @ 0.5 s = 16 dmg/s.
-            //   With Speed Boots (1.5×): ~4 s through → ~64 dmg (survives at 100 HP)
-            //   Without Speed Boots    : ~6 s through → ~96 dmg (near-lethal)
+            // lava tiles every 2 units
             for (int gx = 24; gx <= 54; gx += 2)
                 GauntletLavaHazard.Create(new Vector3(gx, 33f, 0f));
 
-            // Gauntlet reward at east end — grants heal, immunity, 5th key piece.
             GauntletReward.Create(new Vector3(55f, 33f, 0f));
         }
 
-        /// Returns true if (x,y) is inside the lower-deck interior.
-        /// Same shape as the flagship hull minus 3 tiles/side, translated -5 in x.
         private bool IsLowerDeckInterior(int x, int y)
         {
             if (y >=  7 && y <= 12 && x >= 31 && x <= 48) return true;
@@ -546,7 +403,6 @@ namespace DefaultNamespace
 
         private void BuildLowerDeckHull()
         {
-            // Paint floor and clear wall tiles for all interior sections.
             PaintLowerSection( 7, 12, 31, 48);
             PaintLowerSection(13, 18, 29, 50);
             PaintLowerSection(19, 24, 27, 52);
@@ -556,8 +412,6 @@ namespace DefaultNamespace
             PaintLowerSection(61, 65, 27, 52);
             PaintLowerSection(66, 70, 29, 50);
             PaintLowerSection(71, 74, 31, 48);
-
-            // Re-paint hull wall tiles at the interior perimeter.
             PaintLowerDeckPerimeter();
         }
 
@@ -568,7 +422,7 @@ namespace DefaultNamespace
             for (int x = xMin; x <= xMax; x++)
             {
                 groundTilemap.SetTile(new Vector3Int(x, y, 0), floor);
-                wallTilemap.SetTile(new Vector3Int(x, y, 0), null);  // clear void → walkable
+                wallTilemap.SetTile(new Vector3Int(x, y, 0), null);
             }
         }
 
@@ -593,16 +447,6 @@ namespace DefaultNamespace
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════════════
-        // ROOM BUILDERS
-        // ═══════════════════════════════════════════════════════════════════════
-        //
-        // All rooms have exits as hatches near the TOP wall (y = H-2 after
-        // the 2-tile border), representing going back UP to the ship deck.
-        // Players spawn at the room centre when entering.
-
-        // ── Armory  20×15 ────────────────────────────────────────────────────
-
         private void BuildArmory()
         {
             Portal.ApplyPendingSpawn();
@@ -611,15 +455,10 @@ namespace DefaultNamespace
             FillRect(groundTilemap, 0, 0, W-1, H-1, "room_floor");
             FillBorder(wallTilemap, 0, 0, W-1, H-1, 2, "room_wall");
 
-            // Weapon rack barrels on both sides.
             PlaceObstacles("barrels", new int[] { 3,4, 4,4, 3,9, 4,9, 15,4, 15,9 });
-
-            // Exit hatch on inner TOP wall (y=13). Return-spawn on flagship 2 south of (32,46).
             PlacePortal("FlagshipArmory", 10, 13, "BlackwaterFlagship",
                         new Vector2(32f, 44f), "door_marker");
         }
-
-        // ── Mess Hall  20×15 ─────────────────────────────────────────────────
 
         private void BuildMessHall()
         {
@@ -629,15 +468,10 @@ namespace DefaultNamespace
             FillRect(groundTilemap, 0, 0, W-1, H-1, "sand_path");
             FillBorder(wallTilemap, 0, 0, W-1, H-1, 2, "room_wall");
 
-            // Mess tables / crates.
             PlaceObstacles("barrels", new int[] { 4,4, 5,4, 14,4, 15,4, 4,9, 5,9 });
-
-            // Exit hatch top-center. Return-spawn 2 south of flagship (57,46).
             PlacePortal("FlagshipMess", 10, 13, "BlackwaterFlagship",
                         new Vector2(57f, 44f), "door_marker");
         }
-
-        // ── Brig  15×15 ──────────────────────────────────────────────────────
 
         private void BuildBrig()
         {
@@ -647,15 +481,10 @@ namespace DefaultNamespace
             FillRect(groundTilemap, 0, 0, W-1, H-1, "camp_wall_dark");
             FillBorder(wallTilemap, 0, 0, W-1, H-1, 2, "room_wall");
 
-            // Prison bars / pillars.
             PlaceObstacles("room_wall", new int[] { 4,5, 9,5, 4,9, 9,9 });
-
-            // Exit hatch top-center. Return-spawn 2 south of flagship (32,35).
             PlacePortal("FlagshipBrig", 7, 13, "BlackwaterFlagship",
                         new Vector2(32f, 33f), "door_marker");
         }
-
-        // ── Navigation Room  15×15 ───────────────────────────────────────────
 
         private void BuildNavigationRoom()
         {
@@ -665,15 +494,10 @@ namespace DefaultNamespace
             FillRect(groundTilemap, 0, 0, W-1, H-1, "sand_wet");
             FillBorder(wallTilemap, 0, 0, W-1, H-1, 2, "room_wall");
 
-            // Navigation chart tables.
             PlaceObstacles("dock_planks", new int[] { 4,5, 5,5, 9,5, 10,5, 4,9, 9,9 });
-
-            // Exit hatch top-center. Return-spawn 2 south of flagship (44,65).
             PlacePortal("FlagshipNav", 7, 13, "BlackwaterFlagship",
                         new Vector2(44f, 63f), "door_marker");
         }
-
-        // ── Captain's Quarters  25×20 ────────────────────────────────────────
 
         private void BuildCaptainsQuarters()
         {
@@ -683,20 +507,11 @@ namespace DefaultNamespace
             FillRect(groundTilemap, 0, 0, W-1, H-1, "dock_planks");
             FillBorder(wallTilemap, 0, 0, W-1, H-1, 2, "camp_wall");
 
-            // Throne / desk accent.
             PlaceRect(groundTilemap, 11, 14, 13, 16, "treasure_chest_gold");
-
-            // Decorative barrels / crates.
             PlaceObstacles("barrels", new int[] { 3,4, 4,4, 20,4, 21,4, 3,13, 20,13 });
-
-            // Exit hatch inner TOP wall (y=18). Return-spawn 2 north of flagship (44,12) → y=14.
             PlacePortal("FlagshipCaptains", 12, 18, "BlackwaterFlagship",
                         new Vector2(44f, 14f), "door_marker");
         }
-
-        // ═══════════════════════════════════════════════════════════════════════
-        // MAP HELPERS
-        // ═══════════════════════════════════════════════════════════════════════
 
         private void FillRect(Tilemap tm, int x0, int y0, int x1, int y1, string tag)
         {
@@ -727,7 +542,6 @@ namespace DefaultNamespace
             }
         }
 
-        /// Fills a rectangle on a tilemap (helper used for mast bases, etc.)
         private void PlaceRect(Tilemap tm, int x0, int y0, int x1, int y1, string tag)
         {
             TileBase t = GetTileAsset(tag);
@@ -736,7 +550,6 @@ namespace DefaultNamespace
                     tm.SetTile(new Vector3Int(x, y, 0), t);
         }
 
-        /// Places obstacle tiles on wallTilemap at paired (x,y) coordinates.
         private void PlaceObstacles(string tag, int[] coords)
         {
             TileBase t = GetTileAsset(tag);
@@ -744,7 +557,6 @@ namespace DefaultNamespace
                 wallTilemap.SetTile(new Vector3Int(coords[i], coords[i+1], 0), t);
         }
 
-        /// Like PlaceObstacles but skips any position not inside the lower-deck interior.
         private void PlaceObstaclesIf(string tag, int[] coords)
         {
             TileBase t = GetTileAsset(tag);
@@ -753,13 +565,6 @@ namespace DefaultNamespace
                     wallTilemap.SetTile(new Vector3Int(coords[i], coords[i+1], 0), t);
         }
 
-        // ═══════════════════════════════════════════════════════════════════════
-        // PORTAL PLACEMENT
-        // ═══════════════════════════════════════════════════════════════════════
-
-        /// Places a portal at tile (tx,ty).
-        /// Clears any wallTilemap tile at that position so the marker is visible
-        /// and the TilemapCollider2D doesn't block the player from reaching it.
         private void PlacePortal(string id, int tx, int ty,
                                   string targetScene, Vector2 spawnPos,
                                   string markerTag)
@@ -771,8 +576,6 @@ namespace DefaultNamespace
             var go = new GameObject("Portal_" + id);
             go.transform.position = new Vector3(tx + 0.5f, ty + 0.5f, 0f);
 
-            // Kinematic Rigidbody2D required so Unity sends trigger events to
-            // this GameObject's OnTriggerEnter2D even without a dynamic body here.
             var rb2d      = go.AddComponent<Rigidbody2D>();
             rb2d.bodyType = RigidbodyType2D.Kinematic;
 
@@ -784,10 +587,6 @@ namespace DefaultNamespace
             portal.targetScene   = targetScene;
             portal.spawnPosition = spawnPos;
         }
-
-        // ═══════════════════════════════════════════════════════════════════════
-        // TILE ASSET RESOLUTION
-        // ═══════════════════════════════════════════════════════════════════════
 
         private TileBase GetTileAsset(string tag)
         {
@@ -809,10 +608,6 @@ namespace DefaultNamespace
 
         private Sprite SpriteFrom(Texture2D tex)
             => Sprite.Create(tex, new Rect(0, 0, TEX, TEX), new Vector2(0.5f, 0.5f), TEX);
-
-        // ═══════════════════════════════════════════════════════════════════════
-        // VORONOI PROCEDURAL TILE GENERATOR
-        // ═══════════════════════════════════════════════════════════════════════
 
         private Color[] VoronoiTile(int tx, int ty,
             Color cellBase, Color cellLight, Color mortar,
@@ -873,76 +668,51 @@ namespace DefaultNamespace
             return pixels;
         }
 
-        // ═══════════════════════════════════════════════════════════════════════
-        // TEXTURE DEFINITIONS
-        // ═══════════════════════════════════════════════════════════════════════
-
         private Texture2D GenerateTexture(string tag, int tx, int ty)
         {
             Color[] px;
             switch (tag)
             {
-                // ── Ocean ──────────────────────────────────────────────────────
                 case "water": case "water_shallow":
                     px = VoronoiTile(tx, ty,
                         new Color(0.18f,0.46f,0.70f), new Color(0.32f,0.64f,0.88f),
                         new Color(0.06f,0.22f,0.44f), 10, 1.8f, 0.10f); break;
-
-                // ── Main deck — warm brown planks ──────────────────────────────
                 case "ship_deck":
                     px = VoronoiTile(tx, ty,
                         new Color(0.55f,0.35f,0.15f), new Color(0.72f,0.52f,0.28f),
                         new Color(0.30f,0.18f,0.06f), 8, 2.5f, 0.09f); break;
-
-                // ── Quarterdeck — richer amber-brown ───────────────────────────
                 case "ship_deck_aft":
                     px = VoronoiTile(tx, ty,
                         new Color(0.62f,0.38f,0.12f), new Color(0.80f,0.58f,0.28f),
                         new Color(0.34f,0.18f,0.04f), 8, 2.6f, 0.09f); break;
-
-                // ── Forecastle — lighter tan planks ───────────────────────────
                 case "ship_deck_fore":
                     px = VoronoiTile(tx, ty,
                         new Color(0.68f,0.52f,0.28f), new Color(0.84f,0.70f,0.46f),
                         new Color(0.38f,0.26f,0.10f), 8, 2.4f, 0.09f); break;
-
-                // ── Lower deck — dark planks ───────────────────────────────────
                 case "ship_deck_dark":
                     px = VoronoiTile(tx, ty,
                         new Color(0.38f,0.22f,0.08f), new Color(0.52f,0.34f,0.14f),
                         new Color(0.18f,0.10f,0.02f), 8, 2.5f, 0.09f); break;
-
-                // ── Ship rail / hull perimeter — dark navy ─────────────────────
                 case "ship_rail":
                     px = VoronoiTile(tx, ty,
                         new Color(0.12f,0.10f,0.22f), new Color(0.22f,0.20f,0.35f),
                         new Color(0.04f,0.04f,0.08f), 8, 2.0f, 0.06f); break;
-
-                // ── Dock planks / trim ─────────────────────────────────────────
                 case "dock_planks": case "dock_secret":
                     px = VoronoiTile(tx, ty,
                         new Color(0.62f,0.44f,0.24f), new Color(0.78f,0.60f,0.38f),
                         new Color(0.30f,0.18f,0.08f), 6, 3.0f, 0.08f); break;
-
-                // ── Mast base — very dark charred wood ────────────────────────
                 case "mast_base":
                     px = VoronoiTile(tx, ty,
                         new Color(0.18f,0.10f,0.04f), new Color(0.28f,0.18f,0.08f),
                         new Color(0.06f,0.03f,0.01f), 6, 2.8f, 0.05f); break;
-
-                // ── Room floor — stone/wood ────────────────────────────────────
                 case "room_floor":
                     px = VoronoiTile(tx, ty,
                         new Color(0.58f,0.52f,0.44f), new Color(0.74f,0.68f,0.58f),
                         new Color(0.28f,0.24f,0.18f), 9, 2.2f, 0.08f); break;
-
-                // ── Room wall — grey stone ─────────────────────────────────────
                 case "room_wall":
                     px = VoronoiTile(tx, ty,
                         new Color(0.44f,0.44f,0.44f), new Color(0.62f,0.62f,0.62f),
                         new Color(0.18f,0.18f,0.18f), 8, 2.4f, 0.07f); break;
-
-                // ── Sand tiles (mess hall floor) ───────────────────────────────
                 case "sand":
                     px = VoronoiTile(tx, ty,
                         new Color(0.88f,0.76f,0.50f), new Color(0.98f,0.90f,0.70f),
@@ -955,8 +725,6 @@ namespace DefaultNamespace
                     px = VoronoiTile(tx, ty,
                         new Color(0.80f,0.68f,0.36f), new Color(0.94f,0.84f,0.56f),
                         new Color(0.46f,0.36f,0.14f), 10, 2.0f, 0.09f); break;
-
-                // ── Camp wall variants (brig / captain's quarters) ────────────
                 case "camp_wall":
                     px = VoronoiTile(tx, ty,
                         new Color(0.58f,0.54f,0.48f), new Color(0.74f,0.70f,0.64f),
@@ -965,50 +733,34 @@ namespace DefaultNamespace
                     px = VoronoiTile(tx, ty,
                         new Color(0.36f,0.33f,0.29f), new Color(0.50f,0.47f,0.42f),
                         new Color(0.12f,0.10f,0.08f), 8, 2.6f, 0.07f); break;
-
-                // ── Barrels/crates ─────────────────────────────────────────────
                 case "barrels":
                     px = VoronoiTile(tx, ty,
                         new Color(0.42f,0.28f,0.12f), new Color(0.58f,0.42f,0.22f),
                         new Color(0.20f,0.12f,0.04f), 8, 2.0f, 0.08f); break;
-
-                // ── Treasure chest ────────────────────────────────────────────
                 case "treasure_chest": case "treasure_chest_gold":
                     px = VoronoiTile(tx, ty,
                         new Color(0.64f,0.44f,0.12f), new Color(0.84f,0.66f,0.30f),
                         new Color(0.36f,0.22f,0.04f), 7, 2.2f, 0.10f); break;
-
-                // ── Hatch / ladder marker — bright cyan ────────────────────────
                 case "hatch_marker":
                     px = VoronoiTile(tx, ty,
                         new Color(0.10f,0.65f,0.75f), new Color(0.25f,0.82f,0.90f),
                         new Color(0.04f,0.28f,0.35f), 7, 2.0f, 0.08f); break;
-
-                // ── Standard room door marker — bright amber ───────────────────
                 case "door_marker":
                     px = VoronoiTile(tx, ty,
                         new Color(0.90f,0.65f,0.10f), new Color(1.00f,0.85f,0.30f),
                         new Color(0.50f,0.30f,0.02f), 7, 2.0f, 0.08f); break;
-
-                // ── Captain's door/hatch — distinctive red-gold ────────────────
                 case "door_captains":
                     px = VoronoiTile(tx, ty,
                         new Color(0.85f,0.20f,0.10f), new Color(1.00f,0.45f,0.30f),
                         new Color(0.40f,0.05f,0.02f), 7, 2.0f, 0.08f); break;
-
-                // ── Lower deck void — near-black ──────────────────────────────
                 case "hold_void":
                     px = VoronoiTile(tx, ty,
                         new Color(0.08f,0.04f,0.01f), new Color(0.14f,0.08f,0.03f),
                         new Color(0.02f,0.01f,0.00f), 8, 2.0f, 0.03f); break;
-
-                // ── Lower deck hull wall — dark brown timber ───────────────────
                 case "hold_wall":
                     px = VoronoiTile(tx, ty,
                         new Color(0.28f,0.20f,0.12f), new Color(0.38f,0.28f,0.18f),
                         new Color(0.14f,0.08f,0.04f), 8, 2.2f, 0.07f); break;
-
-                // ── Support beam pillar ────────────────────────────────────────
                 case "support_beam":
                     px = VoronoiTile(tx, ty,
                         new Color(0.50f,0.30f,0.10f), new Color(0.64f,0.44f,0.18f),

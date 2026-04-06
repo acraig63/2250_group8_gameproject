@@ -2,22 +2,6 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Lava hazard tiles in the BlackwaterLowerDeck gauntlet corridor.
-    ///
-    /// Unlike HazardZone (which sends TakeDamage via SendMessage → PlayerHazardShield
-    /// → DEF reduction applied), this component calls PlayerController.SetHealth()
-    /// directly. DEF stats therefore do NOT reduce gauntlet damage.
-    ///
-    /// Immunity note: HazardImmunityManager.IsImmune IS respected here.
-    /// Immunity is granted by GauntletReward at the END of the gauntlet, so the
-    /// player never has immunity on the first traversal. On re-entry after collecting
-    /// the reward, immunity protects them (intentional design — collect once, safe return).
-    ///
-    /// Damage math: 8 dmg / 0.5 s tick = 16 dmg/s.
-    ///   With Speed Boots (1.5×): 30-unit corridor ≈ 4 s → ~64 total damage (survives).
-    ///   Without Speed Boots   :  30-unit corridor ≈ 6 s → ~96 total damage (near-lethal).
-    /// </summary>
     public class GauntletLavaHazard : MonoBehaviour
     {
         public int   damagePerTick = 8;
@@ -27,13 +11,9 @@ namespace DefaultNamespace
 
         private void OnTriggerStay2D(Collider2D other)
         {
-            // Immunity check (granted after gauntlet is completed)
             if (HazardImmunityManager.IsImmune) return;
-
-            // Tick-rate limiter
             if (Time.time - _lastDamageTime < tickInterval) return;
 
-            // Player check
             bool isPlayer = other.CompareTag("Player")
                          || other.GetComponent<PlayerController>() != null;
             if (!isPlayer) return;
@@ -42,15 +22,9 @@ namespace DefaultNamespace
             if (pc == null) return;
 
             _lastDamageTime = Time.time;
-
-            // Direct SetHealth call — bypasses PlayerHazardShield and DEF reduction
             pc.SetHealth(pc.GetHealth() - damagePerTick);
         }
 
-        /// <summary>
-        /// Creates a lava hazard tile at the given world position.
-        /// Scale is 2×2 to cover the corridor width.
-        /// </summary>
         public static GameObject Create(Vector3 position)
         {
             Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);

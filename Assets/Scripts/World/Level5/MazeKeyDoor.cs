@@ -2,10 +2,6 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    /// <summary>
-    /// Solid door in BlackwaterLowerDeck that blocks passage to the gauntlet
-    /// until the player has collected 4 key pieces (BlackwaterState.hasMazeKey).
-    /// </summary>
     public class MazeKeyDoor : MonoBehaviour
     {
         private BoxCollider2D _collider;
@@ -46,7 +42,6 @@ namespace DefaultNamespace
 
         private void Update()
         {
-            // Auto-open if the player obtains the key while this scene is active.
             if (!_opened && BlackwaterState.hasMazeKey)
                 OpenInstantly();
         }
@@ -78,7 +73,7 @@ namespace DefaultNamespace
             rb.bodyType = RigidbodyType2D.Static;
 
             BoxCollider2D col = go.AddComponent<BoxCollider2D>();
-            col.isTrigger = false;  // solid — blocks movement
+            col.isTrigger = false;  // solid
 
             go.AddComponent<MazeKeyDoor>();
             return go;

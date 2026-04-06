@@ -8,11 +8,6 @@ namespace DefaultNamespace
         public static HashSet<string> defeatedNPCs      = new HashSet<string>();
         public static HashSet<string> collectedKeyPieces = new HashSet<string>();
         public static HashSet<string> collectedItems     = new HashSet<string>();
-        /// <summary>
-        /// Items the player currently holds for stat purposes (ATK/DEF bonuses).
-        /// Written by DeckItemTracker on pickup, cleared by Level5ItemDropHandler on drop.
-        /// NOT affected by PlayerController.Initialize() wiping the InventoryUI.
-        /// </summary>
         public static HashSet<string> heldItems = new HashSet<string>();
 
         public static bool  hasSpeedBoots      = false;
@@ -23,8 +18,6 @@ namespace DefaultNamespace
 
         public static bool HasAllKeyPieces() => collectedKeyPieces.Count >= 5;
 
-        /// <summary>True when the player has defeated all 4 room NPCs (4 key pieces),
-        /// unlocking the MazeKeyDoor to reach the gauntlet.</summary>
         public static bool hasMazeKey => collectedKeyPieces.Count >= 4;
 
         public static void SavePlayerState()
@@ -61,13 +54,10 @@ namespace DefaultNamespace
             savedSpeed        = -1f;
             hasSavedState     = false;
 
-            // Reset sub-system counters and state
             KeyPiecePickup.ResetPieceCounter();
             HazardImmunityManager.Reset();
 
-            // Clear Blackwater enemies from BattleData so they respawn correctly
-            // after a death reset. BattleData.DefeatedEnemies is public static —
-            // we read but do not modify BattleData.cs itself (teammate file).
+            // remove from BattleData so NPCs respawn
             string[] blackwaterNPCs =
             {
                 "Blackwater Armsman",
