@@ -37350,6 +37350,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1404236440605719013, guid: 99a4c28a74a26f943812e534c403090f,
         type: 3}
+      propertyPath: enemyAttackPower
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1404236440605719013, guid: 99a4c28a74a26f943812e534c403090f,
+        type: 3}
       propertyPath: enemyDisplayName
       value: Pirate Guard 3
       objectReference: {fileID: 0}
@@ -39506,6 +39511,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1633805198}
     m_Modifications:
+    - target: {fileID: 1404236440605719013, guid: 99a4c28a74a26f943812e534c403090f,
+        type: 3}
+      propertyPath: enemyAttackPower
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 1404236440605719013, guid: 99a4c28a74a26f943812e534c403090f,
         type: 3}
       propertyPath: enemyDisplayName
@@ -55100,6 +55110,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1633805198}
     m_Modifications:
+    - target: {fileID: 1404236440605719013, guid: 99a4c28a74a26f943812e534c403090f,
+        type: 3}
+      propertyPath: enemyAttackPower
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 1404236440605719013, guid: 99a4c28a74a26f943812e534c403090f,
         type: 3}
       propertyPath: enemyDisplayName
