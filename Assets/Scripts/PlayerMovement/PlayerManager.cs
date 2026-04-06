@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using DefaultNamespace;
 
@@ -23,18 +24,28 @@ public class PlayerManager : MonoBehaviour
         {
             spriteRenderer.sprite = selectedSprite;
 
-
-
         }
 
         Debug.Log($"HasReturnPosition: {BattleData.HasReturnPosition}, ReturningFromBattle: {BattleData.ReturningFromBattle}, Position: {BattleData.ReturnPlayerPosition}");
-        if (BattleData.HasReturnPosition) // && BattleData.ReturningFromBattle) 
+        if (BattleData.HasReturnPosition) //  && BattleData.ReturningFromBattle) 
         {
-            transform.position = BattleData.ReturnPlayerPosition;
+            //transform.position = BattleData.ReturnPlayerPosition;
+            StartCoroutine(RestoreReturnPositionNextFrame());
             BattleData.HasReturnPosition = false;
             BattleData.ReturningFromBattle = false;
         }
 
         Debug.Log("Spawned player: " + selectedName);
+    }
+    
+    private IEnumerator RestoreReturnPositionNextFrame()
+    {
+        yield return null;
+
+        Debug.Log("Restoring player to return position: " + BattleData.ReturnPlayerPosition);
+
+        transform.position = BattleData.ReturnPlayerPosition;
+        BattleData.HasReturnPosition = false;
+        BattleData.ReturningFromBattle = false;
     }
 }

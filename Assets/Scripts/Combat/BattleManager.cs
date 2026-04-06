@@ -242,29 +242,45 @@ public class BattleManager : MonoBehaviour
 
         if (playerWon)
         {
+            BattleData.HasReturnPosition = true;
+            BattleData.ReturningFromBattle = true;
             if (statusText != null)
                 statusText.text = $"You defeated {BattleData.EnemyName}!";
             StartCoroutine(ReturnToOverworld(2.0f, won: true));
         }
         else
         {
+            BattleData.HasReturnPosition = false;
             if (statusText != null)
                 statusText.text = "You were defeated...";
             StartCoroutine(ReturnToOverworld(2.0f, won: false));
         }
     }
 
+    // private IEnumerator ReturnToOverworld(float delay, bool won)
+    // {
+    //     yield return new WaitForSeconds(delay);
+    //
+    //     // Tell the overworld whether the player won so the NPC can be destroyed
+    //     BattleData.PlayerWon     = won;
+    //     BattleData.PlayerCurrentHealth = _playerHP; // carry HP back
+    //     BattleData.ReturningFromBattle  = true;
+    //
+    //     if (!won) BattleData.HasReturnPosition = false;
+    //
+    //     SceneManager.LoadScene(BattleData.ReturnScene);
+    // }
+    
     private IEnumerator ReturnToOverworld(float delay, bool won)
     {
         yield return new WaitForSeconds(delay);
-
-        // Tell the overworld whether the player won so the NPC can be destroyed
-        BattleData.PlayerWon     = won;
-        BattleData.PlayerCurrentHealth = _playerHP; // carry HP back
-        BattleData.ReturningFromBattle  = true;
-
-        if (!won) BattleData.HasReturnPosition = false;
-
+        BattleData.PlayerWon           = won;
+        BattleData.ReturningFromBattle = won; // only true if won
+        BattleData.HasReturnPosition = won;
+    
+        // If lost, set health to 0 to trigger restart, but BattleResultHandler will reset it
+        BattleData.PlayerCurrentHealth = won ? _playerHP : 0;
+    
         SceneManager.LoadScene(BattleData.ReturnScene);
     }
 
