@@ -267,7 +267,7 @@ namespace DefaultNamespace
             PlacePortal("Brig",       32, 35, "BlackwaterBrig",
                         new Vector2(7f, 7f), "door_marker");
             PlacePortal("LowerDeck",  44, 38, "BlackwaterLowerDeck",
-                        new Vector2(39f, 40f), "door_marker");
+                        new Vector2(42f, 34f), "door_marker");
             PlacePortal("Armory",     32, 46, "BlackwaterArmory",
                         new Vector2(10f, 7f), "door_marker");
             PlacePortal("MessHall",   57, 46, "BlackwaterMessHall",
@@ -322,6 +322,36 @@ namespace DefaultNamespace
             }
         }
 
+        // ── Maze constants ──────────────────────────────────────────────────
+        // 8-column × 11-row grid, 4-unit cells, origin at world (24, 32).
+        // Cell (col, row) center = (26 + col*4,  34 + row*4).
+        // Entry portal: cell (4,0) = (42, 34).
+        // MazeKeyDoor : cell (4,6) = (42, 58).
+        // Lava cells  : (4,7) (4,8) (5,8) (5,9) (4,9).
+        // Reward      : cell (4,10) = (42, 74).
+        // 0 = wall, 1 = corridor.
+        private static readonly int[,] _mazeGrid = new int[11, 8]
+        {
+            { 0, 0, 1, 1, 1, 1, 1, 1 },  // row  0 (y=34) – entry at col 4; cols 5-7 dead-end
+            { 1, 1, 1, 0, 0, 0, 0, 0 },  // row  1 (y=38) – dead-end branch left
+            { 0, 0, 1, 1, 1, 1, 1, 0 },  // row  2 (y=42) – main horizontal corridor
+            { 0, 0, 0, 0, 1, 1, 1, 1 },  // row  3 (y=46) – right-side dead end
+            { 0, 0, 0, 0, 1, 1, 0, 0 },  // row  4 (y=50) – connecting path
+            { 1, 1, 1, 1, 1, 0, 0, 0 },  // row  5 (y=54) – left dead-end corridor
+            { 0, 0, 0, 0, 1, 0, 0, 0 },  // row  6 (y=58) – pre-lava (MazeKeyDoor here)
+            { 0, 0, 0, 0, 1, 0, 0, 0 },  // row  7 (y=62) – lava
+            { 0, 0, 0, 0, 1, 1, 0, 0 },  // row  8 (y=66) – lava turn right
+            { 0, 0, 0, 0, 1, 1, 0, 0 },  // row  9 (y=70) – lava continues
+            { 0, 0, 0, 0, 1, 0, 0, 0 },  // row 10 (y=74) – reward
+        };
+
+        private static bool IsMazeLavaCell(int row, int col)
+        {
+            if (col == 4 && row >= 7 && row <= 9) return true;
+            if (col == 5 && row >= 8 && row <= 9) return true;
+            return false;
+        }
+
         private void BuildLowerDeck()
         {
             Portal.ApplyPendingSpawn();
@@ -331,60 +361,34 @@ namespace DefaultNamespace
 
             BuildLowerDeckHull();
 
-            // support beam pillars
-            PlaceObstaclesIf("support_beam", new int[]
-            {
-                28, 37,  50, 37,
-                28, 43,  50, 43,
-                28, 22,  50, 22,
-                28, 50,  50, 50,
-            });
-
-            PlaceObstaclesIf("barrels", new int[]
-            {
-                25, 33,  26, 33,  52, 33,  53, 33,
-                25, 48,  26, 48,  52, 48,  53, 48,
-                34, 63,  35, 63,  43, 63,  44, 63,
-            });
-
-            PlacePortal("Flagship", 39, 38, "BlackwaterFlagship",
+            // Return portal to Flagship at maze entry cell (4,0) = world (42,34)
+            PlacePortal("Flagship", 42, 34, "BlackwaterFlagship",
                         new Vector2(44f, 36f), "door_marker");
 
-            // maze walls (vertical)
-            CreateWall(29f, 41.5f, 1.5f, 4f);
-            CreateWall(39f, 45.5f, 1.5f, 4f);
-            CreateWall(39f, 49.5f, 1.5f, 4f);
-            CreateWall(44f, 37.5f, 1.5f, 4f);
-            CreateWall(44f, 45.5f, 1.5f, 4f);
-            CreateWall(44f, 49.5f, 1.5f, 4f);
-            CreateWall(49f, 49.5f, 1.5f, 4f);
+            // Build maze from grid
+            for (int row = 0; row < 11; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    float cx = 26f + col * 4f;
+                    float cy = 34f + row * 4f;
 
-            // maze walls (horizontal)
-            CreateWall(31f, 40f, 5f, 1.5f);
-            CreateWall(36f, 40f, 5f, 1.5f);
-            CreateWall(41f, 40f, 5f, 1.5f);
-            CreateWall(51f, 40f, 5f, 1.5f);
-            CreateWall(31f, 44f, 5f, 1.5f);
-            CreateWall(36f, 44f, 5f, 1.5f);
-            CreateWall(46f, 44f, 5f, 1.5f);
-            CreateWall(31f, 48f, 5f, 1.5f);
-            CreateWall(36f, 48f, 5f, 1.5f);
-            CreateWall(46f, 48f, 5f, 1.5f);
-            CreateWall(31f, 52f, 5f, 1.5f);
-            CreateWall(36f, 52f, 5f, 1.5f);
-            CreateWall(41f, 52f, 5f, 1.5f);
+                    if (_mazeGrid[row, col] == 0)
+                    {
+                        CreateWall(cx, cy, 4f, 4f);
+                    }
+                    else if (IsMazeLavaCell(row, col))
+                    {
+                        GauntletLavaHazard.Create(new Vector3(cx, cy, 0f));
+                    }
+                }
+            }
 
-            // maze-to-gauntlet separator
-            CreateWall(30.5f, 35f, 17f, 1.5f);
-            CreateWall(47.5f, 35f, 17f, 1.5f);
+            // MazeKeyDoor at cell (4,6) — no wall placed there, door is the sole barrier
+            MazeKeyDoor.Create(new Vector3(42f, 58f, 0f));
 
-            MazeKeyDoor.Create(new Vector3(39f, 35f, 0f));
-
-            // lava tiles every 2 units
-            for (int gx = 24; gx <= 54; gx += 2)
-                GauntletLavaHazard.Create(new Vector3(gx, 33f, 0f));
-
-            GauntletReward.Create(new Vector3(55f, 33f, 0f));
+            // Reward at cell (4,10)
+            GauntletReward.Create(new Vector3(42f, 74f, 0f));
         }
 
         private bool IsLowerDeckInterior(int x, int y)

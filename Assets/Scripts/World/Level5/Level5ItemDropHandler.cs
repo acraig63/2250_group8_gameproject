@@ -6,6 +6,23 @@ using UnityEngine.SceneManagement;
 
 namespace DefaultNamespace
 {
+    // Disables the pickup collider for 0.5s after spawn so dropped items aren't instantly re-picked up.
+    public class DropPickupCooldown : MonoBehaviour
+    {
+        private void Start()
+        {
+            Collider2D col = GetComponent<Collider2D>();
+            if (col != null) StartCoroutine(EnableAfterDelay(col));
+        }
+
+        private IEnumerator EnableAfterDelay(Collider2D col)
+        {
+            col.enabled = false;
+            yield return new WaitForSeconds(0.5f);
+            if (col != null) col.enabled = true;
+        }
+    }
+
     public class Level5ItemDropHandler : MonoBehaviour
     {
         private static Level5ItemDropHandler _instance;

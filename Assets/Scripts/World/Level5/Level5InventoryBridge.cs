@@ -290,6 +290,7 @@ namespace DefaultNamespace
             col.radius    = 0.5f;
 
             go.AddComponent<ItemPickup>();
+            go.AddComponent<DropPickupCooldown>();
             return go;
         }
     }

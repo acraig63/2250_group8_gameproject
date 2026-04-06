@@ -387,6 +387,9 @@ namespace DefaultNamespace
 
         public static void SpawnDeckItems()
         {
+            Debug.Log("[SpawnDeckItems] collectedItems=[" +
+                      string.Join(", ", BlackwaterState.collectedItems) + "]");
+
             SpawnWeaponItem(
                 "Pirate Cutlass",
                 new Vector3(35f, 30f, 0f),
@@ -417,12 +420,41 @@ namespace DefaultNamespace
                 50);
         }
 
+        // Checks collectedItems AND live inventory so items don't respawn if tracking missed.
+        private static bool ShouldSkipItem(string itemName)
+        {
+            if (BlackwaterState.collectedItems.Contains(itemName))
+            {
+                Debug.Log("[SpawnDeckItems] Skipping '" + itemName + "' (in collectedItems)");
+                return true;
+            }
+
+            // Fallback: scan live inventory in case DeckItemTracker missed the pickup
+            InventoryUI ui = Level5InventoryBridge.KnownInventoryUI;
+            if (ui == null) return false;
+            FieldInfo invField = typeof(InventoryUI).GetField(
+                "_inventory", BindingFlags.NonPublic | BindingFlags.Instance);
+            Inventory inv = invField?.GetValue(ui) as Inventory;
+            if (inv == null) return false;
+            foreach (Item item in inv.Items)
+            {
+                if (item.Name == itemName)
+                {
+                    BlackwaterState.collectedItems.Add(itemName);
+                    Debug.Log("[SpawnDeckItems] Skipping '" + itemName + "' (found in inventory, back-filled)");
+                    return true;
+                }
+            }
+            Debug.Log("[SpawnDeckItems] Spawning '" + itemName + "'");
+            return false;
+        }
+
         private static void SpawnWeaponItem(
             string itemName, Vector3 position,
             string description, int goldValue, Rarity rarity,
             int baseDamage, WeaponType weaponType)
         {
-            if (BlackwaterState.collectedItems.Contains(itemName)) return;
+            if (ShouldSkipItem(itemName)) return;
 
             Sprite spr = GetItemSprite(itemName);
             GameObject go = CreateItemBase(itemName, position, spr, 5, 1.5f);
@@ -443,7 +475,7 @@ namespace DefaultNamespace
             string description, int goldValue, Rarity rarity,
             ClothingSlot slot, int defenseBonus)
         {
-            if (BlackwaterState.collectedItems.Contains(itemName)) return;
+            if (ShouldSkipItem(itemName)) return;
 
             Sprite spr = GetItemSprite(itemName);
             GameObject go = CreateItemBase(itemName, position, spr, 5, 1.5f);
@@ -461,7 +493,7 @@ namespace DefaultNamespace
 
         private static void SpawnGoldCoins(string itemName, Vector3 position, int amount)
         {
-            if (BlackwaterState.collectedItems.Contains(itemName)) return;
+            if (ShouldSkipItem(itemName)) return;
 
             Sprite spr = GetItemSprite(itemName);
             GameObject go = CreateItemBase(itemName, position, spr, 5, 1.5f);
@@ -499,14 +531,22 @@ namespace DefaultNamespace
     public class DeckItemTracker : MonoBehaviour
     {
         public string trackedItemName;
+        private bool _tracked = false;
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.CompareTag("Player")) return;
+            MarkCollected();
+        }
+
+        private void MarkCollected()
+        {
+            if (_tracked) return;
+            _tracked = true;
             BlackwaterState.collectedItems.Add(trackedItemName);
             BlackwaterState.heldItems.Add(trackedItemName);
-            Debug.Log("[DeckItemTracker] Picked up '" + trackedItemName + "' → heldItems=" +
-                      string.Join(", ", BlackwaterState.heldItems));
+            Debug.Log("[DeckItemTracker] Collected '" + trackedItemName +
+                      "' | collectedItems=[" + string.Join(", ", BlackwaterState.collectedItems) + "]");
         }
     }
 }

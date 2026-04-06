@@ -51,6 +51,7 @@ namespace DefaultNamespace
     {
         private static Level5EquipManagerMono _instance;
         private static int _originalPlayerAtk = -1;
+        private static int _originalEnemyAtk  = -1;
 
         public static void EnsureExists()
         {
@@ -83,16 +84,32 @@ namespace DefaultNamespace
 
             if (isBattle)
             {
+                // Apply ATK bonus
                 _originalPlayerAtk = BattleData.PlayerAttackPower;
                 BattleData.PlayerAttackPower = _originalPlayerAtk + Level5EquipManager.GetTotalBonusATK();
                 Debug.Log("[Level5EquipManager] ATK bonus applied: +" +
                           Level5EquipManager.GetTotalBonusATK() +
                           " → PlayerAttackPower=" + BattleData.PlayerAttackPower);
+
+                // Apply DEF: reduce enemy attack power
+                _originalEnemyAtk = BattleData.EnemyAttackPower;
+                int def = Level5EquipManager.GetTotalBonusDEF();
+                BattleData.EnemyAttackPower = Mathf.Max(0, _originalEnemyAtk - def);
+                Debug.Log("[Level5EquipManager] DEF applied: def=" + def +
+                          " enemyAtk " + _originalEnemyAtk + "→" + BattleData.EnemyAttackPower);
             }
-            else if (_originalPlayerAtk >= 0)
+            else
             {
-                BattleData.PlayerAttackPower = _originalPlayerAtk;
-                _originalPlayerAtk = -1;
+                if (_originalPlayerAtk >= 0)
+                {
+                    BattleData.PlayerAttackPower = _originalPlayerAtk;
+                    _originalPlayerAtk = -1;
+                }
+                if (_originalEnemyAtk >= 0)
+                {
+                    BattleData.EnemyAttackPower = _originalEnemyAtk;
+                    _originalEnemyAtk = -1;
+                }
             }
         }
     }
