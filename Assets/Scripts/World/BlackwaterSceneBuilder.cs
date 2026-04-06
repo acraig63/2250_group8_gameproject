@@ -31,6 +31,9 @@ namespace DefaultNamespace
         private Dictionary<string, Sprite>   _spriteCache;
         private const int TEX = 32;
 
+        // Stored once so speed-boot multiplier never stacks on scene reloads.
+        private static float _originalSpeed = -1f;
+
         // -----------------------------------------------------------------------
         // Map size constants
         // -----------------------------------------------------------------------
@@ -91,6 +94,60 @@ namespace DefaultNamespace
             }
 
             Debug.Log($"[BlackwaterSceneBuilder] Built {scene}");
+
+            // ── Part 1 persistent singletons ─────────────────────────────────
+            Level5HealthBar.EnsureExists();
+            Level5InventoryBridge.EnsureInventoryExists();
+
+            // ── Per-scene NPC spawning and deck items ─────────────────────────
+            Level5NPCSetup.SetupRoomNPCs(scene);
+            if (scene == "BlackwaterFlagship")
+                Level5NPCSetup.SpawnDeckItems();
+
+            // ── PlayerHazardShield ────────────────────────────────────────────
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player == null)
+            {
+                PlayerController pcSearch = Object.FindObjectOfType<PlayerController>();
+                if (pcSearch != null) player = pcSearch.gameObject;
+            }
+            if (player != null)
+                PlayerHazardShield.AttachToPlayer(player);
+            else
+                Debug.LogWarning("[BlackwaterSceneBuilder] Player not found — PlayerHazardShield not attached.");
+
+            // ── Equip manager ────────────────────────────────────────────────
+            Level5EquipManagerMono.EnsureExists();
+
+            // ── Speed boots (apply once; prevent stacking on reload) ─────────
+            if (player != null)
+            {
+                PlayerController pc = player.GetComponent<PlayerController>();
+                if (pc != null)
+                {
+                    if (_originalSpeed < 0f) _originalSpeed = pc.speed;
+                    pc.speed = BlackwaterState.hasSpeedBoots ? _originalSpeed * 1.5f : _originalSpeed;
+                }
+            }
+
+            // ── Save / load Blackwater player state ───────────────────────────
+            if (scene.StartsWith("Blackwater") && player != null)
+            {
+                if (BlackwaterState.hasSavedState)
+                    BlackwaterState.LoadPlayerState();
+                BlackwaterState.SavePlayerState();
+            }
+
+            // ── Boss hazard wave (attach AFTER NPC has spawned) ───────────────
+            if (scene == "BlackwaterCaptainsQuarters")
+            {
+                GameObject boss = GameObject.Find("Captain Blackwater");
+                if (boss != null && boss.GetComponent<BossHazardWave>() == null)
+                    boss.AddComponent<BossHazardWave>();
+            }
+
+            // ── Death handler ─────────────────────────────────────────────────
+            Level5DeathHandler.EnsureExists();
         }
 
         // -----------------------------------------------------------------------
@@ -139,6 +196,33 @@ namespace DefaultNamespace
                 return;
             }
             cf.SetBounds(0f, maxX, 0f, maxY);
+        }
+
+        /// <summary>
+        /// Creates a solid maze wall GameObject with a BoxCollider2D (NOT trigger).
+        /// x,y is the world-space centre; width and height are in world units.
+        /// </summary>
+        private GameObject CreateWall(float x, float y, float width, float height)
+        {
+            Texture2D tex = new Texture2D(1, 1);
+            tex.SetPixel(0, 0, Color.white);
+            tex.Apply();
+            Sprite spr = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+
+            GameObject wall = new GameObject("MazeWall");
+            wall.transform.position   = new Vector3(x, y, 0f);
+            wall.transform.localScale = new Vector3(width, height, 1f);
+
+            SpriteRenderer sr = wall.AddComponent<SpriteRenderer>();
+            sr.sprite       = spr;
+            sr.color        = new Color(0.3f, 0.25f, 0.2f);   // dark brown
+            sr.sortingOrder = 2;
+
+            Rigidbody2D rb = wall.AddComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Static;
+
+            wall.AddComponent<BoxCollider2D>();   // solid, not trigger
+            return wall;
         }
 
         // -----------------------------------------------------------------------
@@ -245,10 +329,13 @@ namespace DefaultNamespace
             // All hatches are well inside the deck (≥4 tiles from any rail).
             // Return-spawn positions are 2 tiles away from the hatch tile.
 
-            // Captain's Quarters hatch — quarterdeck center (y=12)
-            // Return spawn 2 tiles north → y=14
-            PlacePortal("Captains",   44, 12, "BlackwaterCaptainsQuarters",
-                        new Vector2(12f, 10f), "door_marker");
+            // Captain's Quarters hatch — quarterdeck center (y=12).
+            // Replaced with LockedPortal: requires all 5 key pieces.
+            // Return spawn set on the LockedPortal; deck marker tile placed manually.
+            wallTilemap.SetTile(new Vector3Int(44, 12, 0), null);
+            groundTilemap.SetTile(new Vector3Int(44, 12, 0), GetTileAsset("door_marker"));
+            LockedPortal.Create(new Vector3(44.5f, 12.5f, 0f),
+                                "BlackwaterCaptainsQuarters", new Vector2(12f, 10f));
 
             // Brig hatch — main deck, left, lower area (y=35)
             // Return spawn 2 tiles south → (32,33)
@@ -366,6 +453,81 @@ namespace DefaultNamespace
             // Flagship return-spawn is 2 tiles south of the flagship hatch → (44,36).
             PlacePortal("Flagship", 39, 38, "BlackwaterFlagship",
                         new Vector2(44f, 36f), "door_marker");
+
+            // ══════════════════════════════════════════════════════════════════
+            // REDESIGNED MAZE — replaces the old 9-wall simple layout
+            //
+            // Interior bounds (main hold): y=31..55, x=23..56 (34×25 area)
+            // Player spawns at (39,40) when entering from flagship portal.
+            // Portal back to flagship sits at tile (39,38) — keep clear.
+            //
+            // CORRECT PATH through maze:
+            //   Start (39,40)
+            //   → NORTH along centre column to y=42 (avoid portal at y=38)
+            //   → WEST through gap between V1(x=35,y=37-41) and V3(x=35,y=43-55)
+            //     at y=42 to reach x≈30
+            //   → SOUTH through x=32-34 corridor (left of H6 at y=37.5 x=23-31,
+            //     right of V1 at x=35) down to y=36
+            //   → EAST along y=36 to MazeKeyDoor at (39,35)
+            //   → Through MazeKeyDoor (requires ≥4 key pieces)
+            //   → Descend to GAUNTLET at y=33
+            //   → Walk EAST along gauntlet (31 units) to GauntletReward at (55,33)
+            //
+            // DEAD ENDS:
+            //   A) Going straight EAST from spawn at y=38-41 → blocked by V2/H7
+            //   B) Going NORTH beyond y=51 in centre → blocked by H3
+            //   C) Upper-left pocket (x=23-35, y=48-55) → no exit downward
+            //   D) Going west to far-left (x=23) column below H6 → dead end
+            // ══════════════════════════════════════════════════════════════════
+
+            // ── Maze walls (solid BoxCollider2D, NOT trigger) ─────────────────
+
+            // HORIZONTAL walls (block vertical movement):
+            CreateWall(26f,  43.5f,  6f,  1.5f);  // H1 upper-left  (x=23-29, y=43.5)
+            CreateWall(49f,  43.5f, 12f,  1.5f);  // H2 upper-right (x=43-55, y=43.5)
+            CreateWall(39f,  51.5f, 10f,  1.5f);  // H3 upper-centre (x=34-44, y=51.5)
+            CreateWall(26f,  53.5f,  6f,  1.5f);  // H4 far-upper-left dead end
+            CreateWall(51f,  53.5f,  8f,  1.5f);  // H5 far-upper-right dead end
+            CreateWall(27f,  37.5f,  8f,  1.5f);  // H6 lower-left (x=23-31, y=37.5)
+            CreateWall(50f,  37.5f, 12f,  1.5f);  // H7 lower-right (x=44-56, y=37.5)
+            CreateWall(32f,  47.5f,  6f,  1.5f);  // H8 left-mid upper (x=29-35, y=47.5)
+            CreateWall(49f,  47.5f,  8f,  1.5f);  // H9 right-mid upper (x=45-53, y=47.5)
+
+            // VERTICAL walls (block horizontal movement):
+            CreateWall(35f,  39f,   1.5f,  4f);   // V1 left of spawn zone  (x=35, y=37-41)
+            CreateWall(43f,  39f,   1.5f,  4f);   // V2 right of spawn zone (x=43, y=37-41)
+            CreateWall(35f,  49f,   1.5f, 12f);   // V3 upper-left divider  (x=35, y=43-55)
+            CreateWall(43f,  49f,   1.5f, 12f);   // V4 upper-right divider (x=43, y=43-55)
+            CreateWall(26f,  40.5f, 1.5f,  5f);   // V5 far-left lower      (x=26, y=38-43)
+            CreateWall(54f,  40.5f, 1.5f,  5f);   // V6 far-right lower     (x=54, y=38-43)
+            CreateWall(32f,  46f,   1.5f,  5f);   // V7 left-centre upper   (x=32, y=43.5-48.5)
+            CreateWall(46f,  46f,   1.5f,  5f);   // V8 right-centre upper  (x=46, y=43.5-48.5)
+
+            // ── Maze-to-gauntlet separator at y=35 ───────────────────────────
+            // Solid wall spanning full width except for MazeKeyDoor gap at x=37-41.
+            CreateWall(29f,  35f,   14f,  1.5f);  // Left part  (x=22-36)
+            CreateWall(48f,  35f,   14f,  1.5f);  // Right part (x=41-55)
+
+            // ── MazeKeyDoor — blocks the only passage to the gauntlet ─────────
+            // Requires hasMazeKey (≥4 key pieces from the 4 NPC rooms).
+            MazeKeyDoor.Create(new Vector3(39f, 35f, 0f));
+
+            // ── Gauntlet corridor (y=31..34 strip of the main hold) ───────────
+            // 31-unit horizontal run: x=24 to x=54 at y=33.
+            // Lava tiles placed every 2 units using GauntletLavaHazard.
+            //
+            // GauntletLavaHazard bypasses PlayerHazardShield — DEF stats do NOT
+            // reduce this damage. 8 dmg/tick at 0.5 s intervals = 16 dmg/s.
+            //   With Speed Boots (1.5×): corridor takes ~4 s → ~64 dmg (survives w/ 100 HP)
+            //   Without Speed Boots    : corridor takes ~6 s → ~96 dmg (near-lethal)
+            //
+            // Player enters the gauntlet at approximately x=39 after passing MazeKeyDoor.
+            // GauntletReward sits at x=55, y=33 — east end of the corridor.
+            for (int gx = 24; gx <= 54; gx += 2)
+                GauntletLavaHazard.Create(new Vector3(gx, 33f, 0f));
+
+            // Gauntlet reward at east end — grants heal, immunity, 5th key piece.
+            GauntletReward.Create(new Vector3(55f, 33f, 0f));
         }
 
         /// Returns true if (x,y) is inside the lower-deck interior.

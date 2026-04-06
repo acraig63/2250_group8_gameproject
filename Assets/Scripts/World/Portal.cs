@@ -42,6 +42,11 @@ namespace DefaultNamespace
             _pendingSpawn    = spawnPosition;
             _hasPendingSpawn = true;
 
+            // Persist player state when transitioning into or out of Blackwater scenes.
+            string currentScene = SceneManager.GetActiveScene().name;
+            if (currentScene.StartsWith("Blackwater") || targetScene.StartsWith("Blackwater"))
+                BlackwaterState.SavePlayerState();
+
             Debug.Log($"[Portal] Loading scene '{targetScene}', spawn at {spawnPosition}");
             SceneManager.LoadScene(targetScene);
         }

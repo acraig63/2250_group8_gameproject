@@ -54,7 +54,19 @@ namespace DefaultNamespace
 
         private static int SumStat(bool isAtk)
         {
-            InventoryUI ui = Object.FindObjectOfType<InventoryUI>();
+            // Use the direct static reference set by Level5InventoryBridge.
+            // This avoids FindObjectOfType returning null (canvas is inactive during Battle)
+            // or returning a different InventoryUI that exists in the Battle scene.
+            InventoryUI ui = Level5InventoryBridge.KnownInventoryUI;
+            if (ui == null)
+            {
+                // Fallback: search including inactive objects (canvas hidden during Battle).
+                ui = Object.FindObjectOfType<InventoryUI>(true);
+                Debug.LogWarning("[Level5EquipManager] KnownInventoryUI was null; " +
+                                 "fell back to FindObjectOfType → " + (ui == null ? "NULL" : ui.name));
+            }
+
+            Debug.Log("[Level5EquipManager] SumStat: ui=" + (ui == null ? "NULL" : ui.name));
             if (ui == null) return 0;
 
             // InventoryUI._inventory is private — access via reflection
@@ -63,19 +75,28 @@ namespace DefaultNamespace
 
             if (invField == null)
             {
-                Debug.LogWarning("Level5EquipManager: InventoryUI._inventory field not found.");
+                Debug.LogWarning("[Level5EquipManager] InventoryUI._inventory field not found.");
                 return 0;
             }
 
             Inventory inv = invField.GetValue(ui) as Inventory;
+            Debug.Log("[Level5EquipManager] Inventory=" + inv +
+                      " itemCount=" + (inv?.Items != null ? inv.Items.Count.ToString() : "null"));
             if (inv == null) return 0;
 
             int total = 0;
             foreach (Item item in inv.Items)
             {
+                Debug.Log("[Level5EquipManager] Checking item: '" + item.Name + "'");
                 if (_stats.TryGetValue(item.Name, out var bonus))
-                    total += isAtk ? bonus.atk : bonus.def;
+                {
+                    int contribution = isAtk ? bonus.atk : bonus.def;
+                    Debug.Log("[Level5EquipManager]   → matched, +" + contribution +
+                              (isAtk ? " ATK" : " DEF"));
+                    total += contribution;
+                }
             }
+            Debug.Log("[Level5EquipManager] Total " + (isAtk ? "ATK" : "DEF") + " = " + total);
             return total;
         }
 

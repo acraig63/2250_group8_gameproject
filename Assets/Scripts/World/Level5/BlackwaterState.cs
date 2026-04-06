@@ -17,6 +17,10 @@ namespace DefaultNamespace
 
         public static bool HasAllKeyPieces() => collectedKeyPieces.Count >= 5;
 
+        /// <summary>True when the player has defeated all 4 room NPCs (4 key pieces),
+        /// unlocking the MazeKeyDoor to reach the gauntlet.</summary>
+        public static bool hasMazeKey => collectedKeyPieces.Count >= 4;
+
         public static void SavePlayerState()
         {
             PlayerController pc = Object.FindObjectOfType<PlayerController>();

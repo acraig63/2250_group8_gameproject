@@ -16,6 +16,14 @@ namespace DefaultNamespace
     {
         private static GameObject _inventoryCanvas;
 
+        /// <summary>
+        /// Direct reference to the InventoryUI we constructed.
+        /// Used by Level5EquipManager to avoid FindObjectOfType returning a
+        /// different InventoryUI (e.g. one in the Battle scene) or returning null
+        /// when the canvas is inactive.
+        /// </summary>
+        public static InventoryUI KnownInventoryUI { get; private set; }
+
         // ── Public entry point ─────────────────────────────────────────────────
 
         public static void EnsureInventoryExists()
@@ -40,6 +48,28 @@ namespace DefaultNamespace
 
             bool isBattle = scene.name == "Battle" || scene.name == "pirateBattleScene";
             _inventoryCanvas.SetActive(!isBattle);
+
+            // Refresh the playerTransform reference each non-battle scene so the
+            // ItemDetailPopup drop-position is always the current player.
+            if (!isBattle)
+            {
+                InventoryUI ui = _inventoryCanvas.GetComponent<InventoryUI>();
+                if (ui != null)
+                {
+                    GameObject player = GameObject.FindGameObjectWithTag("Player");
+                    if (player == null)
+                    {
+                        PlayerController pc = UnityEngine.Object.FindObjectOfType<PlayerController>();
+                        if (pc != null) player = pc.gameObject;
+                    }
+                    if (player != null)
+                    {
+                        BindingFlags bf = BindingFlags.NonPublic | BindingFlags.Instance;
+                        typeof(InventoryUI).GetField("playerTransform", bf)
+                            ?.SetValue(ui, player.transform);
+                    }
+                }
+            }
         }
 
         private void OnDestroy()
@@ -64,6 +94,7 @@ namespace DefaultNamespace
             canvasGO.AddComponent<GraphicRaycaster>();
 
             InventoryUI inventoryUI = canvasGO.AddComponent<InventoryUI>();
+            KnownInventoryUI = inventoryUI;   // cache for Level5EquipManager
 
             // ── InventoryPanel ────────────────────────────────────────────────
             GameObject panelGO = new GameObject("InventoryPanel");
@@ -171,7 +202,7 @@ namespace DefaultNamespace
             uiType.GetField("goldText",          bf).SetValue(inventoryUI, goldText);
             uiType.GetField("fullText",          bf).SetValue(inventoryUI, fullText);
             uiType.GetField("itemDetailPopup",   bf).SetValue(inventoryUI, detailPopup);
-            // playerTransform left null — InventoryUI handles null gracefully (drop won't spawn)
+            // playerTransform is set per-scene by OnSceneLoaded
 
             Type popupType = typeof(ItemDetailPopup);
             popupType.GetField("itemNameText",       bf).SetValue(detailPopup, itemNameText);
@@ -179,7 +210,12 @@ namespace DefaultNamespace
             popupType.GetField("itemStatsText",      bf).SetValue(detailPopup, itemStatsText);
             popupType.GetField("dropButton",         bf).SetValue(detailPopup, dropButton);
             popupType.GetField("closeButton",        bf).SetValue(detailPopup, closeButton);
-            // itemSpritePrefab left null — drop will still remove from inventory
+
+            // ── Dropped-item template ────────────────────────────────────────────
+            // ItemDetailPopup.DropItem() instantiates this prefab at the player's
+            // feet to create a world pickup. Without it the item just vanishes.
+            GameObject dropTemplate = BuildDropTemplate();
+            popupType.GetField("itemSpritePrefab", bf)?.SetValue(detailPopup, dropTemplate);
 
             inventoryUI.Initialize(new Inventory(5));
 
@@ -243,6 +279,37 @@ namespace DefaultNamespace
                     Vector2.zero, Vector2.zero, new Vector2(0.5f, 0.5f));
 
             return btn;
+        }
+
+        // ── Dropped-item template ──────────────────────────────────────────────
+        // Creates an inactive GameObject that acts as a prefab for
+        // ItemDetailPopup.DropItem(). When an item is dropped from inventory,
+        // ItemDetailPopup.Instantiate(dropTemplate) clones this object, then
+        // calls SetItemData() to configure the clone for the specific item.
+        private static GameObject BuildDropTemplate()
+        {
+            Texture2D tex = new Texture2D(1, 1);
+            tex.SetPixel(0, 0, Color.white);
+            tex.Apply();
+            Sprite spr = Sprite.Create(tex, new Rect(0, 0, 1, 1),
+                                       new Vector2(0.5f, 0.5f), 1f);
+
+            GameObject go = new GameObject("DroppedItemTemplate");
+            go.transform.localScale = new Vector3(1.5f, 1.5f, 1f);
+            go.SetActive(false);  // inactive = acts as a prefab
+            DontDestroyOnLoad(go);
+
+            SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite       = spr;
+            sr.color        = Color.white;
+            sr.sortingOrder = 5;
+
+            CircleCollider2D col = go.AddComponent<CircleCollider2D>();
+            col.isTrigger = true;
+            col.radius    = 0.5f;
+
+            go.AddComponent<ItemPickup>();
+            return go;
         }
     }
 }
