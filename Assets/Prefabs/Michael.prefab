@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4041915640001567694}
   - component: {fileID: 5968158322973885932}
   - component: {fileID: 4796694862785025767}
+  - component: {fileID: -6116137738298270489}
   m_Layer: 0
   m_Name: Michael
   m_TagString: Player
@@ -217,3 +218,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-6116137738298270489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8994483418662667129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2621c3862473484d88c39b18bc5fb1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleResultHandler

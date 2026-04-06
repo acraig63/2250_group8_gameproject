@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6648820264854419556}
   - component: {fileID: 7415358074811681506}
   - component: {fileID: 944670097182965357}
+  - component: {fileID: -4643830281943485413}
   m_Layer: 0
   m_Name: Rory
   m_TagString: Player
@@ -217,3 +218,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-4643830281943485413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6962346419067332597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2621c3862473484d88c39b18bc5fb1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleResultHandler
