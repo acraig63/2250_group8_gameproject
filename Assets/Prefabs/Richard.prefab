@@ -15,7 +15,8 @@ GameObject:
   - component: {fileID: 24756477241494723}
   - component: {fileID: 8321869123136439675}
   - component: {fileID: 7503529693051274707}
-  - component: {fileID: 5197101629496033845}
+  - component: {fileID: -403936282490313082}
+  - component: {fileID: -5178357667094446857}
   m_Layer: 0
   m_Name: Richard
   m_TagString: Player
@@ -32,7 +33,7 @@ Transform:
   m_GameObject: {fileID: 4366639678894556108}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.5, y: -12.5, z: 0}
+  m_LocalPosition: {x: 6.0755, y: 2.4717, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -218,7 +219,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5197101629496033845
+--- !u!114 &-403936282490313082
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -227,6 +228,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 4366639678894556108}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2621c3862473484d88c39b18bc5fb1b5, type: 3}
+  m_Script: {fileID: 11500000, guid: c03f3a43a0b164413b0a3bbd4062a80d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BattleResultHandler
+  m_EditorClassIdentifier: Assembly-CSharp::BattleResultHandler4
+--- !u!114 &-5178357667094446857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4366639678894556108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67e8c798a29c4465b59a555521ee8a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  speed: 3
