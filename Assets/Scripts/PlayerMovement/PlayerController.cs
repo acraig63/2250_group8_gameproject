@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour
         BattleData.PlayerCurrentHealth = MaxHealth;
         BattleData.HasReturnPosition = false;
         BattleData.ReturningFromBattle = false;
+        BattleData.DefeatedEnemies.Clear();
         UnityEngine.SceneManagement.SceneManager.LoadScene(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
