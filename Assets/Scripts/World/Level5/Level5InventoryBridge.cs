@@ -32,6 +32,31 @@ namespace DefaultNamespace
             SceneManager.sceneLoaded += bridge.OnSceneLoaded;
         }
 
+        private void Start()
+        {
+            // Bind player transform on initial scene load (sceneLoaded doesn't fire for first load)
+            if (_inventoryCanvas == null) return;
+            string sceneName = SceneManager.GetActiveScene().name;
+            bool isBattle = sceneName == "Battle" || sceneName == "pirateBattleScene";
+            if (isBattle) return;
+
+            InventoryUI ui = _inventoryCanvas.GetComponent<InventoryUI>();
+            if (ui == null) return;
+
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player == null)
+            {
+                PlayerController pc = UnityEngine.Object.FindObjectOfType<PlayerController>();
+                if (pc != null) player = pc.gameObject;
+            }
+            if (player != null)
+            {
+                BindingFlags bf = BindingFlags.NonPublic | BindingFlags.Instance;
+                typeof(InventoryUI).GetField("playerTransform", bf)
+                    ?.SetValue(ui, player.transform);
+            }
+        }
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (_inventoryCanvas == null) return;
@@ -106,6 +131,7 @@ namespace DefaultNamespace
                     Vector2.zero, new Vector2(200f, 400f), new Vector2(0.5f, 0.5f));
             Image panelImage = panelGO.AddComponent<Image>();
             panelImage.color = new Color(1f, 1f, 1f, 0.392f);
+            panelGO.AddComponent<RectMask2D>();
 
             TextMeshProUGUI goldText = MakeTMPText(panelGO.transform, "GoldText",
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
@@ -121,12 +147,13 @@ namespace DefaultNamespace
             containerGO.transform.SetParent(panelGO.transform, false);
             RectTransform containerRect = containerGO.AddComponent<RectTransform>();
             SetRect(containerRect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-                    Vector2.zero, new Vector2(100f, 240f), new Vector2(0.5f, 0.5f));
+                    Vector2.zero, new Vector2(180f, 240f), new Vector2(0.5f, 0.5f));
             VerticalLayoutGroup vlg = containerGO.AddComponent<VerticalLayoutGroup>();
-            vlg.childControlHeight  = false;
-            vlg.childControlWidth   = false;
+            vlg.childControlHeight     = false;
+            vlg.childControlWidth      = true;
             vlg.childForceExpandHeight = false;
-            vlg.childForceExpandWidth  = false;
+            vlg.childForceExpandWidth  = true;
+            vlg.spacing = 5f;
 
             GameObject templateHolder = new GameObject("_SlotTemplate");
             templateHolder.transform.SetParent(canvasGO.transform, false);
@@ -138,7 +165,7 @@ namespace DefaultNamespace
             slotImg.color = Color.white;
             RectTransform slotRect = slotTemplate.GetComponent<RectTransform>();
             SetRect(slotRect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-                    Vector2.zero, new Vector2(100f, 100f), new Vector2(0.5f, 0.5f));
+                    Vector2.zero, new Vector2(180f, 55f), new Vector2(0.5f, 0.5f));
 
             GameObject slotTextGO = new GameObject("Text (TMP)");
             slotTextGO.transform.SetParent(slotTemplate.transform, false);
@@ -204,7 +231,7 @@ namespace DefaultNamespace
             GameObject dropTemplate = BuildDropTemplate();
             popupType.GetField("itemSpritePrefab", bf)?.SetValue(detailPopup, dropTemplate);
 
-            _savedInventory = new Inventory(5);
+            _savedInventory = new Inventory(4);
             inventoryUI.Initialize(_savedInventory);
 
             return canvasGO;

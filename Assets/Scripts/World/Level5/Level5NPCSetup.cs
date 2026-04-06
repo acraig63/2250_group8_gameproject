@@ -345,12 +345,6 @@ namespace DefaultNamespace
                 Vector3 pos = _npcSpawnPositions.TryGetValue(defeatedName, out Vector3 p)
                     ? p : new Vector3(12f, 12f, 0f);
                 KeyPiecePickup.SpawnKeyPiece(pos);
-                int count = BlackwaterState.collectedKeyPieces.Count;
-                PopupMessage.Show(defeatedName + " defeated! Key piece acquired. (" + count + "/5)", 3f);
-            }
-            else
-            {
-                PopupMessage.Show(defeatedName + " defeated!", 3f);
             }
 
             if (grantsSpeedBoots)
@@ -358,6 +352,9 @@ namespace DefaultNamespace
                 BlackwaterState.hasSpeedBoots = true;
                 PopupMessage.Show("Speed Boots acquired! You can now survive the gauntlet.", 4f);
             }
+
+            if (defeatedName == "Captain Blackwater")
+                Level5EndGameHost.Show();
 
             Debug.Log("[Level5NPCSetup] HandlePostBattleReward: " + defeatedName +
                       " → defeatedNPCs count=" + BlackwaterState.defeatedNPCs.Count);

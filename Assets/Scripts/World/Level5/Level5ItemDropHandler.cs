@@ -59,6 +59,12 @@ namespace DefaultNamespace
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
+        private void Start()
+        {
+            // Mirror OnSceneLoaded for the initial scene load (sceneLoaded doesn't fire on first load)
+            _graceFrames = 3;
+        }
+
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;

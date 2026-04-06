@@ -75,7 +75,7 @@ namespace DefaultNamespace
 
             Debug.Log($"[BlackwaterSceneBuilder] Built {scene}");
 
-            Level5HealthBar.EnsureExists();
+            Level5ProgressionHealthBar.EnsureExists();
             Level5InventoryBridge.EnsureInventoryExists();
 
             Level5NPCSetup.SetupRoomNPCs(scene);
@@ -101,7 +101,7 @@ namespace DefaultNamespace
                 if (pc != null)
                 {
                     if (_originalSpeed < 0f) _originalSpeed = pc.speed;
-                    pc.speed = BlackwaterState.hasSpeedBoots ? _originalSpeed * 1.5f : _originalSpeed;
+                    pc.speed = BlackwaterState.hasSpeedBoots ? _originalSpeed * 2.0f : _originalSpeed;
                 }
             }
 

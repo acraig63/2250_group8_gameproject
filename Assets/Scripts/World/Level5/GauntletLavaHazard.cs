@@ -35,7 +35,7 @@ namespace DefaultNamespace
 
             GameObject go = new GameObject("LavaHazard");
             go.transform.position   = position;
-            go.transform.localScale = new Vector3(2f, 2f, 1f);
+            go.transform.localScale = new Vector3(4f, 4f, 1f);
 
             SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
             sr.sprite       = spr;

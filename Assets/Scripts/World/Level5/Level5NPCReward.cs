@@ -22,15 +22,7 @@ namespace DefaultNamespace
             BlackwaterState.defeatedNPCs.Add(npcName);
 
             if (dropsKeyPiece)
-            {
                 KeyPiecePickup.SpawnKeyPiece(transform.position);
-                int count = BlackwaterState.collectedKeyPieces.Count;
-                PopupMessage.Show(npcName + " defeated! Key piece acquired. (" + count + "/5)", 3f);
-            }
-            else
-            {
-                PopupMessage.Show(npcName + " defeated!", 3f);
-            }
 
             if (grantsSpeedBoots)
             {
