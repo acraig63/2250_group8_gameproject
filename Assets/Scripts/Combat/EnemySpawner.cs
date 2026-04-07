@@ -61,6 +61,7 @@ public class EnemySpawner : MonoBehaviour
         PlayerManager pm = other.GetComponent<PlayerManager>();
         if (pc != null)
             BattleData.PlayerMaxHealth = pc.MaxHealth;
+        BattleData.PlayerCurrentHealth = pc.GetHealth();
         if (pm != null && pm.player != null)
             BattleData.PlayerCurrentHealth = pm.player.GetCurrentHealth();
 

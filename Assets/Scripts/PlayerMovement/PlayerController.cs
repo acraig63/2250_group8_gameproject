@@ -20,11 +20,9 @@ public class PlayerController : MonoBehaviour
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
         
-        // if (BattleData.HasReturnPosition)
-        // {
-        //     transform.position = BattleData.ReturnPlayerPosition;
-        //     BattleData.HasReturnPosition = false;
-        // }
+        // Restore health from BattleData if returning from battle
+        if (BattleData.PlayerCurrentHealth > 0)
+            _currentHealth = BattleData.PlayerCurrentHealth;
     }
 
     void Update()
@@ -39,19 +37,32 @@ public class PlayerController : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(movement.x * speed, movement.y * speed);
     }
-
+    
+    public int GetHealth() => _currentHealth;
+    
     public void SetHealth(int hp)
     {
         _currentHealth = Mathf.Clamp(hp, 0, MaxHealth);
-        BattleData.PlayerCurrentHealth = _currentHealth; // add this line
+        BattleData.PlayerCurrentHealth = _currentHealth;
 
         PlayerManager pm = GetComponent<PlayerManager>();
         if (pm != null && pm.player != null)
-        {
             pm.player.SetCurrentHealth(_currentHealth);
-        }
+
+        if (_currentHealth <= 0)
+            Die();
     }
-    public int GetHealth() => _currentHealth;
+
+    private void Die()
+    {
+        BattleData.DiedInBattle = true;
+        BattleData.PlayerCurrentHealth = MaxHealth;
+        BattleData.HasReturnPosition = false;
+        BattleData.ReturningFromBattle = false;
+        BattleData.DefeatedEnemies.Clear();
+        UnityEngine.SceneManagement.SceneManager.LoadScene(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+    }
     
     
 

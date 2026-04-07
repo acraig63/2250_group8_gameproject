@@ -11,7 +11,7 @@ public class CharacterSelectManager : MonoBehaviour
     {
         selectedCharacter = characterName;
         selectedSprite = sprite;
-        SceneManager.LoadScene("StormbreakerIsland");
+        SceneManager.LoadScene("SmugglersIsland");
         Debug.unityLogger.Log("selectedCharacter: " + sprite.name);
         selectedCharacterType = sprite.name.Split('_')[0];
         PlayerManager.playerType = selectedCharacterType;
