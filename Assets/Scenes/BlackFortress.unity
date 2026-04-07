@@ -16128,13 +16128,14 @@ GameObject:
   - component: {fileID: 738007965}
   - component: {fileID: 738007964}
   - component: {fileID: 738007967}
+  - component: {fileID: 738007968}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &738007964
 AudioListener:
   m_ObjectHideFlags: 0
@@ -16253,6 +16254,23 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &738007968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738007963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c8f9cadf7a954f72bb490a0d3d8faa5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
+  target: {fileID: 0}
+  mapMinX: -100
+  mapMaxX: 80
+  mapMinY: -100
+  mapMaxY: 60
 --- !u!1001 &738117119
 PrefabInstance:
   m_ObjectHideFlags: 0
