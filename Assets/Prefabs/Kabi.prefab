@@ -13,10 +13,9 @@ GameObject:
   - component: {fileID: 5803264493967370823}
   - component: {fileID: 6851124140759768964}
   - component: {fileID: 7509687127282140724}
-  - component: {fileID: 304758912472886625}
   - component: {fileID: 1643914162812614576}
-  - component: {fileID: 1839950542164522268}
-  m_Layer: 0
+  - component: {fileID: 5602525674701066160}
+  m_Layer: 20
   m_Name: Kabi
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -183,19 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67e8c798a29c4465b59a555521ee8a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  speed: 5
---- !u!114 &304758912472886625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6556375629273320344}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 720f46e3cc1ef4d30b6cb1774b40a718, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
+  speed: 3
 --- !u!95 &1643914162812614576
 Animator:
   serializedVersion: 7
@@ -218,7 +205,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1839950542164522268
+--- !u!114 &5602525674701066160
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

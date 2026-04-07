@@ -15376,9 +15376,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 680843953}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d51ae093a0d646f2b3d682004370d47, type: 3}
+  m_Script: {fileID: 11500000, guid: a305882b25644a07a495ff15f3105891, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner4
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyDisplayName: Enemy1
   enemyMaxHealth: 50
   enemyAttackPower: 10
@@ -15387,7 +15387,7 @@ MonoBehaviour:
   enemyType: Archer
   enemyNpc: {fileID: 0}
   questionLevel: 4
-  returnScene: 
+  returnScene: BlackFortress
 --- !u!4 &681242604 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2055102311959635375, guid: 5c635e5bc09c93043a53ee0e17e89d0f,
@@ -29895,9 +29895,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1389927334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d51ae093a0d646f2b3d682004370d47, type: 3}
+  m_Script: {fileID: 11500000, guid: a305882b25644a07a495ff15f3105891, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner4
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyDisplayName: Enemy3
   enemyMaxHealth: 50
   enemyAttackPower: 10
@@ -29906,7 +29906,7 @@ MonoBehaviour:
   enemyType: Archer
   enemyNpc: {fileID: 0}
   questionLevel: 4
-  returnScene: 
+  returnScene: BlackFortress
 --- !u!1001 &1391418185
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33758,13 +33758,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1617789632}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d51ae093a0d646f2b3d682004370d47, type: 3}
+  m_Script: {fileID: 11500000, guid: a305882b25644a07a495ff15f3105891, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner4
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyDisplayName: Enemy2
   enemyMaxHealth: 50
   enemyAttackPower: 10
-  enemySprite: {fileID: 427913027731640163, guid: 35c125aba981345ccb82f32d2397e879,
+  enemySprite: {fileID: 7257567913506708742, guid: 4a3b125f2a5ef45f5914bbfd3b0c23c4,
     type: 3}
   enemyType: Archer
   enemyNpc: {fileID: 0}
