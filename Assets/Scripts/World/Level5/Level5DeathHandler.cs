@@ -60,17 +60,35 @@ namespace DefaultNamespace
 
             if (_cachedPC.GetHealth() <= 0)
             {
+                string dyingCharacter = CharacterSelectManager.selectedCharacter;
+                CharacterDisableManager.DisableCharacter(dyingCharacter);
                 BlackwaterState.Reset();
-                PopupMessage.Show("You have fallen... Returning to Smuggler's Island.", 3f);
                 _cachedPC = null;
-                StartCoroutine(DelayedSceneLoad());
+
+                if (CharacterDisableManager.AllDisabled())
+                {
+                    PopupMessage.Show("All crew members have fallen!", 2f);
+                    StartCoroutine(DelayedGameOver());
+                }
+                else
+                {
+                    PopupMessage.Show("You have fallen... Choose your next crew member.", 3f);
+                    CharacterSelectEnforcer.Spawn();
+                    StartCoroutine(DelayedSceneLoad());
+                }
             }
+        }
+
+        private IEnumerator DelayedGameOver()
+        {
+            yield return new WaitForSeconds(2f);
+            GameOverHandler.Show();
         }
 
         private IEnumerator DelayedSceneLoad()
         {
             yield return new WaitForSeconds(2f);
-            SceneManager.LoadScene("SmugglersIsland");
+            SceneManager.LoadScene("OpeningScreen");
         }
     }
 }
