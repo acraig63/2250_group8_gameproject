@@ -10,17 +10,33 @@ public class PlayerController : MonoBehaviour
 
     public int MaxHealth { get; private set; } = 100;
     private int _currentHealth = 100;
-
-
+    
+    private Animator animator;
+    private SpriteRenderer sr;
+    
+    private InventoryUI inventoryUI;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        FindObjectOfType<InventoryUI>().Initialize(new Inventory(5));
+        animator = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
+    
+        // Assign inventoryUI FIRST before using it
+        inventoryUI = FindObjectOfType<InventoryUI>();
+    
+        if (inventoryUI != null)
+        {
+            Inventory inv = new Inventory(5);
+            inv.Gold = BattleData.PlayerGold;
+            inventoryUI.Initialize(inv);
+            inventoryUI.RestoreItemsFromData(); // now safe to call
+        }
+
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
-        
-        // Restore health from BattleData if returning from battle
+
         if (BattleData.PlayerCurrentHealth > 0)
             _currentHealth = BattleData.PlayerCurrentHealth;
     }
@@ -31,6 +47,38 @@ public class PlayerController : MonoBehaviour
         float y = Input.GetAxisRaw("Vertical");
 
         movement = new Vector2(x, y).normalized;
+        
+        float move = movement.magnitude;
+        animator.SetFloat("Speed", move);
+        
+        if (movement.x > 0)
+        {
+            sr.flipX = false; // facing right
+        }
+        else if (movement.x < 0)
+        {
+            sr.flipX = true; // facing left
+        }
+        
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            if (inventoryUI != null)
+            {
+                int gold = inventoryUI.GetGold();
+
+                if (gold >= 10)
+                {
+                    inventoryUI.TrySpendGold(10);
+                    SetHealth(GetHealth() + 10);
+
+                    Debug.Log("Spent 10 gold to heal!");
+                }
+                else
+                {
+                    Debug.Log("Not enough gold!");
+                }
+            }
+        }
     }
 
     void FixedUpdate()
@@ -59,6 +107,8 @@ public class PlayerController : MonoBehaviour
         BattleData.PlayerCurrentHealth = MaxHealth;
         BattleData.HasReturnPosition = false;
         BattleData.ReturningFromBattle = false;
+        BattleData.PlayerGold              = 0;      
+        BattleData.SavedItems.Clear();               
         BattleData.DefeatedEnemies.Clear();
         UnityEngine.SceneManagement.SceneManager.LoadScene(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
