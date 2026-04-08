@@ -52,7 +52,17 @@ public class InventoryUI : MonoBehaviour
                 {
                     Debug.Log($"Clicked slot: {item.Name}");
                     if (itemDetailPopup != null)
-                        itemDetailPopup.Show(item, _inventory, this, playerTransform);
+                    {
+                        Transform pt = playerTransform;
+                        if (pt == null)
+                        {
+                            GameObject p = GameObject.FindWithTag("Player");
+                            if (p != null) pt = p.transform;
+                        }
+                        itemDetailPopup.Show(item, _inventory, this, pt);
+                    }
+                        
+                        //itemDetailPopup.Show(item, _inventory, this, playerTransform);
                     break;
                 }
             }

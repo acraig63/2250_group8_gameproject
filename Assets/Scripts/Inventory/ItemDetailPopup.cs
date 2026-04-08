@@ -77,27 +77,40 @@ public class ItemDetailPopup : MonoBehaviour
         gameObject.SetActive(false);
         _currentItem = null;
     }
-
+    
+    
     private void DropItem()
     {
         if (_currentItem == null || _inventory == null) return;
 
-        // Remove from inventory
+        Debug.Log($"Dropping: {_currentItem.Name}, sprite={_currentItem.WorldSprite}, prefab={itemSpritePrefab}");
+    
         _inventory.RemoveItem(_currentItem);
 
-        // Spawn sprite back in the world at the player's position
+        Debug.Log($"playerTransform={_playerTransform}, itemSpritePrefab={itemSpritePrefab}");
+    
         if (itemSpritePrefab != null && _playerTransform != null)
         {
-            Vector3 dropPosition = _playerTransform.position + new Vector3(1f, 0f, 0f);
+            Vector3 dropPosition = new Vector3(
+                _playerTransform.position.x + 1f,
+                _playerTransform.position.y,
+                0f
+            );
+            Debug.Log($"Instantiating at {dropPosition}");
             GameObject dropped = Instantiate(itemSpritePrefab, dropPosition, Quaternion.identity);
-
-            // Copy item data back onto the ItemPickup script
+            Debug.Log($"Spawned: {dropped.name}");
+        
             ItemPickup pickup = dropped.GetComponent<ItemPickup>();
             if (pickup != null)
                 pickup.SetItemData(_currentItem, _currentItem.WorldSprite);
+            else
+                Debug.Log("No ItemPickup component on prefab!");
+        }
+        else
+        {
+            Debug.Log($"Skipping instantiate — prefab null: {itemSpritePrefab == null}, transform null: {_playerTransform == null}");
         }
 
-        // Refresh inventory UI and close popup
         _inventoryUI.RefreshUI();
         Hide();
     }
