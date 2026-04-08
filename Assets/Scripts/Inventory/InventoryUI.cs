@@ -18,6 +18,7 @@ public class InventoryUI : MonoBehaviour
 
     private Inventory _inventory;
     private bool      _isOpen = false;
+    public Inventory GetInventory() => _inventory;
 
     /// <summary>
     /// Call this from Player.Start() after creating the Inventory instance.

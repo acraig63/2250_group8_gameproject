@@ -5,6 +5,7 @@ using UnityEngine;
 public static class BattleData
 {
     // Overworld → Battle
+    public static int PlayerGold = 0;
     
     // Player Position
     public static Vector3 ReturnPlayerPosition;

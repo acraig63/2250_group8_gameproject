@@ -64,6 +64,10 @@ public class EnemySpawner : MonoBehaviour
         BattleData.PlayerCurrentHealth = pc.GetHealth();
         if (pm != null && pm.player != null)
             BattleData.PlayerCurrentHealth = pm.player.GetCurrentHealth();
+        
+        InventoryUI inventoryUI = FindObjectOfType<InventoryUI>();
+        if (inventoryUI != null)
+            BattleData.PlayerGold = inventoryUI.GetInventory().Gold;
 
         SceneManager.LoadScene("Battle");
     }

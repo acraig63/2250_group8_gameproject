@@ -19,7 +19,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        FindObjectOfType<InventoryUI>().Initialize(new Inventory(5));
+        Inventory inv = new Inventory(5);
+        inv.Gold = BattleData.PlayerGold; // restore gold
+        FindObjectOfType<InventoryUI>().Initialize(inv);
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
