@@ -59,12 +59,11 @@ public class EnemySpawner : MonoBehaviour
 
         // Carry player health into battle
         PlayerController pc = other.GetComponent<PlayerController>();
-        PlayerManager pm = other.GetComponent<PlayerManager>();
         if (pc != null)
-            BattleData.PlayerMaxHealth = pc.MaxHealth;
-        BattleData.PlayerCurrentHealth = pc.GetHealth();
-        if (pm != null && pm.player != null)
-            BattleData.PlayerCurrentHealth = pm.player.GetCurrentHealth();
+        {
+            BattleData.PlayerMaxHealth     = pc.MaxHealth;
+            BattleData.PlayerCurrentHealth = pc.GetHealth();
+        }
         
         InventoryUI inventoryUI = FindObjectOfType<InventoryUI>();
         if (inventoryUI != null)

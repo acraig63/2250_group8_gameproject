@@ -43,6 +43,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (inventoryUI == null)
+            inventoryUI = FindObjectOfType<InventoryUI>();
+
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
 

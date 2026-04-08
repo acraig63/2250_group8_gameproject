@@ -331,6 +331,7 @@ namespace DefaultNamespace
         public static void HandlePostBattleReward(string sceneName)
         {
             if (!BattleData.PlayerWon) return;
+            BattleData.PlayerWon = false;
 
             string defeatedName = BattleData.EnemyName;
             if (!_npcRewardData.ContainsKey(defeatedName)) return;

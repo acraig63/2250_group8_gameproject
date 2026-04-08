@@ -107,9 +107,10 @@ namespace DefaultNamespace
 
             if (scene.StartsWith("Blackwater") && player != null)
             {
-                if (BlackwaterState.hasSavedState)
+                if (BlackwaterState.hasSavedState && !BattleData.ReturningFromBattle)
                     BlackwaterState.LoadPlayerState();
                 BlackwaterState.SavePlayerState();
+                BattleData.ReturningFromBattle = false;
             }
 
             if (scene == "BlackwaterCaptainsQuarters")
@@ -121,6 +122,17 @@ namespace DefaultNamespace
 
             Level5DeathHandler.EnsureExists();
             Level5ItemDropHandler.EnsureExists();
+
+            StartCoroutine(ApplyPendingSpawnNextFrame());
+        }
+
+        private System.Collections.IEnumerator ApplyPendingSpawnNextFrame()
+        {
+            yield return null; // wait one frame so PlayerSpawner.Start() has instantiated the player
+            Portal.ApplyPendingSpawn();
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null)
+                Debug.Log("[BlackwaterSceneBuilder] Player positioned to " + p.transform.position);
         }
 
         private void SetupWallCollision()
@@ -209,7 +221,6 @@ namespace DefaultNamespace
 
         private void BuildFlagship()
         {
-            Portal.ApplyPendingSpawn();
 
             FillRect(groundTilemap, 0, 0, FLAGSHIP_W-1, FLAGSHIP_H-1, "water");
 
@@ -354,7 +365,6 @@ namespace DefaultNamespace
 
         private void BuildLowerDeck()
         {
-            Portal.ApplyPendingSpawn();
 
             FillRect(groundTilemap, 0, 0, LOWERDECK_W-1, LOWERDECK_H-1, "hold_void");
             FillRect(wallTilemap,   0, 0, LOWERDECK_W-1, LOWERDECK_H-1, "hold_void");
@@ -453,7 +463,6 @@ namespace DefaultNamespace
 
         private void BuildArmory()
         {
-            Portal.ApplyPendingSpawn();
             const int W = 20, H = 15;
 
             FillRect(groundTilemap, 0, 0, W-1, H-1, "room_floor");
@@ -466,7 +475,6 @@ namespace DefaultNamespace
 
         private void BuildMessHall()
         {
-            Portal.ApplyPendingSpawn();
             const int W = 20, H = 15;
 
             FillRect(groundTilemap, 0, 0, W-1, H-1, "sand_path");
@@ -479,7 +487,6 @@ namespace DefaultNamespace
 
         private void BuildBrig()
         {
-            Portal.ApplyPendingSpawn();
             const int W = 15, H = 15;
 
             FillRect(groundTilemap, 0, 0, W-1, H-1, "camp_wall_dark");
@@ -492,7 +499,6 @@ namespace DefaultNamespace
 
         private void BuildNavigationRoom()
         {
-            Portal.ApplyPendingSpawn();
             const int W = 15, H = 15;
 
             FillRect(groundTilemap, 0, 0, W-1, H-1, "sand_wet");
@@ -505,7 +511,6 @@ namespace DefaultNamespace
 
         private void BuildCaptainsQuarters()
         {
-            Portal.ApplyPendingSpawn();
             const int W = 25, H = 20;
 
             FillRect(groundTilemap, 0, 0, W-1, H-1, "dock_planks");

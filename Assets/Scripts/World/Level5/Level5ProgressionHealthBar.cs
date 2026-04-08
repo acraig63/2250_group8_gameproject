@@ -5,24 +5,18 @@ using TMPro;
 
 namespace DefaultNamespace
 {
-    // Health bar using the ProgressionSystem HealthBar model for normalized value tracking.
+    // Replicates the exact health bar structure used in TwistedGardens:
+    // HealthBarUI component + Slider on a HealthBar object, with a sibling HealthBar Text label.
     public class Level5ProgressionHealthBar : MonoBehaviour
     {
         private static Level5ProgressionHealthBar _instance;
 
-        private HealthBar _model;
-        private Slider    _slider;
-        private Image     _fillImage;
-        private TextMeshProUGUI _healthText;
-        private PlayerController _player;
-
         public static void EnsureExists()
         {
             if (_instance != null) return;
-            GameObject go = new GameObject("Level5ProgressionHealthBarCanvas");
+            GameObject go = new GameObject("Level5HealthBarCanvas");
             _instance = go.AddComponent<Level5ProgressionHealthBar>();
             DontDestroyOnLoad(go);
-            _instance._model = new HealthBar(100);
             _instance.BuildUI(go);
             SceneManager.sceneLoaded += _instance.OnSceneLoaded;
         }
@@ -33,98 +27,98 @@ namespace DefaultNamespace
             if (_instance == this) _instance = null;
         }
 
-        private void Update()
-        {
-            if (_player == null)
-                _player = FindObjectOfType<PlayerController>();
-            if (_player == null || _model == null) return;
-
-            int current = _player.GetHealth();
-            int max     = _player.MaxHealth;
-
-            // Sync model from PlayerController
-            _model.Reset(max);
-            _model.SetCurrentHP(current);
-
-            float ratio = _model.GetNormalizedValue();
-            _slider.value = ratio;
-
-            if (_fillImage != null)
-            {
-                if      (ratio > 0.6f) _fillImage.color = new Color(0.2f, 0.8f, 0.2f);
-                else if (ratio > 0.3f) _fillImage.color = new Color(1.0f, 0.8f, 0.0f);
-                else                   _fillImage.color = new Color(0.9f, 0.2f, 0.2f);
-            }
-
-            if (_healthText != null)
-                _healthText.text = $"HP: {current} / {max}";
-        }
-
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            _player = null;
             bool isBattle = scene.name == "Battle" || scene.name == "pirateBattleScene";
             gameObject.SetActive(!isBattle);
         }
 
         private void BuildUI(GameObject root)
         {
+            // Root canvas — same sortingOrder as TwistedGardens (10)
             Canvas canvas = root.AddComponent<Canvas>();
             canvas.renderMode   = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 10;
             root.AddComponent<CanvasScaler>();
             root.AddComponent<GraphicRaycaster>();
 
-            GameObject sliderGO = new GameObject("HealthSlider");
+            // ── HealthBar Text ──────────────────────────────────────────────
+            // Sibling of the slider at canvas level, anchored top-right.
+            // Matches TwistedGardens: anchorMin/Max (1,1), pos (-5,-15),
+            // size (200,50), pivot (1,1), right-aligned, fontSize 12, white.
+            GameObject textGO = new GameObject("HealthBar Text");
+            textGO.transform.SetParent(root.transform, false);
+            TextMeshProUGUI healthText = textGO.AddComponent<TextMeshProUGUI>();
+            healthText.text      = "HP: 100 / 100";
+            healthText.fontSize  = 12;
+            healthText.color     = Color.white;
+            healthText.alignment = TextAlignmentOptions.Right;
+            RectTransform textRT = textGO.GetComponent<RectTransform>();
+            textRT.anchorMin        = new Vector2(1f, 1f);
+            textRT.anchorMax        = new Vector2(1f, 1f);
+            textRT.pivot            = new Vector2(1f, 1f);
+            textRT.anchoredPosition = new Vector2(-5f, -15f);
+            textRT.sizeDelta        = new Vector2(200f, 50f);
+
+            // ── HealthBar (Slider + HealthBarUI) ───────────────────────────
+            // Matches TwistedGardens: anchorMin/Max (1,1), pos (-84.9,-10),
+            // size (160,20), pivot (0.5,0.5). No background Image on this object.
+            GameObject sliderGO = new GameObject("HealthBar");
             sliderGO.transform.SetParent(root.transform, false);
+            RectTransform sliderRT = sliderGO.AddComponent<RectTransform>();
+            sliderRT.anchorMin        = new Vector2(1f, 1f);
+            sliderRT.anchorMax        = new Vector2(1f, 1f);
+            sliderRT.pivot            = new Vector2(0.5f, 0.5f);
+            sliderRT.anchoredPosition = new Vector2(-84.9f, -10f);
+            sliderRT.sizeDelta        = new Vector2(160f, 20f);
 
-            RectTransform sliderRect = sliderGO.AddComponent<RectTransform>();
-            sliderRect.anchorMin        = new Vector2(1f, 1f);
-            sliderRect.anchorMax        = new Vector2(1f, 1f);
-            sliderRect.pivot            = new Vector2(0.5f, 0.5f);
-            sliderRect.anchoredPosition = new Vector2(-84.9f, -10f);
-            sliderRect.sizeDelta        = new Vector2(160f, 20f);
+            // Background child — white Image, anchors (0,0.25)/(1,0.75)
+            GameObject bgGO = new GameObject("Background");
+            bgGO.transform.SetParent(sliderGO.transform, false);
+            Image bgImage = bgGO.AddComponent<Image>();
+            bgImage.color = Color.white;
+            RectTransform bgRT = bgGO.GetComponent<RectTransform>();
+            bgRT.anchorMin        = new Vector2(0f, 0.25f);
+            bgRT.anchorMax        = new Vector2(1f, 0.75f);
+            bgRT.pivot            = new Vector2(0.5f, 0.5f);
+            bgRT.anchoredPosition = Vector2.zero;
+            bgRT.sizeDelta        = Vector2.zero;
 
-            Image bgImage = sliderGO.AddComponent<Image>();
-            bgImage.color = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-
+            // Fill Area child — anchors (0,0.25)/(1,0.75)
             GameObject fillAreaGO = new GameObject("Fill Area");
             fillAreaGO.transform.SetParent(sliderGO.transform, false);
-            RectTransform fillAreaRect = fillAreaGO.AddComponent<RectTransform>();
-            fillAreaRect.anchorMin        = Vector2.zero;
-            fillAreaRect.anchorMax        = Vector2.one;
-            fillAreaRect.sizeDelta        = new Vector2(-10f, -4f);
-            fillAreaRect.anchoredPosition = new Vector2(-5f, 0f);
+            RectTransform fillAreaRT = fillAreaGO.AddComponent<RectTransform>();
+            fillAreaRT.anchorMin        = new Vector2(0f, 0.25f);
+            fillAreaRT.anchorMax        = new Vector2(1f, 0.75f);
+            fillAreaRT.pivot            = new Vector2(0.5f, 0.5f);
+            fillAreaRT.anchoredPosition = Vector2.zero;
+            fillAreaRT.sizeDelta        = Vector2.zero;
 
+            // Fill child — bright green matching TwistedGardens exactly, anchors (0,0)/(0,0)
             GameObject fillGO = new GameObject("Fill");
             fillGO.transform.SetParent(fillAreaGO.transform, false);
-            _fillImage = fillGO.AddComponent<Image>();
-            _fillImage.color = new Color(0.2f, 0.8f, 0.2f);
-            RectTransform fillRect = fillGO.GetComponent<RectTransform>();
-            fillRect.anchorMin = Vector2.zero;
-            fillRect.anchorMax = Vector2.one;
-            fillRect.sizeDelta = Vector2.zero;
+            Image fillImage = fillGO.AddComponent<Image>();
+            fillImage.color = new Color(0f, 1f, 0.09392524f, 1f);
+            RectTransform fillRT = fillGO.GetComponent<RectTransform>();
+            fillRT.anchorMin        = new Vector2(0f, 0f);
+            fillRT.anchorMax        = new Vector2(0f, 0f);
+            fillRT.pivot            = new Vector2(0.5f, 0.5f);
+            fillRT.anchoredPosition = Vector2.zero;
+            fillRT.sizeDelta        = Vector2.zero;
 
-            _slider = sliderGO.AddComponent<Slider>();
-            _slider.fillRect     = fillRect;
-            _slider.direction    = Slider.Direction.LeftToRight;
-            _slider.minValue     = 0f;
-            _slider.maxValue     = 1f;
-            _slider.value        = 1f;
-            _slider.interactable = false;
+            // Slider on HealthBar — same settings as TwistedGardens
+            Slider slider = sliderGO.AddComponent<Slider>();
+            slider.fillRect     = fillRT;
+            slider.direction    = Slider.Direction.LeftToRight;
+            slider.minValue     = 0f;
+            slider.maxValue     = 1f;
+            slider.value        = 1f;
+            slider.interactable = false;
 
-            GameObject textGO = new GameObject("HPText");
-            textGO.transform.SetParent(sliderGO.transform, false);
-            _healthText = textGO.AddComponent<TextMeshProUGUI>();
-            _healthText.text      = "HP: 100 / 100";
-            _healthText.fontSize  = 12;
-            _healthText.color     = Color.white;
-            _healthText.alignment = TextAlignmentOptions.Center;
-            RectTransform textRect = textGO.GetComponent<RectTransform>();
-            textRect.anchorMin        = Vector2.zero;
-            textRect.anchorMax        = Vector2.one;
-            textRect.sizeDelta        = Vector2.zero;
-            textRect.anchoredPosition = Vector2.zero;
+            // HealthBarUI drives the update — same component TwistedGardens uses
+            HealthBarUI hbUI = sliderGO.AddComponent<HealthBarUI>();
+            hbUI.slider     = slider;
+            hbUI.healthText = healthText;
         }
     }
 }
