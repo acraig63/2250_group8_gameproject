@@ -36,7 +36,7 @@ namespace DefaultNamespace
 
         // Scenes that use the minimap system.
         private static bool IsMinimapScene(string s)
-            => s == "SmugglersIsland" || s.StartsWith("Blackwater") || s == "StormbreakerIsland";
+            => s == "SmugglersIsland" || s.StartsWith("Blackwater") || s == "StormbreakerIsland" || s == "BlackFortress";
 
         // void Awake()
         // {
