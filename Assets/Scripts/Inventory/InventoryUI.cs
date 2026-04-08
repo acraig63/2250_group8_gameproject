@@ -130,4 +130,19 @@ public class InventoryUI : MonoBehaviour
         Rarity.Legendary => new Color(1.0f,  0.75f, 0.0f),  // gold
         _                => Color.white
     };
+    
+    public int GetGold()
+    {
+        return _inventory.Gold;
+    }
+    
+    public bool TrySpendGold(int amount)
+    {
+        if (_inventory.Gold < amount)
+            return false;
+
+        _inventory.Gold -= amount;
+        RefreshUI();
+        return true;
+    }
 }

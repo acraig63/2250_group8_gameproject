@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private SpriteRenderer sr;
     
+    private InventoryUI inventoryUI;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -28,6 +30,8 @@ public class PlayerController : MonoBehaviour
         
         animator = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
+        
+        inventoryUI = FindObjectOfType<InventoryUI>();
     }
 
     void Update()
@@ -47,6 +51,26 @@ public class PlayerController : MonoBehaviour
         else if (movement.x < 0)
         {
             sr.flipX = true; // facing left
+        }
+        
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            if (inventoryUI != null)
+            {
+                int gold = inventoryUI.GetGold();
+
+                if (gold >= 10)
+                {
+                    inventoryUI.TrySpendGold(10);
+                    SetHealth(GetHealth() + 10);
+
+                    Debug.Log("Spent 10 gold to heal!");
+                }
+                else
+                {
+                    Debug.Log("Not enough gold!");
+                }
+            }
         }
     }
 
