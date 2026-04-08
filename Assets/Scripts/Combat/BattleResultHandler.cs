@@ -32,6 +32,7 @@ public class BattleResultHandler : MonoBehaviour
             BattleData.HasReturnPosition = false;
             BattleData.ReturningFromBattle     = false;
             BattleData.PlayerGold              = 0;
+            BattleData.SavedItems.Clear();
             BattleData.DefeatedEnemies.Clear();
             
             if (BattleData.PlayerCurrentHealth <= 0) BattleData.PlayerCurrentHealth = BattleData.PlayerMaxHealth;

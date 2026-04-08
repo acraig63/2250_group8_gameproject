@@ -44,7 +44,11 @@ public class ExitTile : MonoBehaviour
         {
             InventoryUI inventoryUI = FindObjectOfType<InventoryUI>();
             if (inventoryUI != null)
+            {
                 BattleData.PlayerGold = inventoryUI.GetInventory().Gold;
+                inventoryUI.SaveItemsToData();
+            }
+
             Debug.Log($"Exiting Stormbreaker Island → {nextScene}");
             SceneManager.LoadScene(nextScene);
         }

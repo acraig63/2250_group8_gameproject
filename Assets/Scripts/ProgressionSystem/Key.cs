@@ -10,7 +10,11 @@ public class Key : MonoBehaviour
         {
             InventoryUI inventoryUI = FindObjectOfType<InventoryUI>();
             if (inventoryUI != null)
+            {
                 BattleData.PlayerGold = inventoryUI.GetInventory().Gold;
+                inventoryUI.SaveItemsToData();
+            }
+
             Destroy(gameObject);
             SceneManager.LoadScene(sceneLocation);
         }

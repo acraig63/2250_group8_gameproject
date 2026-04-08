@@ -19,11 +19,7 @@ public class InventoryUI : MonoBehaviour
     private Inventory _inventory;
     private bool      _isOpen = false;
     public Inventory GetInventory() => _inventory;
-
-    /// <summary>
-    /// Call this from Player.Start() after creating the Inventory instance.
-    /// e.g. FindObjectOfType&lt;InventoryUI&gt;().Initialize(new Inventory(20));
-    /// </summary>
+    
     public void Initialize(Inventory inventory)
     {
         _inventory = inventory;
@@ -141,6 +137,58 @@ public class InventoryUI : MonoBehaviour
         Rarity.Legendary => new Color(1.0f,  0.75f, 0.0f),  // gold
         _                => Color.white
     };
+    
+    public void SaveItemsToData()
+    {
+        BattleData.SavedItems.Clear();
+        foreach (Item item in _inventory.Items)
+        {
+            ItemSaveData data = new ItemSaveData
+            {
+                Id          = item.Id,
+                Name        = item.Name,
+                Description = item.Description,
+                GoldValue   = item.GoldValue,
+                Rarity      = item.Rarity,
+                Type        = item.Type,
+                WorldSprite = item.WorldSprite
+            };
+
+            if (item is Weapon w)
+            {
+                data.BaseDamage    = w.BaseDamage;
+                data.WeaponType    = w.WeaponType;
+                data.SpecialEffect = w.SpecialEffect;
+            }
+            else if (item is Clothing c)
+            {
+                data.ClothingSlot = c.Slot;
+                data.DefenseBonus = c.DefenseBonus;
+            }
+
+            BattleData.SavedItems.Add(data);
+        }
+    }
+    
+    public void RestoreItemsFromData()
+    {
+        foreach (ItemSaveData data in BattleData.SavedItems)
+        {
+            Item item = data.Type switch
+            {
+                ItemType.Weapon   => new Weapon(data.Id, data.Name, data.Description,
+                    data.GoldValue, data.Rarity, data.BaseDamage,
+                    data.WeaponType, data.SpecialEffect),
+                ItemType.Clothing => new Clothing(data.Id, data.Name, data.Description,
+                    data.GoldValue, data.Rarity, data.ClothingSlot,
+                    data.DefenseBonus),
+                _                 => new TreasureItem(data.Id, data.Name, data.Description,
+                    data.GoldValue, data.Rarity, data.Type)
+            };
+            item.WorldSprite = data.WorldSprite;
+            _inventory.AddItem(item);
+        }
+    }
     
     public int GetGold()
     {

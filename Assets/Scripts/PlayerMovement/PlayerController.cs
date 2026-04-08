@@ -19,21 +19,26 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        Inventory inv = new Inventory(5);
-        inv.Gold = BattleData.PlayerGold; // restore gold
-        FindObjectOfType<InventoryUI>().Initialize(inv);
+        animator = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
+    
+        // Assign inventoryUI FIRST before using it
+        inventoryUI = FindObjectOfType<InventoryUI>();
+    
+        if (inventoryUI != null)
+        {
+            Inventory inv = new Inventory(5);
+            inv.Gold = BattleData.PlayerGold;
+            inventoryUI.Initialize(inv);
+            inventoryUI.RestoreItemsFromData(); // now safe to call
+        }
+
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
-        
-        // Restore health from BattleData if returning from battle
+
         if (BattleData.PlayerCurrentHealth > 0)
             _currentHealth = BattleData.PlayerCurrentHealth;
-        
-        animator = GetComponent<Animator>();
-        sr = GetComponent<SpriteRenderer>();
-        
-        inventoryUI = FindObjectOfType<InventoryUI>();
     }
 
     void Update()
@@ -102,6 +107,8 @@ public class PlayerController : MonoBehaviour
         BattleData.PlayerCurrentHealth = MaxHealth;
         BattleData.HasReturnPosition = false;
         BattleData.ReturningFromBattle = false;
+        BattleData.PlayerGold              = 0;      
+        BattleData.SavedItems.Clear();               
         BattleData.DefeatedEnemies.Clear();
         UnityEngine.SceneManagement.SceneManager.LoadScene(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);

@@ -37,6 +37,7 @@ public class EnemySpawner : MonoBehaviour
         if (_defeated) return;
         if (!other.CompareTag("Player")) return;
         if (BattleData.DefeatedEnemies.Contains(enemyDisplayName)) return;
+        
 
         
         // Write data for BattleManager to read
@@ -67,7 +68,10 @@ public class EnemySpawner : MonoBehaviour
         
         InventoryUI inventoryUI = FindObjectOfType<InventoryUI>();
         if (inventoryUI != null)
+        {
             BattleData.PlayerGold = inventoryUI.GetInventory().Gold;
+            inventoryUI.SaveItemsToData();
+        }
 
         SceneManager.LoadScene("Battle");
     }
