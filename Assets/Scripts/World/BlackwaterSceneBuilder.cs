@@ -75,7 +75,6 @@ namespace DefaultNamespace
 
             Debug.Log($"[BlackwaterSceneBuilder] Built {scene}");
 
-            Level5ProgressionHealthBar.EnsureExists();
             Level5InventoryBridge.EnsureInventoryExists();
 
             Level5NPCSetup.SetupRoomNPCs(scene);
