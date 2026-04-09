@@ -412,10 +412,6 @@ namespace DefaultNamespace
                 "A ring carved from living coral.",
                 25, Rarity.Common, ClothingSlot.Head, 3);
 
-            SpawnGoldCoins(
-                "Gold Coins",
-                new Vector3(44f, 20f, 0f),
-                50);
         }
 
         // Checks collectedItems AND live inventory so items don't respawn if tracking missed.
