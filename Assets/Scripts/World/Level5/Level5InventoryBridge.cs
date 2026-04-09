@@ -20,6 +20,14 @@ namespace DefaultNamespace
             typeof(InventoryUI).GetField("_inventory",
                 BindingFlags.NonPublic | BindingFlags.Instance);
 
+        public static void SaveInventory()
+        {
+            if (KnownInventoryUI == null || _inventoryField == null) return;
+            object live = _inventoryField.GetValue(KnownInventoryUI);
+            if (live is Inventory inv)
+                _savedInventory = inv;
+        }
+
         public static void EnsureInventoryExists()
         {
             if (UnityEngine.Object.FindObjectOfType<InventoryUI>() != null) return;

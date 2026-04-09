@@ -26,7 +26,10 @@ namespace DefaultNamespace
 
             string currentScene = SceneManager.GetActiveScene().name;
             if (currentScene.StartsWith("Blackwater") || targetScene.StartsWith("Blackwater"))
+            {
                 BlackwaterState.SavePlayerState();
+                Level5InventoryBridge.SaveInventory();
+            }
 
             Debug.Log($"[Portal] Loading scene '{targetScene}', spawn at {spawnPosition}");
             SceneManager.LoadScene(targetScene);
